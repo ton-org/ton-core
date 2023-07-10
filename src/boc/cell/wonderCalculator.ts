@@ -13,7 +13,7 @@ import { LevelMask } from "./LevelMask";
 import { ExoticPruned, exoticPruned } from "./exoticPruned";
 import { exoticMerkleProof } from "./exoticMerkleProof";
 import { getRepr } from "./descriptor";
-import { sha256_sync } from "ton-crypto";
+import { sha256_sync } from "@ton/crypto";
 import { exoticMerkleUpdate } from "./exoticMerkleUpdate";
 import { exoticLibrary } from "./exoticLibrary";
 

@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { sha256_sync, sign, signVerify } from "ton-crypto";
+import { sha256_sync, sign, signVerify } from "@ton/crypto";
 import { Cell } from "../boc/Cell";
 
 const MIN_SEED_LENGTH = 8;
