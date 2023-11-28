@@ -22,25 +22,32 @@ import { loadStateInit, StateInit, storeStateInit } from "./StateInit";
 export type Message = {
     info: CommonMessageInfo,
     init?: Maybe<StateInit>,
-    body: Cell
+    body: Cell,
+    forceRef: boolean,
+    forceInitRef: boolean
 };
 
 export function loadMessage(slice: Slice): Message {
     const info = loadCommonMessageInfo(slice);
     let init: StateInit | null = null;
+    let forceInitRef: boolean = false;
     if (slice.loadBit()) {
-        if (!slice.loadBit()) {
+        forceInitRef = slice.loadBit()
+         if (!forceInitRef) {
             init = loadStateInit(slice);
         } else {
             init = loadStateInit(slice.loadRef().beginParse());
         }
     }
-    const body = slice.loadBit() ? slice.loadRef() : slice.asCell();
+    const forceRef = slice.loadBit()
+    const body = forceRef ? slice.loadRef() : slice.asCell();
 
     return {
         info,
         init,
-        body
+        body,
+        forceRef,
+        forceInitRef,
     };
 }
 
@@ -58,6 +65,8 @@ export function storeMessage(message: Message, opts?: { forceRef?: boolean }) {
             // Check if need to store it in ref
             let needRef = false;
             if (opts && opts.forceRef) {
+                needRef = true;
+            } else if (message && message.forceInitRef) {
                 needRef = true;
             } else if (builder.availableBits - 2 /* At least on byte for ref flag */ >= initCell.bits) {
                 needRef = false;
@@ -80,6 +89,8 @@ export function storeMessage(message: Message, opts?: { forceRef?: boolean }) {
         // Store body
         let needRef = false;
         if (opts && opts.forceRef) {
+            needRef = true;
+        } else if (message && message.forceRef) {
             needRef = true;
         } else {
             if (builder.availableBits - 1 /* At least on byte for ref flag */ >= message.body.bits.length &&
