@@ -7,9 +7,9 @@
  */
 
 import Prando from "prando";
-import { Address } from "../address/Address";
-import { ExternalAddress } from "../address/ExternalAddress";
-import { bitsForNumber } from "./bitsForNumber";
+import {Address} from "../address/Address";
+import {ExternalAddress} from "../address/ExternalAddress";
+import {BitString} from "../boc/BitString";
 
 export function testAddress(workchain: number, seed: string) {
     const random = new Prando(seed);
@@ -27,6 +27,6 @@ export function testExternalAddress(seed: string) {
     for (let i = 0; i < hash.length; i++) {
         hash[i] = random.nextInt(0, 255);
     }
-    let v = BigInt('0x' + hash.toString('hex'));
-    return new ExternalAddress(v, bitsForNumber(v, 'uint'));
+    let v = new BitString(hash, 0, hash.length * 8);
+    return new ExternalAddress(v);
 }

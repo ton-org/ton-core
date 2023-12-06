@@ -7,22 +7,22 @@
  */
 
 import inspectSymbol from 'symbol.inspect';
+import {BitString} from "../boc/BitString";
+
 export class ExternalAddress {
 
     static isAddress(src: any): src is ExternalAddress {
         return src instanceof ExternalAddress;
     }
 
-    readonly value: bigint;
-    readonly bits: number;
+    readonly bits: BitString;
 
-    constructor(value: bigint, bits: number) {
-        this.value = value;
+    constructor(bits: BitString) {
         this.bits = bits;
     }
 
     toString() {
-        return `External<${this.bits}:${this.value}>`;
+        return `External<${this.bits}>`;
     }
 
     [inspectSymbol] = () => this.toString()

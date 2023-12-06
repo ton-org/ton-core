@@ -6,11 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Address } from "../address/Address";
-import { ExternalAddress } from "../address/ExternalAddress";
-import { bitsForNumber } from "../utils/bitsForNumber";
-import { Maybe } from "../utils/maybe";
-import { BitString } from "./BitString";
+import {Address} from "../address/Address";
+import {ExternalAddress} from "../address/ExternalAddress";
+import {Maybe} from "../utils/maybe";
+import {BitString} from "./BitString";
 
 /**
  * Class for building bit strings
@@ -293,8 +292,8 @@ export class BitBuilder {
         // Is External Address
         if (ExternalAddress.isAddress(address)) {
             this.writeUint(1, 2); // External address
-            this.writeUint(address.bits, 9);
-            this.writeUint(address.value, address.bits);
+            this.writeUint(address.bits.length, 9);
+            this.writeBits(address.bits);
             return;
         }
 

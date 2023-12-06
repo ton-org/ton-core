@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { randomInt } from 'crypto';
+import {randomInt} from 'crypto';
 import Prando from 'prando';
-import { ExternalAddress } from '../address/ExternalAddress';
-import { testAddress } from '../utils/testAddress';
-import { BitBuilder } from './BitBuilder';
-import { BitReader } from './BitReader';
+import {ExternalAddress} from '../address/ExternalAddress';
+import {testAddress} from '../utils/testAddress';
+import {BitBuilder} from './BitBuilder';
+import {BitReader} from './BitReader';
 
 describe('BitReader', () => {
     it('should read uints from builder', () => {
@@ -165,9 +165,16 @@ describe('BitReader', () => {
 
     it('should read external address from builder', () => {
         for (let i = 0; i < 1000; i++) {
-            let a = randomInt(20) === 0 ? new ExternalAddress(BigInt(randomInt(10000000000)), 48) : null;
-            let b = new ExternalAddress(BigInt(randomInt(10000000000)), 48);
             let builder = new BitBuilder();
+            builder.writeInt(randomInt(10000000000), 40)
+            let aBits = builder.build();
+            builder = new BitBuilder();
+            builder.writeInt(randomInt(10000000000), 48)
+            let bBits = builder.build();
+
+            let a = randomInt(20) === 0 ? new ExternalAddress(aBits) : null;
+            let b = new ExternalAddress(bBits);
+            builder = new BitBuilder();
             builder.writeAddress(a);
             builder.writeAddress(b);
             let bits = builder.build();
