@@ -13,6 +13,7 @@ import { TupleItem } from "../tuple/tuple";
 import { Maybe } from "../utils/maybe";
 import { ContractState } from "./ContractState";
 import { Sender } from './Sender';
+import { Contract } from "./Contract";
 
 export type ContractGetMethodResult = {
     stack: TupleReader;
@@ -25,4 +26,5 @@ export interface ContractProvider {
     get(name: string, args: TupleItem[]): Promise<ContractGetMethodResult>;
     external(message: Cell): Promise<void>;
     internal(via: Sender, args: { value: bigint | string, bounce?: Maybe<boolean>, sendMode?: SendMode, body?: Maybe<Cell | string> }): Promise<void>;
+    open<T extends Contract>(contract: T): ContractProvider;
 }
