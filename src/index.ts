@@ -49,7 +49,9 @@ export * from './types/_export';
 export { Contract } from './contract/Contract';
 export {
     ContractProvider,
-    ContractGetMethodResult
+    ContractGetMethodResult,
+    ReopenableContractProvider,
+    isReopenableContractProvider
 } from './contract/ContractProvider';
 export { ContractState } from './contract/ContractState';
 export { Sender, SenderArguments } from './contract/Sender';
