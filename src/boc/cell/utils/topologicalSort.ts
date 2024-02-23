@@ -40,7 +40,7 @@ export function topologicalSort(src: Cell) {
         for (let c of allCells.get(hash)!.refs) {
             visit(c);
         }
-        sorted.unshift(hash);
+        sorted.push(hash);
         tempMark.delete(hash);
         notPermCells.delete(hash);
     }
@@ -51,11 +51,12 @@ export function topologicalSort(src: Cell) {
 
     let indexes = new Map<string, number>();
     for (let i = 0; i < sorted.length; i++) {
-        indexes.set(sorted[i], i);
+        indexes.set(sorted[sorted.length-i-1], i);
     }
 
     let result: { cell: Cell, refs: number[] }[] = [];
-    for (let ent of sorted) {
+    for (let i = sorted.length - 1; i >= 0; i--) {
+        let ent = sorted[i];
         const rrr = allCells.get(ent)!;
         result.push({ cell: rrr.cell, refs: rrr.refs.map((v) => indexes.get(v)!) });
     }

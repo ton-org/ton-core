@@ -49,18 +49,17 @@ function removePrefixMap<T>(src: Map<string, T>, length: number) {
     }
 }
 
-function forkMap<T>(src: Map<string, T>) {
+function forkMap<T>(src: Map<string, T>, prefixLen: number) {
     if (src.size === 0) {
         throw Error('Internal inconsistency');
     }
     let left = new Map<string, T>();
     let right = new Map<string, T>();
-    for (let k of src.keys()) {
-        let d = src.get(k)!;
-        if (k.startsWith('0')) {
-            left.set(k.substr(1), d);
+    for (let [k, d] of src.entries()) {
+        if (k[prefixLen] === '0') {
+            left.set(k, d);
         } else {
-            right.set(k.substr(1), d);
+            right.set(k, d);
         }
     }
     if (left.size === 0) {
@@ -72,27 +71,27 @@ function forkMap<T>(src: Map<string, T>) {
     return { left, right };
 }
 
-function buildNode<T>(src: Map<string, T>): Node<T> {
+function buildNode<T>(src: Map<string, T>, prefixLen: number): Node<T> {
     if (src.size === 0) {
         throw Error('Internal inconsistency');
     }
     if (src.size === 1) {
         return { type: 'leaf', value: Array.from(src.values())[0] };
     }
-    let { left, right } = forkMap(src);
+    let { left, right } = forkMap(src, prefixLen);
     return {
         type: 'fork',
-        left: buildEdge(left),
-        right: buildEdge(right)
+        left: buildEdge(left, prefixLen + 1),
+        right: buildEdge(right, prefixLen + 1)
     }
 }
 
-function buildEdge<T>(src: Map<string, T>): Edge<T> {
+function buildEdge<T>(src: Map<string, T>, prefixLen = 0): Edge<T> {
     if (src.size === 0) {
         throw Error('Internal inconsistency');
     }
-    const label = findCommonPrefix(Array.from(src.keys()));
-    return { label, node: buildNode(removePrefixMap(src, label.length)) };
+    const label = findCommonPrefix(Array.from(src.keys()), prefixLen);
+    return { label, node: buildNode(src, label.length + prefixLen) };
 }
 
 export function buildTree<T>(src: Map<bigint, T>, keyLength: number) {
@@ -123,8 +122,8 @@ export function writeLabelShort(src: string, to: Builder) {
     to.storeBit(0);
 
     // Value
-    for (let i = 0; i < src.length; i++) {
-        to.storeBit(src[i] === '1');
+    if (src.length > 0) {
+        to.storeUint(BigInt('0b' + src), src.length);
     }
     return to;
 }
@@ -143,8 +142,8 @@ export function writeLabelLong(src: string, keyLength: number, to: Builder) {
     to.storeUint(src.length, length);
 
     // Value
-    for (let i = 0; i < src.length; i++) {
-        to.storeBit(src[i] === '1');
+    if (src.length > 0) {
+        to.storeUint(BigInt('0b' + src), src.length);
     }
     return to;
 }
@@ -207,11 +206,9 @@ function writeLabel(src: string, keyLength: number, to: Builder) {
     let type = detectLabelType(src, keyLength);
     if (type === 'short') {
         writeLabelShort(src, to);
-    }
-    if (type === 'long') {
+    } else if (type === 'long') {
         writeLabelLong(src, keyLength, to);
-    }
-    if (type === 'same') {
+    } else if (type === 'same') {
         writeLabelSame(src[0] === '1', src.length, keyLength, to);
     }
 }
