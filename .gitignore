@@ -2,6 +2,7 @@ node_modules
 dist
 docs
 coverage
+.idea
 
 
 # Yarn >2.0.0
