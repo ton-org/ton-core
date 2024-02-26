@@ -6,24 +6,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export function findCommonPrefix(src: string[]) {
+export function findCommonPrefix(src: string[], startPos = 0) {
 
     // Corner cases
     if (src.length === 0) {
         return '';
     }
-    if (src.length === 1) {
-        return src[0];
+
+    let r = src[0].slice(startPos);
+
+    for (let i = 1; i < src.length; i++) {
+        const s = src[i];
+        while (s.indexOf(r, startPos) !== startPos) {
+            r = r.substring(0, r.length - 1);
+
+            if (r === '') {
+                return r;
+            }
+        }
     }
 
-    // Searching for prefix
-    const sorted = [...src].sort();
-    let size = 0;
-    for (let i = 0; i < sorted[0].length; i++) {
-        if (sorted[0][i] !== sorted[sorted.length - 1][i]) {
-            break;
-        }
-        size++;
-    }
-    return src[0].slice(0, size);
+    return r;
 }

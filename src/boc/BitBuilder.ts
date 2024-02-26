@@ -88,65 +88,53 @@ export class BitBuilder {
      * @param bits number of bits to write
      */
     writeUint(value: bigint | number, bits: number) {
-
-        // Special case for 8 bits
-        if (bits === 8 && this._length % 8 === 0) {
-            let v = Number(value);
-            if (v < 0 || v > 255 || !Number.isSafeInteger(v)) {
-                throw Error(`value is out of range for ${bits} bits. Got ${value}`);
-            }
-            this._buffer[this._length / 8] = Number(value);
-            this._length += 8;
-            return;
-        }
-
-        // Special case for 16 bits
-        if (bits === 16 && this._length % 8 === 0) {
-            let v = Number(value);
-            if (v < 0 || v > 65536 || !Number.isSafeInteger(v)) {
-                throw Error(`value is out of range for ${bits} bits. Got ${value}`);
-            }
-            this._buffer[this._length / 8] = v >> 8;
-            this._buffer[this._length / 8 + 1] = v & 0xff;
-            this._length += 16;
-            return;
-        }
-
-        // Generic case
-        let v = BigInt(value);
         if (bits < 0 || !Number.isSafeInteger(bits)) {
             throw Error(`invalid bit length. Got ${bits}`);
         }
 
-        // Corner case for zero bits
+        const v = BigInt(value);
+
         if (bits === 0) {
-            if (value !== 0n) {
+            if (v !== 0n) {
                 throw Error(`value is not zero for ${bits} bits. Got ${value}`);
             } else {
                 return;
             }
         }
 
-        // Check input
-        let vBits = (1n << BigInt(bits));
+        const vBits = (1n << BigInt(bits));
         if (v < 0 || v >= vBits) {
             throw Error(`bitLength is too small for a value ${value}. Got ${bits}`);
         }
 
-        // Convert number to bits
-        let b: boolean[] = [];
-        while (v > 0) {
-            b.push(v % 2n === 1n);
-            v /= 2n;
+        if (this._length + bits > this._buffer.length * 8) {
+            throw new Error("BitBuilder overflow");
         }
 
-        // Write bits
-        for (let i = 0; i < bits; i++) {
-            let off = bits - i - 1;
-            if (off < b.length) {
-                this.writeBit(b[off]);
+        const tillByte = 8 - (this._length % 8);
+        if (tillByte > 0) {
+            const bidx = Math.floor(this._length / 8);
+            if (bits < tillByte) {
+                const wb = Number(v);
+                this._buffer[bidx] |= wb << (tillByte - bits);
+                this._length += bits;
             } else {
-                this.writeBit(false);
+                const wb = Number(v >> BigInt(bits - tillByte));
+                this._buffer[bidx] |= wb;
+                this._length += tillByte;
+            }
+        }
+        bits -= tillByte;
+
+        while (bits > 0) {
+            if (bits >= 8) {
+                this._buffer[this._length / 8] = Number((v >> BigInt(bits - 8)) & 0xffn);
+                this._length += 8;
+                bits -= 8;
+            } else {
+                this._buffer[this._length / 8] = Number((v << BigInt(8 - bits)) & 0xffn);
+                this._length += bits;
+                bits = 0;
             }
         }
     }
