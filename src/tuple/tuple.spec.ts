@@ -42,7 +42,7 @@ describe('tuple', () => {
     });
 
     it('should serialize slices', () => {
-        const golden = 'te6ccgEBAwEAHwACDwAAAQQAB0AgAgEAHeBhIIRGeIhda/QFs8ibOAAA';
+        const golden = 'te6ccgEBAwEAHwACDwAAAQQAB0AgAQIAAAAd4GEghEZ4iF1r9AWzyJs4';
         let serialized = serializeTuple([
             {
                 "type": "slice", "cell": beginCell().storeCoins(BigInt("123123123123123234211234123123123")).endCell()
@@ -52,7 +52,7 @@ describe('tuple', () => {
     });
 
     it('should serialize address', () => {
-        const golden = 'te6ccgEBAwEAMgACDwAAAQQAELAgAgEAQ5_5N0I0swMbwhQMZdlgFyGLyjnRvwQ_TZTRvL8db8NQtNAAAA';
+        const golden = 'te6ccgEBAwEAMgACDwAAAQQAELAgAQIAAABDn_k3QjSzAxvCFAxl2WAXIYvKOdG_BD9NlNG8vx1vw1C00A';
         let serialized = serializeTuple([
             {
                 "type": "slice", "cell": beginCell().storeAddress(Address.parse('kf_JuhGlmBjeEKBjLssAuQxeUc6N-CH6bKaN5fjrfhqFpqVQ')).endCell()
@@ -72,7 +72,7 @@ describe('tuple', () => {
     });
 
     it('should serialize tuples', () => {
-        let golden = 'te6ccgEBEAEAjgADDAAABwcABAkDAQEGBwABAgEJBAAHQCAFAgAGBAECAwUAHeBhIIRGeIhda/QFs8ibOAIACAcAEgEAAAAAAAHimQASAQAAAAAAAAB7ARIB//////////8KARIBAAAAAAAAAAMLARIBAAAAAAAAAAIMARIBAAAAAAAAAAENAQIADgESAQAAAAAAAAABDwAA';
+        let golden = 'te6ccgEBEAEAjgADDAAABwcABAEIDQESAf//////////AgESAQAAAAAAAAADAwESAQAAAAAAAAACBAESAQAAAAAAAAABBQECAAYBEgEAAAAAAAAAAQcAAAIACQwCAAoLABIBAAAAAAAAAHsAEgEAAAAAAAHimQECAw8BBgcAAQ4BCQQAB0AgDwAd4GEghEZ4iF1r9AWzyJs4';
         const st = parseTuple(Cell.fromBoc(Buffer.from(golden, 'base64'))[0]);
         let gs = serializeTuple(st);
         // console.warn(inspect(parseStack(gs), false, null, true));

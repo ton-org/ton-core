@@ -21,7 +21,7 @@ describe('StateInit', () => {
             }))
             .endCell()
             .toBoc({ idx: false, crc32: true });
-        expect(boc.toString('base64')).toEqual('te6cckEBAwEACwACATQCAQACAgACAX/38hg=')
+        expect(boc.toString('base64')).toEqual('te6cckEBAwEACwACATQBAgACAQACAoN/wQo=')
 
         // Parse
         let parsed = loadStateInit(Cell.fromBoc(boc)[0].beginParse());
