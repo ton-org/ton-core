@@ -248,8 +248,8 @@ export function serializeBoc(root: Cell, opts: { idx: boolean, crc32: boolean })
     let index: number[] = [];
     for (let c of allCells) {
         let sz = calcCellSize(c.cell, sizeBytes);
-        index.push(totalCellSize);
         totalCellSize += sz;
+        index.push(totalCellSize);
     }
     let offsetBytes = Math.max(Math.ceil(bitsForNumber(totalCellSize, 'uint') / 8), 1);
     let totalSize = (

@@ -126,12 +126,12 @@ describe('boc', () => {
         expect(cell.hash().toString('base64')).toBe('lqKW0iTyhcZ77pPDD4owkVfw2qNdxbh+QQt4YwoJz8c=');
         expect(serializeBoc(cell, { idx: false, crc32: false }).toString('base64')).toBe('te6ccgEBAQEAAgAAAA==');
         expect(serializeBoc(cell, { idx: false, crc32: true }).toString('base64')).toBe('te6cckEBAQEAAgAAAEysuc0=');
-        expect(serializeBoc(cell, { idx: true, crc32: false }).toString('base64')).toBe('te6ccoEBAQEAAgAAAAA=');
-        expect(serializeBoc(cell, { idx: true, crc32: true }).toString('base64')).toBe('te6ccsEBAQEAAgAAAAC1U5ck');
+        expect(serializeBoc(cell, { idx: true, crc32: false }).toString('base64')).toBe('te6ccoEBAQEAAgACAAA=');
+        expect(serializeBoc(cell, { idx: true, crc32: true }).toString('base64')).toBe('te6ccsEBAQEAAgACAAC4Afhr');
         expect(deserializeBoc(Buffer.from('te6ccgEBAQEAAgAAAA==', 'base64'))[0].equals(cell)).toBe(true);
         expect(deserializeBoc(Buffer.from('te6cckEBAQEAAgAAAEysuc0=', 'base64'))[0].equals(cell)).toBe(true);
-        expect(deserializeBoc(Buffer.from('te6ccoEBAQEAAgAAAAA=', 'base64'))[0].equals(cell)).toBe(true);
-        expect(deserializeBoc(Buffer.from('te6ccsEBAQEAAgAAAAC1U5ck', 'base64'))[0].equals(cell)).toBe(true);
+        expect(deserializeBoc(Buffer.from('te6ccoEBAQEAAgACAAA=', 'base64'))[0].equals(cell)).toBe(true);
+        expect(deserializeBoc(Buffer.from('te6ccsEBAQEAAgACAAC4Afhr', 'base64'))[0].equals(cell)).toBe(true);
     });
 
     it('should serialize single cell with a number of byte-aligned bits', () => {
@@ -140,12 +140,12 @@ describe('boc', () => {
         expect(cell.hash().toString('base64')).toBe('keNT38owvINaYYHwYjE1R8HYk0c1NSMH72u+/aMJ+1c=');
         expect(serializeBoc(cell, { idx: false, crc32: false }).toString('base64')).toBe('te6ccgEBAQEABgAACAdbzRU=');
         expect(serializeBoc(cell, { idx: false, crc32: true }).toString('base64')).toBe('te6cckEBAQEABgAACAdbzRVRblCS');
-        expect(serializeBoc(cell, { idx: true, crc32: false }).toString('base64')).toBe('te6ccoEBAQEABgAAAAgHW80V');
-        expect(serializeBoc(cell, { idx: true, crc32: true }).toString('base64')).toBe('te6ccsEBAQEABgAAAAgHW80Vyf0TAA==');
+        expect(serializeBoc(cell, { idx: true, crc32: false }).toString('base64')).toBe('te6ccoEBAQEABgAGAAgHW80V');
+        expect(serializeBoc(cell, { idx: true, crc32: true }).toString('base64')).toBe('te6ccsEBAQEABgAGAAgHW80ViGH1dQ==');
         expect(deserializeBoc(Buffer.from('te6ccgEBAQEABgAACAdbzRU=', 'base64'))[0].equals(cell)).toBe(true);
         expect(deserializeBoc(Buffer.from('te6cckEBAQEABgAACAdbzRVRblCS', 'base64'))[0].equals(cell)).toBe(true);
-        expect(deserializeBoc(Buffer.from('te6ccoEBAQEABgAAAAgHW80V', 'base64'))[0].equals(cell)).toBe(true);
-        expect(deserializeBoc(Buffer.from('te6ccsEBAQEABgAAAAgHW80Vyf0TAA==', 'base64'))[0].equals(cell)).toBe(true);
+        expect(deserializeBoc(Buffer.from('te6ccoEBAQEABgAGAAgHW80V', 'base64'))[0].equals(cell)).toBe(true);
+        expect(deserializeBoc(Buffer.from('te6ccsEBAQEABgAGAAgHW80ViGH1dQ==', 'base64'))[0].equals(cell)).toBe(true);
     });
 
     it('should serialize single cell with a number of non-aligned bits', () => {
@@ -154,12 +154,12 @@ describe('boc', () => {
         expect(cell.hash().toString('base64')).toBe('Rk+nt8kkAyN9S1v4H0zwFbGs2INwpMHvESvPQbrI6d0=');
         expect(serializeBoc(cell, { idx: false, crc32: false }).toString('base64')).toBe('te6ccgEBAQEABwAACQHW80Vg');
         expect(serializeBoc(cell, { idx: false, crc32: true }).toString('base64')).toBe('te6cckEBAQEABwAACQHW80Vgb11ZoQ==');
-        expect(serializeBoc(cell, { idx: true, crc32: false }).toString('base64')).toBe('te6ccoEBAQEABwAAAAkB1vNFYA==');
-        expect(serializeBoc(cell, { idx: true, crc32: true }).toString('base64')).toBe('te6ccsEBAQEABwAAAAkB1vNFYMkX0oY=');
+        expect(serializeBoc(cell, { idx: true, crc32: false }).toString('base64')).toBe('te6ccoEBAQEABwAHAAkB1vNFYA==');
+        expect(serializeBoc(cell, { idx: true, crc32: true }).toString('base64')).toBe('te6ccsEBAQEABwAHAAkB1vNFYM0Si3w=');
         expect(deserializeBoc(Buffer.from('te6ccgEBAQEABwAACQHW80Vg', 'base64'))[0].equals(cell)).toBe(true);
         expect(deserializeBoc(Buffer.from('te6cckEBAQEABwAACQHW80Vgb11ZoQ==', 'base64'))[0].equals(cell)).toBe(true);
-        expect(deserializeBoc(Buffer.from('te6ccoEBAQEABwAAAAkB1vNFYA==', 'base64'))[0].equals(cell)).toBe(true);
-        expect(deserializeBoc(Buffer.from('te6ccsEBAQEABwAAAAkB1vNFYMkX0oY=', 'base64'))[0].equals(cell)).toBe(true);
+        expect(deserializeBoc(Buffer.from('te6ccoEBAQEABwAHAAkB1vNFYA==', 'base64'))[0].equals(cell)).toBe(true);
+        expect(deserializeBoc(Buffer.from('te6ccsEBAQEABwAHAAkB1vNFYM0Si3w=', 'base64'))[0].equals(cell)).toBe(true);
     });
 
     it('should serialize single cell with a single reference', () => {
@@ -174,12 +174,12 @@ describe('boc', () => {
         expect(cell.hash().toString('base64')).toBe('goaQYcsXO2c/gd3qvMo3ncEjzpbU7urNQ7hPDo0qC1c=');
         expect(serializeBoc(cell, { idx: false, crc32: false }).toString('base64')).toBe('te6ccgEBAgEADQABCDreaLEBAAgHW80V');
         expect(serializeBoc(cell, { idx: false, crc32: true }).toString('base64')).toBe('te6cckEBAgEADQABCDreaLEBAAgHW80VSW/75w==');
-        expect(serializeBoc(cell, { idx: true, crc32: false }).toString('base64')).toBe('te6ccoEBAgEADQAABwEIOt5osQEACAdbzRU=');
-        expect(serializeBoc(cell, { idx: true, crc32: true }).toString('base64')).toBe('te6ccsEBAgEADQAABwEIOt5osQEACAdbzRWZVy8t');
+        expect(serializeBoc(cell, { idx: true, crc32: false }).toString('base64')).toBe('te6ccoEBAgEADQAHDQEIOt5osQEACAdbzRU=');
+        expect(serializeBoc(cell, { idx: true, crc32: true }).toString('base64')).toBe('te6ccsEBAgEADQAHDQEIOt5osQEACAdbzRUxP4cd');
         expect(deserializeBoc(Buffer.from('te6ccgEBAgEADQABCDreaLEBAAgHW80V', 'base64'))[0].equals(cell)).toBe(true);
         expect(deserializeBoc(Buffer.from('te6cckEBAgEADQABCDreaLEBAAgHW80VSW/75w==', 'base64'))[0].equals(cell)).toBe(true);
         expect(deserializeBoc(Buffer.from('te6ccoEBAgEADQAABwEIOt5osQEACAdbzRU=', 'base64'))[0].equals(cell)).toBe(true);
-        expect(deserializeBoc(Buffer.from('te6ccsEBAgEADQAABwEIOt5osQEACAdbzRWZVy8t', 'base64'))[0].equals(cell)).toBe(true);
+        expect(deserializeBoc(Buffer.from('te6ccsEBAgEADQAHDQEIOt5osQEACAdbzRUxP4cd', 'base64'))[0].equals(cell)).toBe(true);
     });
 
     it('should serialize single cell with multiple references', () => {
@@ -196,12 +196,12 @@ describe('boc', () => {
         expect(cell.hash().toString('base64')).toBe('cks0wbfqFZE9/yb0sWMWQGoj0XBOLkUi+aX5xpJ6jjA=');
         expect(serializeBoc(cell, { idx: false, crc32: false }).toString('base64')).toBe('te6ccgEBAgEADwADCDreaLEBAQEACAdbzRU=');
         expect(serializeBoc(cell, { idx: false, crc32: true }).toString('base64')).toBe('te6cckEBAgEADwADCDreaLEBAQEACAdbzRWpQD2p');
-        expect(serializeBoc(cell, { idx: true, crc32: false }).toString('base64')).toBe('te6ccoEBAgEADwAACQMIOt5osQEBAQAIB1vNFQ==');
-        expect(serializeBoc(cell, { idx: true, crc32: true }).toString('base64')).toBe('te6ccsEBAgEADwAACQMIOt5osQEBAQAIB1vNFT/vUE4=');
+        expect(serializeBoc(cell, { idx: true, crc32: false }).toString('base64')).toBe('te6ccoEBAgEADwAJDwMIOt5osQEBAQAIB1vNFQ==');
+        expect(serializeBoc(cell, { idx: true, crc32: true }).toString('base64')).toBe('te6ccsEBAgEADwAJDwMIOt5osQEBAQAIB1vNFZz9usI=');
         expect(deserializeBoc(Buffer.from('te6ccgEBAgEADwADCDreaLEBAQEACAdbzRU=', 'base64'))[0].equals(cell)).toBe(true);
         expect(deserializeBoc(Buffer.from('te6cckEBAgEADwADCDreaLEBAQEACAdbzRWpQD2p', 'base64'))[0].equals(cell)).toBe(true);
         expect(deserializeBoc(Buffer.from('te6ccoEBAgEADwAACQMIOt5osQEBAQAIB1vNFQ==', 'base64'))[0].equals(cell)).toBe(true);
-        expect(deserializeBoc(Buffer.from('te6ccsEBAgEADwAACQMIOt5osQEBAQAIB1vNFT/vUE4=', 'base64'))[0].equals(cell)).toBe(true);
+        expect(deserializeBoc(Buffer.from('te6ccsEBAgEADwAJDwMIOt5osQEBAQAIB1vNFZz9usI=', 'base64'))[0].equals(cell)).toBe(true);
     });
 
     it('should deserialize/serialize library cell', () => {
@@ -221,6 +221,18 @@ describe('boc', () => {
         let cell = Cell.fromBoc(boc)[0];
 
         expect(cell.hash().toString('hex')).toBe(testCase.hash);
+    });
+
+    it('should serialize boc with index', () => {
+        let cell = beginCell()
+            .storeUint(228, 32)
+            .storeRef(beginCell().storeUint(1337, 32).endCell())
+            .storeRef(beginCell().storeUint(1338, 32).endCell())
+            .endCell();
+
+        let serialized = cell.toBoc({ idx: true, crc32: false }).toString('hex');
+        expect(cell.toString()).toBe('x{000000E4}\n x{00000539}\n x{0000053A}');
+        expect(serialized).toBe('b5ee9c7281010301001400080e140208000000e4010200080000053900080000053a');
     });
 });
 

@@ -37,8 +37,9 @@ export function topologicalSort(src: Cell) {
             throw Error('Not a DAG');
         }
         tempMark.add(hash);
-        for (let c of allCells.get(hash)!.refs) {
-            visit(c);
+        let refs = allCells.get(hash)!.refs;
+        for (let ci = refs.length - 1; ci >= 0; ci--) {
+            visit(refs[ci]);
         }
         sorted.push(hash);
         tempMark.delete(hash);
