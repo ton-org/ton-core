@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## Fixed
+- Fixed BoC serialization with indicies
+- Improve BoC serialization perfomance (thanks @krigga)
+
+Notes: BoC topological sort now is more like C++ impl, however there are still some differences. Tests in your project may fail after this update if you rely on serialized BoC.
+
 ## [0.56.0] - 2024-02-23
 
 ## Added
