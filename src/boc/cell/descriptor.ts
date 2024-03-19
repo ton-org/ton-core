@@ -11,8 +11,8 @@ import { Cell } from "../Cell";
 import { CellType } from "../CellType";
 import { bitsToPaddedBuffer } from "../utils/paddedBits";
 
-export function getRefsDescriptor(refs: Cell[], level: number, type: CellType) {
-    return refs.length + (type !== CellType.Ordinary ? 1 : 0) * 8 + level * 32;
+export function getRefsDescriptor(refs: Cell[], levelMask: number, type: CellType) {
+    return refs.length + (type !== CellType.Ordinary ? 1 : 0) * 8 + levelMask * 32;
 }
 
 export function getBitsDescriptor(bits: BitString) {
@@ -20,7 +20,7 @@ export function getBitsDescriptor(bits: BitString) {
     return Math.ceil(len / 8) + Math.floor(len / 8);
 }
 
-export function getRepr(originalBits: BitString, bits: BitString, refs: Cell[], level: number, type: CellType) {
+export function getRepr(originalBits: BitString, bits: BitString, refs: Cell[], level: number, levelMask: number, type: CellType) {
 
     // Allocate
     const bitsLen = Math.ceil(bits.length / 8);
@@ -28,7 +28,7 @@ export function getRepr(originalBits: BitString, bits: BitString, refs: Cell[], 
 
     // Write descriptors
     let reprCursor = 0;
-    repr[reprCursor++] = getRefsDescriptor(refs, level, type);
+    repr[reprCursor++] = getRefsDescriptor(refs, levelMask, type);
     repr[reprCursor++] = getBitsDescriptor(originalBits);
 
     // Write bits

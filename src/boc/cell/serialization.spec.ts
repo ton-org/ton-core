@@ -223,6 +223,13 @@ describe('boc', () => {
         expect(cell.hash().toString('hex')).toBe(testCase.hash);
     });
 
+    it('should deserialize block 2', () => {
+        let testCase = fs.readFileSync(__dirname + '/__testdata__/block2.txt', 'utf8');
+        let cell = Cell.fromBase64(testCase);
+
+        expect(cell.hash().toString('hex')).toBe('25e19f8c4574804a8cabade6bab736a27a67f4f6696a8a0feb93b3dfbfab7fcf');
+    });
+
     it('should serialize boc with index', () => {
         let cell = beginCell()
             .storeUint(228, 32)

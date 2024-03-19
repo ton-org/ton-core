@@ -129,7 +129,7 @@ export function wonderCalculator(type: CellType, bits: BitString, refs: Cell[]):
         // Hash
         //
 
-        let repr = getRepr(bits, currentBits, refs, levelI, type);
+        let repr = getRepr(bits, currentBits, refs, levelI, levelMask.apply(levelI).value, type);
         let hash = sha256_sync(repr);
 
         //

@@ -222,7 +222,7 @@ export function deserializeBoc(src: Buffer) {
 }
 
 function writeCellToBuilder(cell: Cell, refs: number[], sizeBytes: number, to: BitBuilder) {
-    let d1 = getRefsDescriptor(cell.refs, cell.level(), cell.type);
+    let d1 = getRefsDescriptor(cell.refs, cell.mask.value, cell.type);
     let d2 = getBitsDescriptor(cell.bits);
     to.writeUint(d1, 8);
     to.writeUint(d2, 8);
