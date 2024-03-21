@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Address } from "../address/Address";
-import { ExternalAddress } from "../address/ExternalAddress";
-import { BitString } from "./BitString";
+import {Address} from "../address/Address";
+import {ExternalAddress} from "../address/ExternalAddress";
+import {BitString} from "./BitString";
 
 /**
  * Class for reading bit strings
@@ -499,14 +499,14 @@ export class BitReader {
         }
 
         // Load length
-        let bits = Number(this._preloadUint(9, this._offset + 2));
+        let len = Number(this._preloadUint(9, this._offset + 2));
 
         // Load address
-        let value = this._preloadUint(bits, this._offset + 11);
+        let bits = this._bits.substring(this._offset + 11, len);
 
         // Update offset
-        this._offset += 11 + bits;
+        this._offset += 11 + len;
 
-        return new ExternalAddress(value, bits);
+        return new ExternalAddress(bits);
     }
 }
