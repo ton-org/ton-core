@@ -44,7 +44,7 @@ export class BitBuilder {
         }
 
         // Set bit
-        if (value === true || value > 0) {
+        if ((typeof value === 'boolean' && value === true) || (typeof value === 'number' && value > 0)) {
             this._buffer[(n / 8) | 0] |= 1 << (7 - (n % 8));
         }
 
