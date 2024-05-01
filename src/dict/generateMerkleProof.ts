@@ -3,6 +3,7 @@ import { Cell } from '../boc/Cell';
 import { Slice } from '../boc/Slice';
 import { DictionaryKeyTypes, Dictionary, DictionaryKey } from './Dictionary';
 import { readUnaryLength } from './utils/readUnaryLength';
+import { convertToMerkleProof } from '../boc/cell/exoticMerkleProof';
 
 function convertToPrunedBranch(c: Cell): Cell {
     return beginCell()
@@ -10,15 +11,6 @@ function convertToPrunedBranch(c: Cell): Cell {
         .storeUint(1, 8)
         .storeBuffer(c.hash(0))
         .storeUint(c.depth(0), 16)
-        .endCell({ exotic: true });
-}
-
-function convertToMerkleProof(c: Cell): Cell {
-    return beginCell()
-        .storeUint(3, 8)
-        .storeBuffer(c.hash(0))
-        .storeUint(c.depth(0), 16)
-        .storeRef(c)
         .endCell({ exotic: true });
 }
 
