@@ -392,8 +392,8 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
         serializeDict(prepared, resolvedKey.bits, resolvedValue.serialize, builder);
     }
 
-    generateMerkleProof(key: K): Cell {
-        return generateMerkleProof(this, key, this._key!)
+    generateMerkleProof(keys: K[]): Cell {
+        return generateMerkleProof(this, keys, this._key!)
     }
 
     generateMerkleUpdate(key: K, newValue: V): Cell {

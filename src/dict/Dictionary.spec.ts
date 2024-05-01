@@ -121,14 +121,22 @@ describe('Dictionary', () => {
         d.set(4, 44);
         d.set(5, 55);
 
+        const dict_hash = new Builder().storeDictDirect(d).endCell().hash();
         for (let k = 1; k <= 5; k++) {
-            const proof = d.generateMerkleProof(k);
+            const proof = d.generateMerkleProof([k]);
             Cell.fromBoc(proof.toBoc());
             expect(exoticMerkleProof(proof.bits, proof.refs).proofHash).toEqual(
-                Buffer.from(
-                    'ee41b86bd71f8224ebd01848b4daf4cd46d3bfb3e119d8b865ce7c2802511de3',
-                    'hex'
-                )
+                dict_hash
+            );
+
+            // todo: parse the pruned dictionary and check the presence of the keys
+        }
+
+        for (let k = 1; k <= 3; k++) {
+            const proof = d.generateMerkleProof([k, k + 1, k + 2]);
+            Cell.fromBoc(proof.toBoc());
+            expect(exoticMerkleProof(proof.bits, proof.refs).proofHash).toEqual(
+                dict_hash
             );
         }
     });
