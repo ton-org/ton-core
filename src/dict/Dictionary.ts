@@ -12,7 +12,7 @@ import { Cell } from "../boc/Cell";
 import { Slice } from "../boc/Slice";
 import { BitString } from "../boc/BitString";
 import { Maybe } from "../utils/maybe";
-import { generateMerkleProof } from "./generateMerkleProof";
+import { generateMerkleProof, generateMerkleProofDirect } from "./generateMerkleProof";
 import { generateMerkleUpdate } from "./generateMerkleUpdate";
 import { parseDict } from "./parseDict";
 import { serializeDict } from "./serializeDict";
@@ -392,8 +392,23 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
         serializeDict(prepared, resolvedKey.bits, resolvedValue.serialize, builder);
     }
 
+    /**
+     * Generate merkle proof for multiple keys in the dictionary
+     * @param keys an array of the keys
+     * @returns generated merkle proof cell
+     */
     generateMerkleProof(keys: K[]): Cell {
         return generateMerkleProof(this, keys, this._key!)
+    }
+
+    /**
+     * Low level method for generating pruned dictionary directly.
+     * The result can be used as a part of a bigger merkle proof
+     * @param keys an array of the keys
+     * @returns cell that contains the pruned dictionary
+     */
+    generateMerkleProofDirect(keys: K[]): Cell {
+        return generateMerkleProofDirect(this, keys, this._key!)
     }
 
     generateMerkleUpdate(key: K, newValue: V): Cell {

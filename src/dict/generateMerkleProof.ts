@@ -106,19 +106,25 @@ function doGenerateMerkleProof(
     }
 }
 
-export function generateMerkleProof<K extends DictionaryKeyTypes, V>(
+export function generateMerkleProofDirect<K extends DictionaryKeyTypes, V>(
     dict: Dictionary<K, V>,
     keys: K[],
     keyObject: DictionaryKey<K>
 ): Cell {
     keys = keys.filter((key) => dict.has(key)); 
     const s = beginCell().storeDictDirect(dict).asSlice();
-    return convertToMerkleProof(
-        doGenerateMerkleProof(
+    return doGenerateMerkleProof(
             '',
             s,
             keyObject.bits,
             keys.map((key) => keyObject.serialize(key).toString(2).padStart(keyObject.bits, '0'))
-        )
     );
+}
+
+export function generateMerkleProof<K extends DictionaryKeyTypes, V>(
+    dict: Dictionary<K, V>,
+    keys: K[],
+    keyObject: DictionaryKey<K>
+): Cell {
+    return convertToMerkleProof(generateMerkleProofDirect(dict, keys, keyObject));
 }
