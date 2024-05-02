@@ -68,25 +68,25 @@ function doGenerateMerkleProof(
         let right = sl.loadRef();
         // NOTE: Left and right branches are implicitly contain prefixes '0' and '1'
         if (!left.isExotic) {
-            const left_keys = keys.filter((key) => {
+            const leftKeys = keys.filter((key) => {
                 return pp + '0' === key.slice(0, pp.length + 1);
             });
             left = doGenerateMerkleProof(
                 pp + '0',
                 left.beginParse(),
                 n - prefixLength - 1,
-                left_keys
+                leftKeys
             );
         }
         if (!right.isExotic) {
-            const right_keys = keys.filter((key) => {
+            const rightKeys = keys.filter((key) => {
                 return pp + '1' === key.slice(0, pp.length + 1);
             });
             right = doGenerateMerkleProof(
                 pp + '1',
                 right.beginParse(),
                 n - prefixLength - 1,
-                right_keys
+                rightKeys
             );
         }
 

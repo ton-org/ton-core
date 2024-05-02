@@ -121,12 +121,12 @@ describe('Dictionary', () => {
         d.set(4, 44);
         d.set(5, 55);
 
-        const dict_hash = new Builder().storeDictDirect(d).endCell().hash();
+        const dictHash = beginCell().storeDictDirect(d).endCell().hash();
         for (let k = 1; k <= 5; k++) {
             const proof = d.generateMerkleProof([k]);
             Cell.fromBoc(proof.toBoc());
             expect(exoticMerkleProof(proof.bits, proof.refs).proofHash).toEqual(
-                dict_hash
+                dictHash
             );
 
             // todo: parse the pruned dictionary and check the presence of the keys
@@ -136,7 +136,7 @@ describe('Dictionary', () => {
             const proof = d.generateMerkleProof([k, k + 1, k + 2]);
             Cell.fromBoc(proof.toBoc());
             expect(exoticMerkleProof(proof.bits, proof.refs).proofHash).toEqual(
-                dict_hash
+                dictHash
             );
         }
     });
