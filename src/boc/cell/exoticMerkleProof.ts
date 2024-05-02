@@ -9,6 +9,7 @@
 import { BitReader } from "../BitReader";
 import { BitString } from "../BitString";
 import { Cell } from "../Cell";
+import { beginCell } from '../Builder';
 
 export function exoticMerkleProof(bits: BitString, refs: Cell[]) {
     const reader = new BitReader(bits);
@@ -48,4 +49,13 @@ export function exoticMerkleProof(bits: BitString, refs: Cell[]) {
         proofDepth,
         proofHash
     };
+}
+
+export function convertToMerkleProof(c: Cell): Cell {
+    return beginCell()
+        .storeUint(3, 8)
+        .storeBuffer(c.hash(0))
+        .storeUint(c.depth(0), 16)
+        .storeRef(c)
+        .endCell({ exotic: true });
 }

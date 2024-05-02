@@ -3,6 +3,7 @@ import { Cell } from '../boc/Cell';
 import { Slice } from '../boc/Slice';
 import { DictionaryKeyTypes, Dictionary, DictionaryKey } from './Dictionary';
 import { readUnaryLength } from './utils/readUnaryLength';
+import { convertToMerkleProof } from '../boc/cell/exoticMerkleProof';
 
 function convertToPrunedBranch(c: Cell): Cell {
     return beginCell()
@@ -13,23 +14,19 @@ function convertToPrunedBranch(c: Cell): Cell {
         .endCell({ exotic: true });
 }
 
-function convertToMerkleProof(c: Cell): Cell {
-    return beginCell()
-        .storeUint(3, 8)
-        .storeBuffer(c.hash(0))
-        .storeUint(c.depth(0), 16)
-        .storeRef(c)
-        .endCell({ exotic: true });
-}
-
 function doGenerateMerkleProof(
     prefix: string,
     slice: Slice,
     n: number,
-    key: string
+    keys: string[]
 ): Cell {
     // Reading label
     const originalCell = slice.asCell();
+
+    if (keys.length == 0) {
+        // no keys to prove, prune the whole subdict
+        return convertToPrunedBranch(originalCell);
+    }
 
     let lb0 = slice.loadBit() ? 1 : 0;
     let prefixLength = 0;
@@ -71,28 +68,26 @@ function doGenerateMerkleProof(
         let right = sl.loadRef();
         // NOTE: Left and right branches are implicitly contain prefixes '0' and '1'
         if (!left.isExotic) {
-            if (pp + '0' === key.slice(0, pp.length + 1)) {
-                left = doGenerateMerkleProof(
-                    pp + '0',
-                    left.beginParse(),
-                    n - prefixLength - 1,
-                    key
-                );
-            } else {
-                left = convertToPrunedBranch(left);
-            }
+            const leftKeys = keys.filter((key) => {
+                return pp + '0' === key.slice(0, pp.length + 1);
+            });
+            left = doGenerateMerkleProof(
+                pp + '0',
+                left.beginParse(),
+                n - prefixLength - 1,
+                leftKeys
+            );
         }
         if (!right.isExotic) {
-            if (pp + '1' === key.slice(0, pp.length + 1)) {
-                right = doGenerateMerkleProof(
-                    pp + '1',
-                    right.beginParse(),
-                    n - prefixLength - 1,
-                    key
-                );
-            } else {
-                right = convertToPrunedBranch(right);
-            }
+            const rightKeys = keys.filter((key) => {
+                return pp + '1' === key.slice(0, pp.length + 1);
+            });
+            right = doGenerateMerkleProof(
+                pp + '1',
+                right.beginParse(),
+                n - prefixLength - 1,
+                rightKeys
+            );
         }
 
         return beginCell()
@@ -103,18 +98,25 @@ function doGenerateMerkleProof(
     }
 }
 
-export function generateMerkleProof<K extends DictionaryKeyTypes, V>(
+export function generateMerkleProofDirect<K extends DictionaryKeyTypes, V>(
     dict: Dictionary<K, V>,
-    key: K,
+    keys: K[],
     keyObject: DictionaryKey<K>
 ): Cell {
-    const s = beginCell().storeDictDirect(dict).endCell().beginParse();
-    return convertToMerkleProof(
-        doGenerateMerkleProof(
+    keys = keys.filter((key) => dict.has(key)); 
+    const s = beginCell().storeDictDirect(dict).asSlice();
+    return doGenerateMerkleProof(
             '',
             s,
             keyObject.bits,
-            keyObject.serialize(key).toString(2).padStart(keyObject.bits, '0')
-        )
+            keys.map((key) => keyObject.serialize(key).toString(2).padStart(keyObject.bits, '0'))
     );
+}
+
+export function generateMerkleProof<K extends DictionaryKeyTypes, V>(
+    dict: Dictionary<K, V>,
+    keys: K[],
+    keyObject: DictionaryKey<K>
+): Cell {
+    return convertToMerkleProof(generateMerkleProofDirect(dict, keys, keyObject));
 }

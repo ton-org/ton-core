@@ -21,8 +21,8 @@ export function generateMerkleUpdate<K extends DictionaryKeyTypes, V>(
     keyObject: DictionaryKey<K>,
     newValue: V
 ): Cell {
-    const oldProof = generateMerkleProof(dict, key, keyObject).refs[0];
+    const oldProof = generateMerkleProof(dict, [key], keyObject).refs[0];
     dict.set(key, newValue);
-    const newProof = generateMerkleProof(dict, key, keyObject).refs[0];
+    const newProof = generateMerkleProof(dict, [key], keyObject).refs[0];
     return convertToMerkleUpdate(oldProof, newProof);
 }
