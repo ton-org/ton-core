@@ -24,7 +24,7 @@ function doGenerateMerkleProof(
     const originalCell = slice.asCell();
 
     if (keys.length == 0) {
-        // no keys to proof, prune the whole subdict
+        // no keys to prove, prune the whole subdict
         return convertToPrunedBranch(originalCell);
     }
 
