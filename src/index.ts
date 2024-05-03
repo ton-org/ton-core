@@ -28,12 +28,12 @@ export { Writable } from './boc/Writable';
 export { Dictionary, DictionaryKey, DictionaryKeyTypes, DictionaryValue } from './dict/Dictionary';
 
 // Exotics
-export { exoticMerkleProof } from './boc/cell/exoticMerkleProof';
+export { exoticMerkleProof, convertToMerkleProof } from './boc/cell/exoticMerkleProof';
 export { exoticMerkleUpdate } from './boc/cell/exoticMerkleUpdate';
 export { exoticPruned } from './boc/cell/exoticPruned';
 
 // Merkle trees
-export { generateMerkleProof } from './dict/generateMerkleProof'
+export { generateMerkleProof, generateMerkleProofDirect } from './dict/generateMerkleProof'
 export { generateMerkleUpdate } from './dict/generateMerkleUpdate'
 
 // Tuples
