@@ -103,7 +103,11 @@ export function generateMerkleProofDirect<K extends DictionaryKeyTypes, V>(
     keys: K[],
     keyObject: DictionaryKey<K>
 ): Cell {
-    keys = keys.filter((key) => dict.has(key)); 
+    keys.forEach((key) => {
+        if (!dict.has(key)) {
+            throw new Error(`Trying to generate merkle proof for a missing key "${key}"`)
+        }
+    })
     const s = beginCell().storeDictDirect(dict).asSlice();
     return doGenerateMerkleProof(
             '',
