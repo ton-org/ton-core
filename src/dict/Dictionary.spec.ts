@@ -139,6 +139,8 @@ describe('Dictionary', () => {
                 dictHash
             );
         }
+
+        expect(() => d.generateMerkleProof([6])).toThrow();
     });
 
     it('should generate merkle updates', () => {
