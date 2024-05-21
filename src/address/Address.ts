@@ -112,6 +112,14 @@ export class Address {
         }
     }
 
+    static toAddress(source: Address | string): Address {
+        if (typeof source === 'string') {
+            return Address.parse(source);
+        }
+
+        return source;
+    }
+
     static parse(source: string) {
         if (Address.isFriendly(source)) {
             return this.parseFriendly(source).address;
