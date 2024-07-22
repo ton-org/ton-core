@@ -511,7 +511,7 @@ export class BitReader {
     }
 
     private _toSafeInteger(src: bigint, alt: string) {
-        if(BigInt(Number.MAX_SAFE_INTEGER) < src) {
+        if(BigInt(Number.MAX_SAFE_INTEGER) < src || src < BigInt(Number.MIN_SAFE_INTEGER)) {
             throw new TypeError(`${src} is out of safe integer range. Use ${alt} instead`);
         }
 
