@@ -131,7 +131,7 @@ export class BitReader {
      * @returns read value as number
      */
     loadUint(bits: number): number {
-        return Number(this.loadUintBig(bits));
+        return this._toSafeInteger(this.loadUintBig(bits), 'loadUintBig');
     }
 
     /**
@@ -151,7 +151,7 @@ export class BitReader {
      * @returns read value as number
      */
     preloadUint(bits: number): number {
-        return Number(this._preloadUint(bits, this._offset));
+        return this._toSafeInteger(this._preloadUint(bits, this._offset), 'preloadUintBig');
     }
 
     /**
@@ -171,7 +171,7 @@ export class BitReader {
     loadInt(bits: number): number {
         let res = this._preloadInt(bits, this._offset);
         this._offset += bits;
-        return Number(res);
+        return this._toSafeInteger(res, 'loadUintBig');
     }
 
     /**
@@ -191,7 +191,7 @@ export class BitReader {
      * @returns read value as bigint
      */
     preloadInt(bits: number): number {
-        return Number(this._preloadInt(bits, this._offset));
+        return this._toSafeInteger(this._preloadInt(bits, this._offset), 'preloadIntBig');
     }
 
     /**
@@ -210,7 +210,7 @@ export class BitReader {
      */
     loadVarUint(bits: number): number {
         let size = Number(this.loadUint(bits));
-        return Number(this.loadUintBig(size * 8));
+        return this._toSafeInteger(this.loadUintBig(size * 8), 'loadVarUintBig');
     }
 
     /**
@@ -230,7 +230,7 @@ export class BitReader {
      */
     preloadVarUint(bits: number): number {
         let size = Number(this._preloadUint(bits, this._offset));
-        return Number(this._preloadUint(size * 8, this._offset + bits));
+        return this._toSafeInteger(this._preloadUint(size * 8, this._offset + bits), 'preloadVarUintBig');
     }
 
     /**
@@ -250,7 +250,7 @@ export class BitReader {
      */
     loadVarInt(bits: number): number {
         let size = Number(this.loadUint(bits));
-        return Number(this.loadIntBig(size * 8));
+        return this._toSafeInteger(this.loadIntBig(size * 8), 'loadVarIntBig');
     }
 
     /**
@@ -270,7 +270,7 @@ export class BitReader {
      */
     preloadVarInt(bits: number): number {
         let size = Number(this._preloadUint(bits, this._offset));
-        return Number(this._preloadInt(size * 8, this._offset + bits));
+        return this._toSafeInteger(this._preloadInt(size * 8, this._offset + bits), 'preloadVarIntBig');
     }
 
     /**
@@ -508,5 +508,13 @@ export class BitReader {
         this._offset += 11 + bits;
 
         return new ExternalAddress(value, bits);
+    }
+
+    private _toSafeInteger(src: bigint, alt: string) {
+        if(BigInt(Number.MAX_SAFE_INTEGER) < src) {
+            throw new TypeError(`${src} is out of safe integer range. Use ${alt} instead`);
+        }
+
+        return Number(src);
     }
 }
