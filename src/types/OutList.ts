@@ -16,6 +16,10 @@ import {loadStorageInfo, storeStorageInfo} from "./StorageInto";
 import {loadAccountStorage, storeAccountStorage} from "./AccountStorage";
 import {Account} from "./Account";
 import {loadMessage} from "./Message";
+import { CurrencyCollection, loadCurrencyCollection, storeCurrencyCollection } from "./CurrencyCollection";
+import { SimpleLibrary } from "./SimpleLibrary";
+import { LibRef, loadLibRef, storeLibRef } from "./LibRef";
+import { ReserveMode } from "./ReserveMode";
 
 export interface OutActionSendMsg {
     type: 'sendMsg',
@@ -28,7 +32,19 @@ export interface OutActionSetCode {
     newCode: Cell;
 }
 
-export type OutAction = OutActionSendMsg | OutActionSetCode;
+export interface OutActionReserve {
+    type: 'reserve',
+    mode: ReserveMode;
+    currency: CurrencyCollection;
+}
+
+export interface OutActionChangeLibrary {
+    type: 'changeLibrary',
+    mode: number;
+    libRef: LibRef;
+}
+
+export type OutAction = OutActionSendMsg | OutActionSetCode | OutActionReserve | OutActionChangeLibrary;
 
 export function storeOutAction(action: OutAction) {
     switch (action.type) {
@@ -36,6 +52,10 @@ export function storeOutAction(action: OutAction) {
             return storeOutActionSendMsg(action);
         case 'setCode':
             return storeOutActionSetCode(action);
+        case 'reserve':
+            return storeOutActionReserve(action);
+        case 'changeLibrary':
+            return storeOutActionChangeLibrary(action);
         default:
             throw new Error(`Unknown action type ${(action as OutAction).type}`)
     }
@@ -64,6 +84,32 @@ function storeOutActionSetCode(action: OutActionSetCode) {
     }
 }
 
+/*
+action_reserve_currency#36e6b809 mode:(## 8)
+  currency:CurrencyCollection = OutAction;
+ */
+const outActionReserveTag = 0x36e6b809;
+function storeOutActionReserve(action: OutActionReserve) {
+    return (builder: Builder) => {
+        builder.storeUint(outActionReserveTag, 32)
+            .storeUint(action.mode, 8)
+            .store(storeCurrencyCollection(action.currency));
+    }
+}
+
+/*
+action_change_library#26fa1dd4 mode:(## 7)
+  libref:LibRef = OutAction;
+ */
+const outActionChangeLibraryTag = 0x26fa1dd4;
+function storeOutActionChangeLibrary(action: OutActionChangeLibrary) {
+    return (builder: Builder) => {
+        builder.storeUint(outActionChangeLibraryTag, 32)
+            .storeUint(action.mode, 7)
+            .store(storeLibRef(action.libRef));
+    }
+}
+
 
 export function loadOutAction(slice: Slice): OutAction  {
     const tag = slice.loadUint(32);
@@ -87,9 +133,30 @@ export function loadOutAction(slice: Slice): OutAction  {
         }
     }
 
+    if (tag === outActionReserveTag) {
+        const mode = slice.loadUint(8);
+        const currency = loadCurrencyCollection(slice);
+
+        return {
+            type: 'reserve',
+            mode,
+            currency
+        }
+    }
+
+    if (tag === outActionChangeLibraryTag) {
+        const mode = slice.loadUint(7);
+        const libRef = loadLibRef(slice);
+
+        return {
+            type: 'changeLibrary',
+            mode,
+            libRef
+        }
+    }
+
     throw new Error(`Unknown out action tag 0x${tag.toString(16)}`);
 }
-
 
 
 /*

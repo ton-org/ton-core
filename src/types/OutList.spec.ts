@@ -11,6 +11,8 @@ import {
     loadOutAction,
     loadOutList,
     OutAction,
+    OutActionChangeLibrary,
+    OutActionReserve,
     OutActionSendMsg,
     OutActionSetCode,
     storeOutAction,
@@ -18,6 +20,9 @@ import {
 } from "./OutList";
 import {SendMode} from "./SendMode";
 import {MessageRelaxed, storeMessageRelaxed} from "./MessageRelaxed";
+import { ReserveMode } from "./ReserveMode";
+import { storeCurrencyCollection } from "./CurrencyCollection";
+import { LibRef, storeLibRef } from "./LibRef";
 
 const mockMessageRelaxed1: MessageRelaxed = {
     info: {
@@ -48,6 +53,8 @@ const mockSetCodeCell = beginCell().storeUint(123, 8).endCell();
 describe('Out List', () => {
     const outActionSendMsgTag = 0x0ec3c86d;
     const outActionSetCodeTag = 0xad4de08e;
+    const outActionReserveTag = 0x36e6b809;
+    const outActionChangeLibraryTag = 0x26fa1dd4;
 
     it('Should serialise sendMsg action', () => {
         const mode = SendMode.PAY_GAS_SEPARATELY;
@@ -78,6 +85,44 @@ describe('Out List', () => {
         const expected = beginCell()
             .storeUint(outActionSetCodeTag, 32)
             .storeRef(mockSetCodeCell)
+            .endCell();
+        expect(expected.equals(actual)).toBeTruthy();
+    });
+
+    it('Should serialize reserve action', () => {
+        const mode = ReserveMode.AT_MOST_THIS_AMOUNT;
+        const currency = { coins: 2000000n }
+        const action = storeOutAction({
+            type: 'reserve',
+            mode,
+            currency
+        });
+
+        const actual = beginCell().store(action).endCell();
+
+        const expected = beginCell()
+            .storeUint(outActionReserveTag, 32)
+            .storeUint(mode, 8)
+            .store(storeCurrencyCollection(currency))
+        .endCell();
+
+        expect(expected.equals(actual)).toBeTruthy();
+    });
+
+    it('Should serialize changeLibrary action', () => {
+        const mode = 0;
+        const lib = beginCell().storeUint(1234, 16).endCell();
+        const libRef: LibRef = { type: "ref", library: lib };
+        const action = storeOutAction({
+            type: 'changeLibrary',
+            mode,
+            libRef
+        });
+        const actual = beginCell().store(action).endCell();
+        const expected = beginCell()
+            .storeUint(outActionChangeLibraryTag, 32)
+            .storeUint(mode, 7)
+            .store(storeLibRef(libRef))
             .endCell();
         expect(expected.equals(actual)).toBeTruthy();
     });
@@ -122,9 +167,52 @@ describe('Out List', () => {
         expect(expected.newCode.equals(actual.newCode)).toBeTruthy();
     });
 
+    it('Should deserialize reserve action', () => {
+        const mode = ReserveMode.THIS_AMOUNT;
+        const currency = { coins: 3000000n }
+        const action = beginCell()
+            .storeUint(outActionReserveTag, 32)
+            .storeUint(mode, 8)
+            .store(storeCurrencyCollection(currency))
+            .endCell();
+
+        const actual = loadOutAction(action.beginParse()) as OutActionReserve;
+
+        const expected = {
+            type: 'reserve',
+            mode,
+            currency
+        };
+        expect(expected.type).toEqual(actual.type);
+        expect(expected.mode).toEqual(actual.mode);
+        expect(expected.currency.coins).toEqual(actual.currency.coins);
+    });
+
+    it('Should deserialize changeLibrary action', () => {
+        const mode = 1;
+        const libHash = Buffer.alloc(32);
+        const libRef: LibRef = { type: "hash", libHash};
+        const action = beginCell()
+            .storeUint(outActionChangeLibraryTag, 32)
+            .storeUint(mode, 7)
+            .store(storeLibRef(libRef))
+            .endCell();
+        const actual = loadOutAction(action.beginParse()) as OutActionChangeLibrary;
+        const expected = {
+            type: 'changeLibrary',
+            mode,
+            libRef
+        };
+        expect(expected.type).toEqual(actual.type);
+        expect(expected.mode).toEqual(actual.mode);
+        expect(expected.libRef).toEqual(actual.libRef);
+    });
+
     it('Should serialize out list', () => {
+        const reserveMode = ReserveMode.THIS_AMOUNT;
         const sendMode1 = SendMode.PAY_GAS_SEPARATELY;
         const sendMode2 = SendMode.IGNORE_ERRORS;
+        const changeLibraryMode = 1;
 
         const actions: OutAction[] = [
             {
@@ -140,6 +228,21 @@ describe('Out List', () => {
             {
                 type: 'setCode',
                 newCode: mockSetCodeCell
+            },
+            {
+                type: 'reserve',
+                mode: reserveMode,
+                currency: {
+                    coins: 3000000n
+                }
+            },
+            {
+                type: 'changeLibrary',
+                mode: changeLibraryMode,
+                libRef: {
+                    type: "ref",
+                    library: beginCell().storeUint(1234, 16).endCell()
+                }
             }
         ]
 
@@ -147,27 +250,42 @@ describe('Out List', () => {
 
         // tvm handles actions from c5 in reversed order
         const expected =
-            beginCell()
-                .storeRef(
-                    beginCell()
-                        .storeRef(
-                            beginCell()
-                                .storeRef(beginCell().endCell())
-                                .storeUint(outActionSendMsgTag, 32)
-                                .storeUint(sendMode1, 8)
-                                .storeRef(beginCell().store(storeMessageRelaxed(mockMessageRelaxed1)).endCell())
-                                .endCell()
-                        )
-                        .storeUint(outActionSendMsgTag, 32)
-                        .storeUint(sendMode2, 8)
-                        .storeRef(beginCell().store(storeMessageRelaxed(mockMessageRelaxed2)).endCell())
-                        .endCell()
-                )
-                .storeUint(outActionSetCodeTag, 32)
-                .storeRef(mockSetCodeCell)
-                .endCell()
-
-
+        beginCell()
+            .storeRef(
+                beginCell()
+                    .storeRef(
+                        beginCell()
+                            .storeRef(
+                                beginCell()
+                                    .storeRef(
+                                        beginCell()
+                                            .storeRef(beginCell().endCell())
+                                            .storeUint(outActionSendMsgTag, 32)
+                                            .storeUint(sendMode1, 8)
+                                            .storeRef(beginCell().store(storeMessageRelaxed(mockMessageRelaxed1)).endCell())
+                                            .endCell()
+                                    )
+                                    .storeUint(outActionSendMsgTag, 32)
+                                    .storeUint(sendMode2, 8)
+                                    .storeRef(beginCell().store(storeMessageRelaxed(mockMessageRelaxed2)).endCell())
+                                    .endCell()
+                            )
+                            .storeUint(outActionSetCodeTag, 32)
+                            .storeRef(mockSetCodeCell)
+                            .endCell()
+                    )
+                    .storeUint(outActionReserveTag, 32)
+                    .storeUint(reserveMode, 8)
+                    .store(storeCurrencyCollection({ coins: 3000000n }))
+                    .endCell()
+            )
+            .storeUint(outActionChangeLibraryTag, 32)
+            .storeUint(changeLibraryMode, 7)
+            .store(storeLibRef({
+                type: "ref",
+                library: beginCell().storeUint(1234, 16).endCell()
+            }))
+            .endCell();
 
         expect(actual.equals(expected)).toBeTruthy();
     });
@@ -175,9 +293,12 @@ describe('Out List', () => {
     it('Should deserialize out list', () => {
         const outActionSendMsgTag = 0x0ec3c86d;
         const outActionSetCodeTag = 0xad4de08e;
+        const outActionReserveTag = 0x36e6b809;
 
         const sendMode1 = SendMode.PAY_GAS_SEPARATELY;
         const sendMode2 = SendMode.IGNORE_ERRORS;
+        const reserveMode = ReserveMode.THIS_AMOUNT;
+        const changeLibraryMode = 1;
 
         const expected: OutAction[] = [
             {
@@ -193,7 +314,23 @@ describe('Out List', () => {
             {
                 type: 'setCode',
                 newCode: mockSetCodeCell
+            },
+            {
+                type: 'reserve',
+                mode: reserveMode,
+                currency: {
+                    coins: 3000000n
+                }
+            },
+            {
+                type: 'changeLibrary',
+                mode: changeLibraryMode,
+                libRef: {
+                    type: "ref",
+                    library: beginCell().storeUint(1234, 16).endCell()
+                }
             }
+
         ]
 
         const rawList =
@@ -202,20 +339,37 @@ describe('Out List', () => {
                     beginCell()
                         .storeRef(
                             beginCell()
-                                .storeRef(beginCell().endCell())
-                                .storeUint(outActionSendMsgTag, 32)
-                                .storeUint(sendMode1, 8)
-                                .storeRef(beginCell().store(storeMessageRelaxed(mockMessageRelaxed1)).endCell())
+                                .storeRef(
+                                    beginCell()
+                                        .storeRef(
+                                            beginCell()
+                                                .storeRef(beginCell().endCell())
+                                                .storeUint(outActionSendMsgTag, 32)
+                                                .storeUint(sendMode1, 8)
+                                                .storeRef(beginCell().store(storeMessageRelaxed(mockMessageRelaxed1)).endCell())
+                                                .endCell()
+                                        )
+                                        .storeUint(outActionSendMsgTag, 32)
+                                        .storeUint(sendMode2, 8)
+                                        .storeRef(beginCell().store(storeMessageRelaxed(mockMessageRelaxed2)).endCell())
+                                        .endCell()
+                                )
+                                .storeUint(outActionSetCodeTag, 32)
+                                .storeRef(mockSetCodeCell)
                                 .endCell()
                         )
-                        .storeUint(outActionSendMsgTag, 32)
-                        .storeUint(sendMode2, 8)
-                        .storeRef(beginCell().store(storeMessageRelaxed(mockMessageRelaxed2)).endCell())
+                        .storeUint(outActionReserveTag, 32)
+                        .storeUint(reserveMode, 8)
+                        .store(storeCurrencyCollection({ coins: 3000000n }))
                         .endCell()
                 )
-                .storeUint(outActionSetCodeTag, 32)
-                .storeRef(mockSetCodeCell)
-                .endCell()
+                .storeUint(outActionChangeLibraryTag, 32)
+                .storeUint(changeLibraryMode, 7)
+                .store(storeLibRef({
+                    type: "ref",
+                    library: beginCell().storeUint(1234, 16).endCell()
+                }))
+                .endCell();
 
         const actual = loadOutList(rawList.beginParse());
 
@@ -235,6 +389,5 @@ describe('Out List', () => {
                 expect(item1.newCode.equals(item2.newCode)).toBeTruthy();
             }
         })
-
     });
 });
