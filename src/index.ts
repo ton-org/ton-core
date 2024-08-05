@@ -23,6 +23,7 @@ export { Slice } from './boc/Slice';
 export { CellType } from './boc/CellType';
 export { Cell } from './boc/Cell';
 export { Writable } from './boc/Writable';
+export * from "./boc/functional";
 
 // Dict
 export { Dictionary, DictionaryKey, DictionaryKeyTypes, DictionaryValue } from './dict/Dictionary';
