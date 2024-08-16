@@ -39,6 +39,8 @@ export {
 export {
     OutActionSendMsg,
     OutActionSetCode,
+    OutActionReserve,
+    OutActionChangeLibrary,
     OutAction,
     loadOutAction,
     storeOutAction,
@@ -98,6 +100,9 @@ export {
     SendMode
 } from './SendMode';
 export {
+    ReserveMode
+} from './ReserveMode';
+export {
     ShardAccount,
     loadShardAccount,
     storeShardAccount
@@ -122,6 +127,11 @@ export {
     loadSimpleLibrary,
     storeSimpleLibrary
 } from './SimpleLibrary';
+export {
+    LibRef,
+    loadLibRef,
+    storeLibRef
+} from './LibRef';
 export {
     SplitMergeInfo,
     loadSplitMergeInfo,
