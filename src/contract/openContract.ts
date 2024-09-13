@@ -45,7 +45,7 @@ export function openContract<T extends Contract>(src: T, factory: (params: { add
     return new Proxy<any>(src as any, {
         get(target, prop) {
             const value = target[prop];
-            if (typeof prop === 'string' && (prop.startsWith('get') || prop.startsWith('send'))) {
+            if (typeof prop === 'string' && (prop.startsWith('get') || prop.startsWith('send') || prop.startsWith('is'))) {
                 if (typeof value === 'function') {
                     return (...args: any[]) => value.apply(target, [executor, ...args]);
                 }
