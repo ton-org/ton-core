@@ -8,14 +8,12 @@
 
 import { Address } from "../address/Address";
 import { Cell } from "../boc/Cell";
-import { Dictionary } from "../dict/Dictionary";
 import { StateInit } from "../types/StateInit";
 import { Contract } from "./Contract";
 import { ContractProvider } from "./ContractProvider";
-import { SimpleLibrary } from "../types/SimpleLibrary";
 
 export type OpenedContract<F> = {
-    [P in keyof F]: P extends `${'get' | 'send'}${string}`
+    [P in keyof F]: P extends `${'get' | 'send' | 'is'}${string}`
     ? (F[P] extends (x: ContractProvider, ...args: infer P) => infer R ? (...args: P) => R : never)
     : F[P];
 }
@@ -47,7 +45,7 @@ export function openContract<T extends Contract>(src: T, factory: (params: { add
     return new Proxy<any>(src as any, {
         get(target, prop) {
             const value = target[prop];
-            if (typeof prop === 'string' && (prop.startsWith('get') || prop.startsWith('send'))) {
+            if (typeof prop === 'string' && (prop.startsWith('get') || prop.startsWith('send') || prop.startsWith('is'))) {
                 if (typeof value === 'function') {
                     return (...args: any[]) => value.apply(target, [executor, ...args]);
                 }

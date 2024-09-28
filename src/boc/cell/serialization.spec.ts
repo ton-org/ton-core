@@ -241,5 +241,10 @@ describe('boc', () => {
         expect(cell.toString()).toBe('x{000000E4}\n x{00000539}\n x{0000053A}');
         expect(serialized).toBe('b5ee9c7281010301001400080e140208000000e4010200080000053900080000053a');
     });
+
+    it('should deserialize cell from hex', () => {
+        let cell = Cell.fromHex('b5ee9c7241010201000d00010800000001010008000000027d4b3cf8');
+        expect(cell.toString()).toBe('x{00000001}\n x{00000002}');
+    });
 });
 

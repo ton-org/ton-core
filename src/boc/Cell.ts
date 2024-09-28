@@ -34,11 +34,23 @@ export class Cell {
     }
 
     /**
-     * Helper class that deserializes a single cell from BOC in base64
+     * Helper function that deserializes a single cell from BOC in base64
      * @param src source string
      */
     static fromBase64(src: string): Cell {
         let parsed = Cell.fromBoc(Buffer.from(src, 'base64'));
+        if (parsed.length !== 1) {
+            throw new Error("Deserialized more than one cell");
+        }
+        return parsed[0];
+    }
+
+    /**
+     * Helper function that deserializes a single cell from BOC in hex
+     * @param src source string
+     */
+    static fromHex(src: string): Cell {
+        let parsed = Cell.fromBoc(Buffer.from(src, 'hex'));
         if (parsed.length !== 1) {
             throw new Error("Deserialized more than one cell");
         }
