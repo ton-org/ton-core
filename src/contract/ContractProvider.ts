@@ -26,7 +26,7 @@ export type ContractGetMethodResult = {
 
 export interface ContractProvider {
     getState(): Promise<ContractState>;
-    get(name: string, args: TupleItem[]): Promise<ContractGetMethodResult>;
+    get(name: string | number, args: TupleItem[]): Promise<ContractGetMethodResult>;
     external(message: Cell): Promise<void>;
     internal(via: Sender, args: { value: bigint | string, bounce?: Maybe<boolean>, sendMode?: SendMode, body?: Maybe<Cell | string> }): Promise<void>;
     open<T extends Contract>(contract: T): OpenedContract<T>;
