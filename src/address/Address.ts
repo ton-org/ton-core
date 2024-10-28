@@ -8,17 +8,18 @@
 
 import inspectSymbol from 'symbol.inspect';
 import { crc16 } from '../utils/crc16';
+import { base64ToUint8Array, hexStringToUint8Array, uint8ArrayToHexString, uint8ArrayToBase64, uint8ArrayEquals } from '../utils/buffer_to_uint8array';
 
 const bounceable_tag = 0x11;
 const non_bounceable_tag = 0x51;
 const test_flag = 0x80;
 
-function parseFriendlyAddress(src: string | Buffer) {
+function parseFriendlyAddress(src: string | Uint8Array) {
     if (typeof src === 'string' && !Address.isFriendly(src)) {
         throw new Error('Unknown address type');
     }
 
-    const data = Buffer.isBuffer(src) ? src : Buffer.from(src, 'base64');
+    const data = src instanceof Uint8Array ? src : base64ToUint8Array(src);
 
     // 1byte tag + 1byte workchain + 32 bytes hash + 2 byte crc
     if (data.length !== 36) {
@@ -124,13 +125,12 @@ export class Address {
 
     static parseRaw(source: string) {
         let workChain = parseInt(source.split(":")[0]);
-        let hash = Buffer.from(source.split(":")[1], 'hex');
-
+        let hash = hexStringToUint8Array(source.split(":")[1]);
         return new Address(workChain, hash);
     }
 
-    static parseFriendly(source: string | Buffer) {
-        if (Buffer.isBuffer(source)) {
+    static parseFriendly(source: string | Uint8Array) {
+        if (source instanceof Uint8Array) {
             let r = parseFriendlyAddress(source);
             return {
                 isBounceable: r.isBounceable,
@@ -149,9 +149,9 @@ export class Address {
     }
 
     readonly workChain: number;
-    readonly hash: Buffer;
+    readonly hash: Uint8Array;
 
-    constructor(workChain: number, hash: Buffer) {
+    constructor(workChain: number, hash: Uint8Array) {
         if (hash.length !== 32) {
             throw new Error('Invalid address hash length: ' + hash.length);
         }
@@ -162,18 +162,18 @@ export class Address {
     }
 
     toRawString = () => {
-        return this.workChain + ':' + this.hash.toString('hex');
+        return this.workChain + ':' + uint8ArrayToHexString(this.hash);
     }
 
     equals(src: Address) {
         if (src.workChain !== this.workChain) {
             return false;
         }
-        return src.hash.equals(this.hash);
+        return uint8ArrayEquals(src.hash, this.hash);
     }
 
     toRaw = () => {
-        const addressWithChecksum = Buffer.alloc(36);
+        const addressWithChecksum = new Uint8Array(36);
         addressWithChecksum.set(this.hash);
         addressWithChecksum.set([this.workChain, this.workChain, this.workChain, this.workChain], 32);
         return addressWithChecksum;
@@ -188,11 +188,11 @@ export class Address {
             tag |= test_flag;
         }
 
-        const addr = Buffer.alloc(34);
+        const addr = new Uint8Array(34);
         addr[0] = tag;
         addr[1] = this.workChain;
         addr.set(this.hash, 2);
-        const addressWithChecksum = Buffer.alloc(36);
+        const addressWithChecksum = new Uint8Array(36);
         addressWithChecksum.set(addr);
         addressWithChecksum.set(crc16(addr), 34);
         return addressWithChecksum;
@@ -202,9 +202,9 @@ export class Address {
         let urlSafe = (args && args.urlSafe !== undefined) ? args.urlSafe : true;
         let buffer = this.toStringBuffer(args);
         if (urlSafe) {
-            return buffer.toString('base64').replace(/\+/g, '-').replace(/\//g, '_');
+            return uint8ArrayToBase64(buffer).replace(/\+/g, '-').replace(/\//g, '_');
         } else {
-            return buffer.toString('base64');
+            return uint8ArrayToBase64(buffer);
         }
     }
 

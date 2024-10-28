@@ -15,6 +15,7 @@ import { BitBuilder } from "../BitBuilder";
 import { getBitsDescriptor, getRefsDescriptor } from "./descriptor";
 import { bitsToPaddedBuffer } from "../utils/paddedBits";
 import { crc32c } from "../../utils/crc32c";
+import { uint8ArrayEquals } from "../../utils/buffer_to_uint8array";
 
 function getHashesCount(levelMask: number) {
     return getHashesCountFromMask(levelMask & 7)
@@ -79,7 +80,7 @@ function calcCellSize(cell: Cell, sizeBytes: number) {
     return 2 /* D1+D2 */ + Math.ceil(cell.bits.length / 8) + cell.refs.length * sizeBytes;
 }
 
-export function parseBoc(src: Buffer) {
+export function parseBoc(src: Uint8Array) {
     let reader = new BitReader(new BitString(src, 0, src.length * 8));
     let magic = reader.loadUint(32);
     if (magic === 0x68ff65f3) {
@@ -112,7 +113,7 @@ export function parseBoc(src: Buffer) {
         let index = reader.loadBuffer(cells * offBytes);
         let cellData = reader.loadBuffer(totalCellSize);
         let crc32 = reader.loadBuffer(4);
-        if (!crc32c(src.subarray(0, src.length - 4)).equals(crc32)) {
+        if (!uint8ArrayEquals(crc32c(src.subarray(0, src.length - 4)), crc32)) {
             throw Error('Invalid CRC32C');
         }
         return {
@@ -141,14 +142,14 @@ export function parseBoc(src: Buffer) {
         for (let i = 0; i < roots; i++) {
             root.push(reader.loadUint(size * 8));
         }
-        let index: Buffer | null = null;
+        let index: Uint8Array | null = null;
         if (hasIdx) {
             index = reader.loadBuffer(cells * offBytes);
         }
         let cellData = reader.loadBuffer(totalCellSize);
         if (hasCrc32c) {
             let crc32 = reader.loadBuffer(4);
-            if (!crc32c(src.subarray(0, src.length - 4)).equals(crc32)) {
+            if (!uint8ArrayEquals(crc32c(src.subarray(0, src.length - 4)), crc32)) {
                 throw Error('Invalid CRC32C');
             }
         }
@@ -168,7 +169,7 @@ export function parseBoc(src: Buffer) {
     }
 }
 
-export function deserializeBoc(src: Buffer) {
+export function deserializeBoc(src: Uint8Array) {
 
     //
     // Parse BOC

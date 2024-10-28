@@ -454,7 +454,7 @@ export class BitReader {
         return res;
     }
 
-    private _preloadBuffer(bytes: number, offset: number): Buffer {
+    private _preloadBuffer(bytes: number, offset: number): Uint8Array {
 
         // Try to load fast
         let fastBuffer = this._bits.subbuffer(offset, bytes * 8);
@@ -463,7 +463,7 @@ export class BitReader {
         }
 
         // Load slow
-        let buf = Buffer.alloc(bytes);
+        let buf = new Uint8Array(bytes);
         for (let i = 0; i < bytes; i++) {
             buf[i] = Number(this._preloadUint(8, offset + i * 8));
         }

@@ -7,6 +7,7 @@
  */
 
 import { bitsToPaddedBuffer } from "./utils/paddedBits";
+import { uint8ArrayToHexString } from '../utils/buffer_to_uint8array';
 import inspectSymbol from 'symbol.inspect';
 
 /**
@@ -14,7 +15,7 @@ import inspectSymbol from 'symbol.inspect';
  */
 export class BitString {
 
-    static readonly EMPTY = new BitString(Buffer.alloc(0), 0, 0);
+    static readonly EMPTY = new BitString(new Uint8Array(0), 0, 0);
 
     // NOTE: We want to hide this fields from the user, but
     //       using private fields would break the compatibility
@@ -22,7 +23,7 @@ export class BitString {
 
     private readonly _offset: number;
     private readonly _length: number;
-    private readonly _data: Buffer;
+    private readonly _data: Uint8Array;
 
     /**
      * Checks if supplied object is BitString
@@ -38,7 +39,7 @@ export class BitString {
      * @param offset offset in bits from the start of the buffer
      * @param length length of the bitstring in bits
      */
-    constructor(data: Buffer, offset: number, length: number) {
+    constructor(data: Uint8Array, offset: number, length: number) {
 
         // Check bounds
         if (length < 0) {
@@ -168,14 +169,14 @@ export class BitString {
         const padded = bitsToPaddedBuffer(this);
 
         if (this._length % 4 === 0) {
-            const s = padded.subarray(0, Math.ceil(this._length / 8)).toString('hex').toUpperCase();
+            const s = uint8ArrayToHexString(padded.subarray(0, Math.ceil(this._length / 8))).toUpperCase();
             if (this._length % 8 === 0) {
                 return s;
             } else {
                 return s.substring(0, s.length - 1);
             }
         } else {
-            const hex = padded.toString('hex').toUpperCase();
+            const hex = uint8ArrayToHexString(padded).toUpperCase();
             if (this._length % 8 <= 4) {
                 return hex.substring(0, hex.length - 1) + '_';
             } else {

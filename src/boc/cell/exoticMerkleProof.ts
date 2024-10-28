@@ -10,6 +10,7 @@ import { BitReader } from "../BitReader";
 import { BitString } from "../BitString";
 import { Cell } from "../Cell";
 import { beginCell } from '../Builder';
+import { uint8ArrayToHexString, uint8ArrayEquals } from '../../utils/buffer_to_uint8array';
 
 export function exoticMerkleProof(bits: BitString, refs: Cell[]) {
     const reader = new BitReader(bits);
@@ -41,8 +42,8 @@ export function exoticMerkleProof(bits: BitString, refs: Cell[]) {
         throw new Error(`Merkle Proof cell ref depth must be exactly "${proofDepth}", got "${refDepth}"`);
     }
 
-    if (!proofHash.equals(refHash)) {
-        throw new Error(`Merkle Proof cell ref hash must be exactly "${proofHash.toString('hex')}", got "${refHash.toString('hex')}"`);
+    if (!uint8ArrayEquals(proofHash, refHash)) {
+        throw new Error(`Merkle Proof cell ref hash must be exactly "${uint8ArrayToHexString(proofHash)}", got "${uint8ArrayToHexString(refHash)}"`);
     }
 
     return {

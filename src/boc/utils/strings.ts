@@ -9,6 +9,7 @@
 import { beginCell, Builder } from "../Builder";
 import { Cell } from "../Cell";
 import { Slice } from "../Slice";
+import { utf8StringToUint8Array } from '../../utils/buffer_to_uint8array';
 
 function readBuffer(slice: Slice) {
     // Check consistency
@@ -20,16 +21,19 @@ function readBuffer(slice: Slice) {
     }
 
     // Read string
-    let res: Buffer
+    let res: Uint8Array
     if (slice.remainingBits === 0) {
-        res = Buffer.alloc(0);
+        res = new Uint8Array(0);
     } else {
         res = slice.loadBuffer(slice.remainingBits / 8);
     }
 
     // Read tail
     if (slice.remainingRefs === 1) {
-        res = Buffer.concat([res, readBuffer(slice.loadRef().beginParse())]);
+        const concatenatedBuffer = new Uint8Array(res.length + readBuffer(slice.loadRef().beginParse()).length);
+        concatenatedBuffer.set(res, 0);
+        concatenatedBuffer.set(readBuffer(slice.loadRef().beginParse()), res.length);
+        res = concatenatedBuffer;
     }
 
     return res;
@@ -39,7 +43,7 @@ export function readString(slice: Slice) {
     return readBuffer(slice).toString();
 }
 
-function writeBuffer(src: Buffer, builder: Builder) {
+function writeBuffer(src: Uint8Array, builder: Builder) {
     if (src.length > 0) {
         let bytes = Math.floor(builder.availableBits / 8);
         if (src.length > bytes) {
@@ -57,10 +61,10 @@ function writeBuffer(src: Buffer, builder: Builder) {
 
 export function stringToCell(src: string): Cell {
     let builder = beginCell();
-    writeBuffer(Buffer.from(src), builder);
+    writeBuffer(utf8StringToUint8Array(src), builder);
     return builder.endCell();
 }
 
 export function writeString(src: string, builder: Builder) {
-    writeBuffer(Buffer.from(src), builder);
+    writeBuffer(utf8StringToUint8Array(src), builder);
 }

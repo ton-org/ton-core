@@ -14,7 +14,7 @@ describe('Cell', () => {
     it('should construct', () => {
         let cell = new Cell();
         expect(cell.type).toBe(CellType.Ordinary);
-        expect(cell.bits.equals(new BitString(Buffer.alloc(0), 0, 0))).toEqual(true);
+        expect(cell.bits.equals(new BitString(new Uint8Array(0), 0, 0))).toEqual(true);
         expect(cell.refs).toEqual([]);
     });
 });
