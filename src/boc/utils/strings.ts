@@ -9,7 +9,7 @@
 import { beginCell, Builder } from "../Builder";
 import { Cell } from "../Cell";
 import { Slice } from "../Slice";
-import { utf8StringToUint8Array } from '../../utils/buffer_to_uint8array';
+import { uint8ArrayToUtf8String, utf8StringToUint8Array } from '../../utils/buffer_to_uint8array';
 
 function readBuffer(slice: Slice) {
     // Check consistency
@@ -30,9 +30,10 @@ function readBuffer(slice: Slice) {
 
     // Read tail
     if (slice.remainingRefs === 1) {
-        const concatenatedBuffer = new Uint8Array(res.length + readBuffer(slice.loadRef().beginParse()).length);
+        const buf2 = readBuffer(slice.loadRef().beginParse());
+        const concatenatedBuffer = new Uint8Array(res.length + buf2.length);
         concatenatedBuffer.set(res, 0);
-        concatenatedBuffer.set(readBuffer(slice.loadRef().beginParse()), res.length);
+        concatenatedBuffer.set(buf2, res.length);
         res = concatenatedBuffer;
     }
 
@@ -40,7 +41,7 @@ function readBuffer(slice: Slice) {
 }
 
 export function readString(slice: Slice) {
-    return readBuffer(slice).toString();
+    return uint8ArrayToUtf8String(readBuffer(slice));
 }
 
 function writeBuffer(src: Uint8Array, builder: Builder) {
