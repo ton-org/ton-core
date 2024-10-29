@@ -9,6 +9,7 @@
 import { Address } from "../../address/Address";
 import { BitString } from "../../boc/BitString";
 import { bitsToPaddedBuffer, paddedBufferToBits } from "../../boc/utils/paddedBits";
+import { uint8ArrayToHexString } from "../../utils/buffer_to_uint8array";
 
 export function serializeInternalKey(value: any): string {
     if (typeof value === 'number') {
@@ -20,8 +21,8 @@ export function serializeInternalKey(value: any): string {
         return 'b:' + value.toString(10);
     } else if (Address.isAddress(value)) {
         return 'a:' + value.toString();
-    } else if (Buffer.isBuffer(value)) {
-        return 'f:' + value.toString('hex');
+    } else if (value instanceof Uint8Array) {
+        return 'f:' + uint8ArrayToHexString(value);
     } else if(BitString.isBitString(value)) {
         return 'B:' + value.toString();
     } else {

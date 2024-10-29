@@ -41,7 +41,7 @@ export type Transaction = {
     stateUpdate: HashUpdate,
     description: TransactionDescription,
     raw: Cell,
-    hash: () => Buffer,
+    hash: () => Uint8Array,
 };
 
 export function loadTransaction(slice: Slice): Transaction {
