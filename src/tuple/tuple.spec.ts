@@ -10,6 +10,7 @@ import { Address } from "../address/Address";
 import { beginCell } from "../boc/Builder";
 import { Cell } from "../boc/Cell";
 import { parseTuple, serializeTuple } from "./tuple";
+import { base64ToUint8Array, uint8ArrayToBase64, uint8ArrayToBase64Url } from "../utils/buffer_to_uint8array";
 
 describe('tuple', () => {
     it('should serialize tuple with numbers', () => {
@@ -28,7 +29,7 @@ describe('tuple', () => {
         }, {
             "type": "int", "value": BigInt("100000000")
         }]);
-        expect(serialized.toBoc({ idx: false, crc32: false }).toString('base64')).toEqual('te6ccgEBCAEAWQABGAAABwEAAAAABfXhAAEBEgEAAAAAAAAJxAIBEgEAAAAABfXhAAMBEgEAAAAABfXhAAQBEgEAAAALmE+yAAUBEgH//////////wYBEgH//////////wcAAA==');
+        expect(uint8ArrayToBase64(serialized.toBoc({ idx: false, crc32: false }))).toEqual('te6ccgEBCAEAWQABGAAABwEAAAAABfXhAAEBEgEAAAAAAAAJxAIBEgEAAAAABfXhAAMBEgEAAAAABfXhAAQBEgEAAAALmE+yAAUBEgH//////////wYBEgH//////////wcAAA==');
     });
 
     it('should serialize tuple long numbers', () => {
@@ -38,7 +39,7 @@ describe('tuple', () => {
                 "type": "int", "value": BigInt("12312312312312323421")
             }
         ]);
-        expect(serialized.toBoc({ idx: false, crc32: false }).toString('base64')).toEqual(golden);
+        expect(uint8ArrayToBase64(serialized.toBoc({ idx: false, crc32: false }))).toEqual(golden);
     });
 
     it('should serialize slices', () => {
@@ -48,7 +49,7 @@ describe('tuple', () => {
                 "type": "slice", "cell": beginCell().storeCoins(BigInt("123123123123123234211234123123123")).endCell()
             }
         ]);
-        expect(serialized.toBoc({ idx: false, crc32: false }).toString('base64')).toEqual(golden);
+        expect(uint8ArrayToBase64(serialized.toBoc({ idx: false, crc32: false }))).toEqual(golden);
     });
 
     it('should serialize address', () => {
@@ -58,7 +59,7 @@ describe('tuple', () => {
                 "type": "slice", "cell": beginCell().storeAddress(Address.parse('kf_JuhGlmBjeEKBjLssAuQxeUc6N-CH6bKaN5fjrfhqFpqVQ')).endCell()
             }
         ]);
-        expect(serialized.toBoc({ idx: false, crc32: false }).toString('base64url')).toEqual(golden);
+        expect(uint8ArrayToBase64Url(serialized.toBoc({ idx: false, crc32: false }))).toEqual(golden);
     });
 
     it('should serialize int', () => {
@@ -68,16 +69,16 @@ describe('tuple', () => {
                 "type": "int", "value": BigInt('91243637913382117273357363328745502088904016167292989471764554225637796775334')
             }
         ]);
-        expect(serialized.toBoc({ idx: false, crc32: false }).toString('base64')).toEqual(golden);
+        expect(uint8ArrayToBase64(serialized.toBoc({ idx: false, crc32: false }))).toEqual(golden);
     });
 
     it('should serialize tuples', () => {
         let golden = 'te6ccgEBEAEAjgADDAAABwcABAEIDQESAf//////////AgESAQAAAAAAAAADAwESAQAAAAAAAAACBAESAQAAAAAAAAABBQECAAYBEgEAAAAAAAAAAQcAAAIACQwCAAoLABIBAAAAAAAAAHsAEgEAAAAAAAHimQECAw8BBgcAAQ4BCQQAB0AgDwAd4GEghEZ4iF1r9AWzyJs4';
-        const st = parseTuple(Cell.fromBoc(Buffer.from(golden, 'base64'))[0]);
+        const st = parseTuple(Cell.fromBoc(base64ToUint8Array(golden))[0]);
         let gs = serializeTuple(st);
         // console.warn(inspect(parseStack(gs), false, null, true));
         // console.warn(inspect(st, false, null, true));
-        expect(gs.toBoc({ idx: false, crc32: false }).toString('base64')).toEqual(golden);
+        expect(uint8ArrayToBase64(gs.toBoc({ idx: false, crc32: false }))).toEqual(golden);
         // let serialized = serializeStack([
         //     {
         //         type: 'int', value: new BN(1)

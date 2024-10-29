@@ -35,6 +35,14 @@ export function uint8ArrayToBase64(uint8Array: Uint8Array): string {
     return btoa(binaryString);
 }
 
+// uint8Array to base64url
+export function uint8ArrayToBase64Url(uint8Array: Uint8Array): string {
+    return uint8ArrayToBase64(uint8Array)
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/g, '');
+}
+
 // uint8ArrayToUtf8String
 export function uint8ArrayToUtf8String(uint8Array: Uint8Array): string {
     const decoder = new TextDecoder('utf-8');
