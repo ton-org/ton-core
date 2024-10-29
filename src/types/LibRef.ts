@@ -17,7 +17,7 @@ import { Slice } from "../boc/Slice";
 
 export interface LibRefHash {
     type: 'hash';
-    libHash: Buffer;
+    libHash: Uint8Array;
 }
 
 export interface LibRefRef {

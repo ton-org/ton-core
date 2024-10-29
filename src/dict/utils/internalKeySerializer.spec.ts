@@ -8,6 +8,7 @@
 
 import { Address } from "../../address/Address";
 import { BitString } from "../../boc/BitString";
+import { hexStringToUint8Array, uint8ArrayEquals } from "../../utils/buffer_to_uint8array";
 import { testAddress } from "../../utils/testAddress";
 import { deserializeInternalKey, serializeInternalKey } from "./internalKeySerializer";
 
@@ -31,13 +32,13 @@ describe('internalKeySerializer', () => {
         }
     });
     it('should serialize buffers', () => {
-        let cs = [Buffer.from('00', 'hex'), Buffer.from('ff', 'hex'), Buffer.from('0f', 'hex'), Buffer.from('0f000011002233456611', 'hex')];
+        let cs = [hexStringToUint8Array('00'), hexStringToUint8Array('ff'), hexStringToUint8Array('0f'), hexStringToUint8Array('0f000011002233456611')];
         for (let c of cs) {
-            expect((deserializeInternalKey(serializeInternalKey(c)) as Buffer).equals(c)).toBe(true);
+            expect(uint8ArrayEquals(deserializeInternalKey(serializeInternalKey(c)) as Uint8Array, c)).toBe(true);
         }
     });
     it('should serialize bit strings', () => {
-        let cs = [Buffer.from('00', 'hex'), Buffer.from('ff', 'hex'), Buffer.from('0f', 'hex'), Buffer.from('0f000011002233456611', 'hex')];
+        let cs = [hexStringToUint8Array('00'), hexStringToUint8Array('ff'), hexStringToUint8Array('0f'), hexStringToUint8Array('0f000011002233456611')];
         for (let c of cs) {
             for(let i = 0; i < c.length * 8 - 1; i++) {
                 let bs = new BitString(c, 0, c.length * 8 - i);

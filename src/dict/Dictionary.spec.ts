@@ -13,7 +13,7 @@ import { exoticMerkleUpdate } from "../boc/cell/exoticMerkleUpdate";
 import { Dictionary } from "./Dictionary";
 import fs from 'fs';
 import { BitString } from "../boc/BitString";
-import { base64ToUint8Array, hexStringToUint8Array } from "../utils/buffer_to_uint8array";
+import { base64ToUint8Array, hexStringToUint8Array, utf8StringToUint8Array } from "../utils/buffer_to_uint8array";
 
 function storeBits(builder: Builder, src: string) {
     for (let s of src) {
@@ -99,8 +99,8 @@ describe('Dictionary', () => {
         const keyLen = 9; // Not 8 bit aligned
         const keys = Dictionary.Keys.BitString(keyLen);
         const values = Dictionary.Values.BitString(72);
-        let testKey = new BitString(Buffer.from("Test"), 0, keyLen);
-        let testVal = new BitString(Buffer.from("BitString"), 0, 72);
+        let testKey = new BitString(utf8StringToUint8Array("Test"), 0, keyLen);
+        let testVal = new BitString(utf8StringToUint8Array("BitString"), 0, 72);
         let testDict = Dictionary.empty(keys, values);
 
         testDict.set(testKey, testVal);

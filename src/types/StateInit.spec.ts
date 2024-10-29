@@ -8,6 +8,7 @@
 
 import { beginCell } from "../boc/Builder";
 import { Cell } from "../boc/Cell";
+import { uint8ArrayToBase64 } from "../utils/buffer_to_uint8array";
 import { loadStateInit, storeStateInit } from "./StateInit";
 
 describe('StateInit', () => {
@@ -21,7 +22,7 @@ describe('StateInit', () => {
             }))
             .endCell()
             .toBoc({ idx: false, crc32: true });
-        expect(boc.toString('base64')).toEqual('te6cckEBAwEACwACATQBAgACAQACAoN/wQo=')
+        expect(uint8ArrayToBase64(boc)).toEqual('te6cckEBAwEACwACATQBAgACAQACAoN/wQo=')
 
         // Parse
         let parsed = loadStateInit(Cell.fromBoc(boc)[0].beginParse());
