@@ -13,6 +13,7 @@ import { exoticMerkleUpdate } from "../boc/cell/exoticMerkleUpdate";
 import { Dictionary } from "./Dictionary";
 import fs from 'fs';
 import { BitString } from "../boc/BitString";
+import { base64ToUint8Array, hexStringToUint8Array } from "../utils/buffer_to_uint8array";
 
 function storeBits(builder: Builder, src: string) {
     for (let s of src) {
@@ -61,7 +62,7 @@ describe('Dictionary', () => {
     });
 
     it('should parse config', () => {
-        let cell = Cell.fromBoc(Buffer.from(fs.readFileSync(__dirname + '/__testdata__/config.txt', 'utf-8'), 'base64'))[0];
+        let cell = Cell.fromBoc(base64ToUint8Array(fs.readFileSync(__dirname + '/__testdata__/config.txt', 'utf-8')))[0];
         let configs = cell.beginParse().loadDictDirect(Dictionary.Keys.Int(32), Dictionary.Values.Cell());
         let ids: number[] = [0, 1, 2, 4, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 28, 29, 31, 32, 34, 71, 72, -999, -71];
         let keys = configs.keys();
@@ -73,7 +74,7 @@ describe('Dictionary', () => {
     });
 
     it('should parse bridge config', () => {
-        let cell = Cell.fromBoc(Buffer.from(fs.readFileSync(__dirname + '/__testdata__/config.txt', 'utf-8'), 'base64'))[0];
+        let cell = Cell.fromBoc(base64ToUint8Array(fs.readFileSync(__dirname + '/__testdata__/config.txt', 'utf-8')))[0];
         let configs = cell.beginParse().loadDictDirect(Dictionary.Keys.Int(32), Dictionary.Values.Cell());
 
         for (let i of [71, 72]) {
@@ -88,7 +89,7 @@ describe('Dictionary', () => {
     });
 
     it('should parse dictionary with empty values', () => {
-        let cell = Cell.fromBoc(Buffer.from(fs.readFileSync(__dirname + "/__testdata__/empty_value.boc")))[0];
+        let cell = Cell.fromBoc(new Uint8Array(fs.readFileSync(__dirname + "/__testdata__/empty_value.boc")))[0];
         let testDict = Dictionary.loadDirect(Dictionary.Keys.BigUint(256), Dictionary.Values.BitString(0), cell);
         expect(testDict.keys()[0]).toEqual(123n);
         expect(testDict.get(123n)!.length).toBe(0);
@@ -160,9 +161,8 @@ describe('Dictionary', () => {
             expect(
                 exoticMerkleUpdate(update.bits, update.refs).proofHash1
             ).toEqual(
-                Buffer.from(
+                hexStringToUint8Array(
                     'ee41b86bd71f8224ebd01848b4daf4cd46d3bfb3e119d8b865ce7c2802511de3',
-                    'hex'
                 )
             );
             d.set(k, Math.floor(d.get(k)! / 2));
