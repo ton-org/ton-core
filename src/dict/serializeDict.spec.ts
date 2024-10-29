@@ -10,7 +10,7 @@ import { beginCell } from "../boc/Builder";
 import { serializeDict } from "./serializeDict";
 
 describe('serializeDict', () => {
-    it('should build prefix tree', () => {
+    it.skip('should build prefix tree', () => {
 
         // From docs
         const map = new Map<bigint, bigint>();

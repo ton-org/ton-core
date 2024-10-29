@@ -4,6 +4,7 @@ export function utf8StringToUint8Array(str: string): Uint8Array {
 }
 
 export function base64ToUint8Array(base64: string): Uint8Array {
+    const encoder = new TextEncoder();
     const binaryString = atob(base64);
     const len = binaryString.length;
     const bytes = new Uint8Array(len);
