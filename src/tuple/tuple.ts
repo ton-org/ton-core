@@ -189,8 +189,10 @@ function serializeTupleTail(src: TupleItem[], builder: Builder) {
     }
 }
 
-export function serializeTuple(src: TupleItem[]) {
-    let builder = beginCell();
+export function serializeTuple(src: TupleItem[], builder: Builder | null = null): Cell {
+    if (!builder) {
+        builder = beginCell();
+    }
     builder.storeUint(src.length, 24);
     let r = [...src];
     serializeTupleTail(r, builder);
