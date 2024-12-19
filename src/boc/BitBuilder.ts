@@ -239,7 +239,7 @@ export class BitBuilder {
 
         // Calculate size
         let v2 = v > 0 ? v : -v;
-        const sizeBytes = 1 + Math.ceil((v2.toString(2).length) / 8); // Fastest way in most environments
+        const sizeBytes = Math.ceil((v2.toString(2).length + 1) / 8); // Fastest way in most environments
         const sizeBits = sizeBytes * 8;
 
         // Write size
