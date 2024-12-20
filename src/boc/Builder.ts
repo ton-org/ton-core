@@ -260,6 +260,16 @@ export class Builder {
         return this;
     }
 
+    storeAddress1(address: Address | ExternalAddress | "none") {
+        this._bits.writeAddress1(address);
+        return this;
+    }
+
+    storeMaybeAddress1(address: Maybe<Address | ExternalAddress | "none">) {
+        this._bits.writeMaybeAddress1(address);
+        return this;
+    }
+
     /**
      * Store reference
      * @param cell cell or builder to store

@@ -106,6 +106,24 @@ export class TupleReader {
         }
     }
 
+    readAddress1() {
+        let r = this.readCell().beginParse().loadAddress1();
+        if (r !== null) {
+            return r;
+        } else {
+            throw Error('Not an address');
+        }
+    }
+
+    readAddressOpt1() {
+        let r = this.readCellOpt();
+        if (r !== null) {
+            return r.beginParse().loadMaybeAddress1();
+        } else {
+            return null;
+        }
+    }
+
     readCell() {
         let popped = this.pop();
         if (popped.type !== 'cell' && popped.type !== 'slice' && popped.type !== 'builder') {

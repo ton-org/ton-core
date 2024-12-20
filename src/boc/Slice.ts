@@ -360,6 +360,22 @@ export class Slice {
     }
 
     /**
+     * Load internal Address
+     * @returns Address
+     */
+    loadAddress1() {
+        return this._reader.loadAddress1();
+    }
+
+    /**
+     * Load optional internal Address
+     * @returns Address or null
+     */
+    loadMaybeAddress1() {
+        return this._reader.loadMaybeAddress1();
+    }
+
+    /**
      * Load external address
      * @returns ExternalAddress
      */
