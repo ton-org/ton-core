@@ -16,6 +16,7 @@ import { wonderCalculator } from './cell/wonderCalculator';
 import { deserializeBoc, serializeBoc } from './cell/serialization';
 import { BitReader } from './BitReader';
 import { beginCell } from './Builder';
+import { base64ToUint8Array, hexStringToUint8Array, uint8ArrayEquals } from '../utils/buffer_to_uint8array';
 
 /**
  * Cell as described in TVM spec
@@ -29,7 +30,7 @@ export class Cell {
      * @param src source buffer
      * @returns array of cells
      */
-    static fromBoc(src: Buffer) {
+    static fromBoc(src: Uint8Array) {
         return deserializeBoc(src);
     }
 
@@ -38,7 +39,7 @@ export class Cell {
      * @param src source string
      */
     static fromBase64(src: string): Cell {
-        let parsed = Cell.fromBoc(Buffer.from(src, 'base64'));
+        let parsed = Cell.fromBoc(base64ToUint8Array(src));
         if (parsed.length !== 1) {
             throw new Error("Deserialized more than one cell");
         }
@@ -50,7 +51,7 @@ export class Cell {
      * @param src source string
      */
     static fromHex(src: string): Cell {
-        let parsed = Cell.fromBoc(Buffer.from(src, 'hex'));
+        let parsed = Cell.fromBoc(hexStringToUint8Array(src));
         if (parsed.length !== 1) {
             throw new Error("Deserialized more than one cell");
         }
@@ -64,7 +65,7 @@ export class Cell {
     readonly mask: LevelMask;
 
     // Level and depth information
-    private _hashes: Buffer[] = [];
+    private _hashes: Uint8Array[] = [];
     private _depths: number[] = [];
 
     constructor(opts?: { exotic?: boolean, bits?: BitString, refs?: Cell[] }) {
@@ -82,7 +83,7 @@ export class Cell {
         }
 
         // Resolve type
-        let hashes: Buffer[];
+        let hashes: Uint8Array[];
         let depths: number[];
         let mask: LevelMask;
         let type = CellType.Ordinary;
@@ -159,7 +160,7 @@ export class Cell {
      * @param level level
      * @returns cell hash
      */
-    hash = (level: number = 3): Buffer => {
+    hash = (level: number = 3): Uint8Array => {
         return this._hashes[Math.min(this._hashes.length - 1, level)];
     }
 
@@ -186,14 +187,14 @@ export class Cell {
      * @returns true if cells are equal
      */
     equals = (other: Cell): boolean => {
-        return this.hash().equals(other.hash());
+        return uint8ArrayEquals(this.hash(), other.hash());
     }
 
     /**
      * Serializes cell to BOC
      * @param opts options
      */
-    toBoc(opts?: { idx?: boolean | null | undefined, crc32?: boolean | null | undefined }): Buffer {
+    toBoc(opts?: { idx?: boolean | null | undefined, crc32?: boolean | null | undefined }): Uint8Array {
         let idx = (opts && opts.idx !== null && opts.idx !== undefined) ? opts.idx : false;
         let crc32 = (opts && opts.crc32 !== null && opts.crc32 !== undefined) ? opts.crc32 : true;
         return serializeBoc(this, { idx, crc32 });

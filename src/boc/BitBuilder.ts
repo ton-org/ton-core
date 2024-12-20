@@ -16,11 +16,11 @@ import { BitString } from "./BitString";
  * Class for building bit strings
  */
 export class BitBuilder {
-    private _buffer: Buffer;
+    private _buffer: Uint8Array;
     private _length: number;
 
     constructor(size: number = 1023) {
-        this._buffer = Buffer.alloc(Math.ceil(size / 8));
+        this._buffer = new Uint8Array(Math.ceil(size / 8));
         this._length = 0;
     }
 
@@ -66,14 +66,14 @@ export class BitBuilder {
      * Write bits from buffer
      * @param src source buffer
      */
-    writeBuffer(src: Buffer) {
+    writeBuffer(src: Uint8Array) {
 
         // Special case for aligned offsets
         if (this._length % 8 === 0) {
             if (this._length + src.length * 8 > this._buffer.length * 8) {
                 throw new Error("BitBuilder overflow");
             }
-            src.copy(this._buffer, this._length / 8);
+            this._buffer.set(src, this._length / 8);
             this._length += src.length * 8;
         } else {
             for (let i = 0; i < src.length; i++) {

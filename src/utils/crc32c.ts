@@ -6,9 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { writeInt32LEToUint8Array } from './buffer_to_uint8array';
+
 const POLY = 0x82f63b78;
 
-export function crc32c(source: Buffer) {
+export function crc32c(source: Uint8Array): Uint8Array {
     let crc = 0 ^ 0xffffffff;
     for (let n = 0; n < source.length; n++) {
         crc ^= source[n];
@@ -24,7 +26,5 @@ export function crc32c(source: Buffer) {
     crc = crc ^ 0xffffffff;
 
     // Convert endianness
-    let res = Buffer.alloc(4);
-    res.writeInt32LE(crc);
-    return res;
+    return writeInt32LEToUint8Array(crc);
 }
