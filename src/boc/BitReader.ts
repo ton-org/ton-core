@@ -328,6 +328,32 @@ export class BitReader {
         }
     }
 
+    loadAddress1() {
+        let type = Number(this._preloadUint(2, this._offset));
+        if (type === 0) {
+            return 'none' as const;
+        } else if (type === 1) {
+            return this._loadExternalAddress();
+        } else if (type === 2) {
+            return this._loadInternalAddress();
+        } else {
+            throw new Error("Unsupported address type: " + type);
+        }
+    }
+
+    loadMaybeAddress1() {
+        let type = Number(this._preloadUint(1, this._offset));
+        if (type === 0) {
+            this._offset += 1;
+            return null;
+        } else if (type === 1) {
+            this._offset += 1;
+            return this.loadAddress1();
+        } else {
+            throw new Error("Invalid maybe");
+        }
+    }
+
     /**
      * Load external address
      * @returns ExternalAddress

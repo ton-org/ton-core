@@ -290,6 +290,26 @@ export class BitBuilder {
         throw Error(`Invalid address. Got ${address}`);
     }
 
+    writeAddress1(address: Address | ExternalAddress | "none") {
+        // Is empty address
+        if (address === "none") {
+            this.writeUint(0, 2); // Empty address
+            return;
+        }
+
+        this.writeAddress(address);
+    }
+
+    writeMaybeAddress1(address: Maybe<Address | ExternalAddress | "none">) {
+        if (address === null || address === undefined) {
+            this.writeUint(0, 1);
+            return;
+        }
+
+        this.writeUint(1, 1);
+        this.writeAddress1(address);
+    }
+
     /**
      * Build BitString
      * @returns result bit string
