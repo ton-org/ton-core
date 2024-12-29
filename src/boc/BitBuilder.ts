@@ -152,7 +152,7 @@ export class BitBuilder {
 
         // Corner case for zero bits
         if (bits === 0) {
-            if (value !== 0n) {
+            if (v !== 0n) {
                 throw Error(`value is not zero for ${bits} bits. Got ${value}`);
             } else {
                 return;
@@ -161,7 +161,7 @@ export class BitBuilder {
 
         // Corner case for one bit
         if (bits === 1) {
-            if (value !== -1n && value !== 0n) {
+            if (v !== -1n && v !== 0n) {
                 throw Error(`value is not zero or -1 for ${bits} bits. Got ${value}`);
             } else {
                 this.writeBit(value === -1n);
