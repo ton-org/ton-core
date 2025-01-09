@@ -185,18 +185,16 @@ export class TupleReader {
     }
 
     readBufferOpt() {
-        let popped = this.peek();
-        if (popped.type === 'null') {
+        let r = this.readCellOpt();
+        if (r !== null) {
+            let s = r.beginParse();
+            if (s.remainingRefs !== 0 || s.remainingBits % 8 !== 0) {
+                throw Error('Not a buffer');
+            }
+            return s.loadBuffer(s.remainingBits / 8);
+        } else {
             return null;
-        }
-        let s = this.readCell().beginParse();
-        if (s.remainingRefs !== 0) {
-            throw Error('Not a buffer');
-        }
-        if (s.remainingBits % 8 !== 0) {
-            throw Error('Not a buffer');
-        }
-        return s.loadBuffer(s.remainingBits / 8);
+	}
     }
 
     readString() {
@@ -205,11 +203,13 @@ export class TupleReader {
     }
 
     readStringOpt() {
-        let popped = this.peek();
-        if (popped.type === 'null') {
+        let r = this.readCellOpt();
+        if (r !== null) {
+            let s = r.beginParse();
+            return s.loadStringTail();
+        } else {
             return null;
         }
-        let s = this.readCell().beginParse();
-        return s.loadStringTail();
     }
 }
+

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.59.1] - 2024-12-20
+
+## Fixed
+- `BitBuilder.writeVarInt` bytes size calculation (thx @Gusarich)
+
+## [0.59.0] - 2024-10-09
+
+## Fixed 
+- `TupleReader`: always pop current element in `readStringOpt` and `readBufferOpt` (thx @anton-trunov)
+
+## Added
+- `ContractProvider`: `get` now accept numbers as method IDs (thx @anton-trunov)
+- `Cell.fromHex` method (thx @krigga)
+
 ## [0.58.1] - 2024-09-13
 
 ## Fixed
