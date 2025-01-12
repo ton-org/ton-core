@@ -15,6 +15,7 @@ import { Maybe } from "../utils/maybe";
 export type SenderArguments = {
     value: bigint,
     to: Address,
+    ec?: Maybe<[number, bigint][]>,
     sendMode?: Maybe<SendMode>,
     bounce?: Maybe<boolean>,
     init?: Maybe<StateInit>,
