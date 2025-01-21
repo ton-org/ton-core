@@ -8,8 +8,13 @@
 
 import { Maybe } from "../utils/maybe";
 
+type ExtraCurrencyMap = {
+    [k: number]: bigint
+}
+
 export type ContractState = {
     balance: bigint,
+    ec: Maybe<ExtraCurrencyMap>,
     last: { lt: bigint, hash: Buffer } | null,
     state: { type: 'uninit' } | { type: 'active', code: Maybe<Buffer>, data: Maybe<Buffer> } | { type: 'frozen', stateHash: Buffer }
 };
