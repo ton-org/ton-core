@@ -20,7 +20,7 @@ import { ExtraCurrency, packExtraCurrencyDict } from "./ExtraCurrency";
 export function internal(src: {
     to: Address | string,
     value: bigint | string,
-    extracurrency: Maybe<ExtraCurrency>,
+    extracurrency?: Maybe<ExtraCurrency>,
     bounce?: Maybe<boolean>,
     init?: Maybe<StateInit>,
     body?: Maybe<Cell | string>
