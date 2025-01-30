@@ -15,11 +15,12 @@ import { MessageRelaxed } from "./MessageRelaxed";
 import { Message } from "./Message";
 import { Dictionary } from "../dict/Dictionary";
 import { StateInit } from "./StateInit";
+import { ExtraCurrency, packExtraCurrencyDict } from "./ExtraCurrency";
 
 export function internal(src: {
     to: Address | string,
     value: bigint | string,
-    ec?: Maybe<[number, bigint][]>,
+    extracurrency: Maybe<ExtraCurrency>,
     bounce?: Maybe<boolean>,
     init?: Maybe<StateInit>,
     body?: Maybe<Cell | string>
@@ -50,14 +51,10 @@ export function internal(src: {
     }
 
     let other: Dictionary<number, bigint> | undefined;
-    if(src.ec) {
+    if(src.extracurrency) {
         // Resolve value
-        other = Dictionary.empty(Dictionary.Keys.Uint(32), Dictionary.Values.BigVarUint(5));
-        for(let tuple of src.ec) {
-            other.set(tuple[0], tuple[1]);
-        }
+        other = packExtraCurrencyDict(src.extracurrency);
     }
-
 
     // Resolve body
     let body: Cell = Cell.EMPTY;
