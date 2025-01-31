@@ -78,6 +78,14 @@ export {
     storeDepthBalanceInfo
 } from './DepthBalanceInfo';
 export {
+    ExtraCurrency,
+    packExtraCurrencyCell,
+    packExtraCurrencyDict,
+    loadExtraCurrency,
+    loadMaybeExtraCurrency,
+    storeExtraCurrency
+} from './ExtraCurrency';
+export {
     HashUpdate,
     loadHashUpdate,
     storeHashUpdate
