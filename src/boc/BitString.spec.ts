@@ -24,7 +24,7 @@ describe('BitString', () => {
     });
 
     it('should read bits', () => {
-        let bs = new BitString(Buffer.from([0b10101010]), 0, 8);
+        let bs = new BitString(new Uint8Array([0b10101010]), 0, 8);
         expect(bs.at(0)).toBe(true);
         expect(bs.at(1)).toBe(false);
         expect(bs.at(2)).toBe(true);
@@ -36,9 +36,9 @@ describe('BitString', () => {
         expect(bs.toString()).toEqual('AA');
     });
     it('should equals', () => {
-        let a = new BitString(Buffer.from([0b10101010]), 0, 8);
-        let b = new BitString(Buffer.from([0b10101010]), 0, 8);
-        let c = new BitString(Buffer.from([0, 0b10101010]), 8, 8);
+        let a = new BitString(new Uint8Array([0b10101010]), 0, 8);
+        let b = new BitString(new Uint8Array([0b10101010]), 0, 8);
+        let c = new BitString(new Uint8Array([0, 0b10101010]), 8, 8);
         expect(a.equals(b)).toBe(true);
         expect(b.equals(a)).toBe(true);
         expect(a.equals(c)).toBe(true);
@@ -48,49 +48,49 @@ describe('BitString', () => {
         expect(c.toString()).toEqual('AA');
     });
     it('should format strings', () => {
-        expect(new BitString(Buffer.from([0b00000000]), 0, 1).toString()).toEqual('4_');
-        expect(new BitString(Buffer.from([0b10000000]), 0, 1).toString()).toEqual('C_');
-        expect(new BitString(Buffer.from([0b11000000]), 0, 2).toString()).toEqual('E_');
-        expect(new BitString(Buffer.from([0b11100000]), 0, 3).toString()).toEqual('F_');
-        expect(new BitString(Buffer.from([0b11100000]), 0, 4).toString()).toEqual('E');
-        expect(new BitString(Buffer.from([0b11101000]), 0, 5).toString()).toEqual('EC_');
+        expect(new BitString(new Uint8Array([0b00000000]), 0, 1).toString()).toEqual('4_');
+        expect(new BitString(new Uint8Array([0b10000000]), 0, 1).toString()).toEqual('C_');
+        expect(new BitString(new Uint8Array([0b11000000]), 0, 2).toString()).toEqual('E_');
+        expect(new BitString(new Uint8Array([0b11100000]), 0, 3).toString()).toEqual('F_');
+        expect(new BitString(new Uint8Array([0b11100000]), 0, 4).toString()).toEqual('E');
+        expect(new BitString(new Uint8Array([0b11101000]), 0, 5).toString()).toEqual('EC_');
     });
     it('should do subbuffers', () => {
-        let bs = new BitString(Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
+        let bs = new BitString(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
         let bs2 = bs.subbuffer(0, 16);
         expect(bs2!.length).toBe(2);
     });
     it('should do substrings', () => {
-        let bs = new BitString(Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
+        let bs = new BitString(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
         let bs2 = bs.substring(0, 16);
         expect(bs2!.length).toBe(16);
     });
     it('should do empty substrings with requested length 0', () => {
-        let bs = new BitString(Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
+        let bs = new BitString(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
         let bs2 = bs.substring(bs.length, 0);
         expect(bs2!.length).toBe(0);
     });
     it('should OOB when substring offset is out of bounds', () => {
-        let bs = new BitString(Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
+        let bs = new BitString(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
         testOOB('substring', bs, bs.length + 1, 0);
         testOOB('substring', bs, -1, 0);
     });
     it('should OOB when subbuffer offset is out of bounds', () => {
-        let bs = new BitString(Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
+        let bs = new BitString(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
         testOOB('subbuffer', bs, bs.length + 1, 0);
         testOOB('subbuffer', bs, -1, 0);
     });
     it('should OOB when offset is on the end of bitsring and length > 0', () =>{
-        let bs = new BitString(Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
+        let bs = new BitString(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
         testOOB('substring', bs, bs.length, 1);
     });
     it('should do empty subbuffers with requested length 0', () => {
-        let bs = new BitString(Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
+        let bs = new BitString(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
         let bs2 = bs.subbuffer(bs.length, 0);
         expect(bs2!.length).toBe(0);
     });
     it('should OOB when offset is on the end of buffer and length > 0', () => {
-        let bs = new BitString(Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
+        let bs = new BitString(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
         testOOB('subbuffer', bs, bs.length, 1);
     });
     it('should process monkey strings', () => {

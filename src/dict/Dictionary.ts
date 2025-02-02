@@ -18,7 +18,7 @@ import { parseDict } from "./parseDict";
 import { serializeDict } from "./serializeDict";
 import { deserializeInternalKey, serializeInternalKey } from "./utils/internalKeySerializer";
 
-export type DictionaryKeyTypes = Address | number | bigint | Buffer | BitString;
+export type DictionaryKeyTypes = Address | number | bigint | Uint8Array | BitString;
 
 export type DictionaryKey<K extends DictionaryKeyTypes> = {
     bits: number;
@@ -83,7 +83,7 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
          * @param bytes number of bytes of a buffer
          * @returns DictionaryKey<Buffer>
          */
-        Buffer: (bytes: number) => {
+        Uint8Array: (bytes: number) => {
             return createBufferKey(bytes);
         },
 
@@ -507,11 +507,11 @@ function createUintKey(bits: number): DictionaryKey<number> {
     }
 }
 
-function createBufferKey(bytes: number): DictionaryKey<Buffer> {
+function createBufferKey(bytes: number): DictionaryKey<Uint8Array> {
     return {
         bits: bytes * 8,
         serialize: (src) => {
-            if (!Buffer.isBuffer(src)) {
+            if (!(src instanceof Uint8Array)) {
                 throw Error('Key is not a buffer');
             }
             return beginCell().storeBuffer(src).endCell().beginParse().loadUintBig(bytes * 8);
@@ -646,7 +646,7 @@ function createDictionaryValue<K extends DictionaryKeyTypes, V>(key: DictionaryK
     }
 }
 
-function createBufferValue(size: number): DictionaryValue<Buffer> {
+function createBufferValue(size: number): DictionaryValue<Uint8Array> {
     return {
         serialize: (src, buidler) => {
             if (src.length !== size) {

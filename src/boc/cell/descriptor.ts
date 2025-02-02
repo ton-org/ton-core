@@ -24,7 +24,7 @@ export function getRepr(originalBits: BitString, bits: BitString, refs: Cell[], 
 
     // Allocate
     const bitsLen = Math.ceil(bits.length / 8);
-    const repr = Buffer.alloc(2 + bitsLen + (2 + 32) * refs.length);
+    const repr = new Uint8Array(2 + bitsLen + (2 + 32) * refs.length);
 
     // Write descriptors
     let reprCursor = 0;
@@ -32,7 +32,7 @@ export function getRepr(originalBits: BitString, bits: BitString, refs: Cell[], 
     repr[reprCursor++] = getBitsDescriptor(originalBits);
 
     // Write bits
-    bitsToPaddedBuffer(bits).copy(repr, reprCursor);
+    repr.set(bitsToPaddedBuffer(bits), reprCursor);
     reprCursor += bitsLen;
 
     // Write refs
@@ -47,13 +47,13 @@ export function getRepr(originalBits: BitString, bits: BitString, refs: Cell[], 
         repr[reprCursor++] = childDepth % 256;
     }
     for (const c of refs) {
-        let childHash: Buffer;
+        let childHash: Uint8Array;
         if (type == CellType.MerkleProof || type == CellType.MerkleUpdate) {
             childHash = c.hash(level + 1);
         } else {
             childHash = c.hash(level);
         }
-        childHash.copy(repr, reprCursor);
+        repr.set(childHash, reprCursor);
         reprCursor += 32;
     }
 

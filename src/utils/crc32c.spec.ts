@@ -7,9 +7,10 @@
  */
 
 import { crc32c } from "./crc32c";
+import { utf8StringToUint8Array, hexStringToUint8Array } from "./buffer_to_uint8array";
 
 describe('src32c', () => {
     it('should match test vector', () => {
-        expect(crc32c(Buffer.from('123456789'))).toEqual(Buffer.from('839206e3', 'hex'));
+        expect(crc32c(utf8StringToUint8Array('123456789'))).toEqual(hexStringToUint8Array('839206e3'));
     });
 });
