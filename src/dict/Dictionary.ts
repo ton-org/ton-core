@@ -542,7 +542,9 @@ function createIntValue(bits: number): DictionaryValue<number> {
             buidler.storeInt(src, bits);
         },
         parse: (src) => {
-            return src.loadInt(bits);
+            let value = src.loadInt(bits);
+            src.endParse();
+            return value;
         }
     }
 }
@@ -553,7 +555,9 @@ function createBigIntValue(bits: number): DictionaryValue<bigint> {
             buidler.storeInt(src, bits);
         },
         parse: (src) => {
-            return src.loadIntBig(bits);
+            let value = src.loadIntBig(bits);
+            src.endParse();
+            return value;
         }
     }
 }
@@ -564,7 +568,9 @@ function createBigVarIntValue(bits: number): DictionaryValue<bigint> {
             buidler.storeVarInt(src, bits);
         },
         parse: (src) => {
-            return src.loadVarIntBig(bits);
+            let value = src.loadVarIntBig(bits);
+            src.endParse();
+            return value;
         }
     }
 }
@@ -575,7 +581,9 @@ function createBigVarUintValue(bits: number): DictionaryValue<bigint> {
             buidler.storeVarUint(src, bits);
         },
         parse: (src) => {
-            return src.loadVarUintBig(bits);
+            let value = src.loadVarUintBig(bits);
+            src.endParse();
+            return value;
         }
     }
 }
@@ -586,7 +594,9 @@ function createUintValue(bits: number): DictionaryValue<number> {
             buidler.storeUint(src, bits);
         },
         parse: (src) => {
-            return src.loadUint(bits);
+            let value = src.loadUint(bits);
+            src.endParse();
+            return value;
         }
     }
 }
@@ -597,7 +607,9 @@ function createBigUintValue(bits: number): DictionaryValue<bigint> {
             buidler.storeUint(src, bits);
         },
         parse: (src) => {
-            return src.loadUintBig(bits);
+            let value = src.loadUintBig(bits);
+            src.endParse();
+            return value;
         }
     }
 }
@@ -608,7 +620,9 @@ function createBooleanValue(): DictionaryValue<boolean> {
             buidler.storeBit(src);
         },
         parse: (src) => {
-            return src.loadBit();
+            let value = src.loadBit();
+            src.endParse();
+            return value;
         }
     }
 }
@@ -619,7 +633,9 @@ function createAddressValue(): DictionaryValue<Address> {
             buidler.storeAddress(src);
         },
         parse: (src) => {
-            return src.loadAddress();
+            let addr = src.loadAddress();
+            src.endParse();
+            return addr;
         }
     }
 }
@@ -630,7 +646,9 @@ function createCellValue(): DictionaryValue<Cell> {
             buidler.storeRef(src);
         },
         parse: (src) => {
-            return src.loadRef();
+            let value = src.loadRef();
+            src.endParse();
+            return value;
         }
     }
 }
@@ -641,7 +659,9 @@ function createDictionaryValue<K extends DictionaryKeyTypes, V>(key: DictionaryK
             src.store(buidler);
         },
         parse: (src) => {
-            return Dictionary.load(key, value, src);
+            let dict = Dictionary.load(key, value, src);
+            src.endParse();
+            return dict;
         }
     }
 }
@@ -655,7 +675,9 @@ function createBufferValue(size: number): DictionaryValue<Buffer> {
             buidler.storeBuffer(src);
         },
         parse: (src) => {
-            return src.loadBuffer(size);
+            let value = src.loadBuffer(size);
+            src.endParse();
+            return value;
         }
     }
 }
@@ -669,7 +691,9 @@ function createBitStringValue(bits: number): DictionaryValue<BitString> {
             builder.storeBits(src);
         },
         parse: (src) => {
-            return src.loadBits(bits);
+            let value = src.loadBits(bits);
+            src.endParse();
+            return value;
         }
     }
 }

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## Fixed
+- BREAKING: fail if there is remaining data in dictionary value after parsing (security issue)
+
+Notes: if you want to parse dictionary value without checking for remaining data, you can implement your custom `DictionaryValue`
+
 ## [0.60.0] - 2025-01-31
 
 ## Added
