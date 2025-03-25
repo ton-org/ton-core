@@ -476,14 +476,39 @@ export class BitReader {
             throw Error('Invalid address');
         }
 
-        // No Anycast supported
+        // Handle Anycast
+        let rewrite_pfx = undefined;
+        let rewrite_depth = undefined;
         if (this._preloadUint(1, this._offset + 2) !== 0n) {
-            throw Error('Invalid address');
+            rewrite_depth = Number(this._preloadUint(5, this._offset + 3));
+            rewrite_pfx = this._preloadUint(rewrite_depth, this._offset + 8);
+            this._offset += 5 + rewrite_depth;
         }
 
         // Read address
         let wc = Number(this._preloadInt(8, this._offset + 3));
         let hash = this._preloadBuffer(32, this._offset + 11);
+
+        // Apply rewrite prefix if present
+        if (rewrite_depth !== undefined && rewrite_pfx !== undefined) {
+            let pfx = Number(rewrite_pfx);
+            let byteIndex = 0;
+            let bitIndex = 0;
+            let bitsRemaining = rewrite_depth;
+
+            while (bitsRemaining > 0) {
+                let bitsInThisByte = Math.min(8 - bitIndex, bitsRemaining);
+                let mask = ((1 << bitsInThisByte) - 1) << (8 - bitIndex - bitsInThisByte);
+                let bits = ((pfx >> (bitsRemaining - bitsInThisByte)) & ((1 << bitsInThisByte) - 1)) << (8 - bitIndex - bitsInThisByte);
+                hash[byteIndex] = (hash[byteIndex] & ~mask) | bits;
+                bitsRemaining -= bitsInThisByte;
+                bitIndex += bitsInThisByte;
+                if (bitIndex === 8) {
+                    byteIndex++;
+                    bitIndex = 0;
+                }
+            }
+        }
 
         // Update offset
         this._offset += 267;
