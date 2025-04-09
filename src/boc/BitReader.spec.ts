@@ -180,4 +180,18 @@ describe('BitReader', () => {
             expect(reader.loadExternalAddress().toString()).toEqual(b.toString());
         }
     });
+
+    it('should read anycat address', () => {
+        const builder = new BitBuilder();
+        builder.writeUint(0b10, 2); // addr_std tag
+        builder.writeUint(0b1, 1)   // addr_std just anycast_info
+        builder.writeUint(2, 5);    // anycast_info depth
+        builder.writeUint(1, 2);    // anycast_info rewrite_pfx
+        builder.writeInt(0, 8);     // addr_std workchain_id
+        builder.writeUint(1, 256);  // addr_std address
+        const bits = builder.build();
+        const reader = new BitReader(bits);
+        const expected = "0:4000000000000000000000000000000000000000000000000000000000000001"
+        expect(reader.loadAddress()!.toRawString()).toEqual(expected);
+    });
 });
