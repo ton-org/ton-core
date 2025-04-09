@@ -12,6 +12,7 @@ import { BitReader } from "./BitReader";
 import { beginCell } from "./Builder";
 import { Cell } from "./Cell";
 import { readString } from "./utils/strings";
+import { countBits64 } from "../utils/countBits64";
 
 /**
  * Slice is a class that allows to read cell data
@@ -53,6 +54,29 @@ export class Slice {
      */
     get offsetRefs() {
         return this._refsOffset;
+    }
+
+    /**
+     * Preloads an uniq selector for the tag of constructor combinator
+     * @param bits number of useful bit depth (max 6)
+     * @param mask number a bit mask applied to the preloaded value
+     * @param [extend=false] boolean flag if true, extend the value with remaining bits when not enough
+     * @returns number the computed bit selector value or -1 on failure
+     */
+    preloadBitSelector(bits: number, mask: number, extend = false): number {
+        if (bits > 6) {
+            return -1;
+        }
+        let n: number;
+        if (bits <= this.remainingBits) {
+            n = Number(this.preloadUint(bits));
+        } else if (extend) {
+            n = Number(this.preloadUint(this.remainingBits)) << (bits - this.remainingBits);
+        } else {
+            return -1;
+        }
+        const bitsMask = (2 << n) - 1;
+        return countBits64(mask & bitsMask) - 1;
     }
 
     /**

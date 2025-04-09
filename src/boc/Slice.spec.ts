@@ -13,6 +13,34 @@ import { BitBuilder } from './BitBuilder';
 import { Cell } from './Cell';
 
 describe('Slice', () => {
+    it('should read bit selector from slice', () => {
+        const builder = new BitBuilder();
+        builder.writeUint(0b00, 2); // f_a$00 = Foo
+        builder.writeUint(0b01, 2); // f_b$01 = Foo
+        builder.writeUint(0b10, 2); // f_c$10 = Foo
+        builder.writeUint(0b10, 2); // b_b$10 = Bar
+        builder.writeUint(0b11, 2); // b_c$11 = Bar
+        builder.writeUint(0b0, 1);  // b_a$0  = Bar
+        const bits = builder.build();
+        const reader = new Cell({ bits }).beginParse();
+        expect(reader.preloadBitSelector(7, 0)).toEqual(-1);
+        const prefixUsefulDepth = 2;
+        let mask = 0b111;
+        expect(reader.preloadBitSelector(prefixUsefulDepth, mask)).toEqual(0);
+        reader.skip(2);
+        expect(reader.preloadBitSelector(prefixUsefulDepth, mask)).toEqual(1);
+        reader.skip(2);
+        expect(reader.preloadBitSelector(prefixUsefulDepth, mask)).toEqual(2);
+        reader.skip(2);
+        mask = 0b1101;
+        expect(reader.preloadBitSelector(prefixUsefulDepth, mask, true)).toEqual(1);
+        reader.skip(2);
+        expect(reader.preloadBitSelector(prefixUsefulDepth, mask, true)).toEqual(2);
+        reader.skip(2);
+        expect(reader.preloadBitSelector(prefixUsefulDepth, mask)).toEqual(-1);
+        expect(reader.preloadBitSelector(prefixUsefulDepth, mask, true)).toEqual(0);
+    });
+
     it('should read uints from slice', () => {
         let prando = new Prando('test-1');
         for (let i = 0; i < 1000; i++) {
