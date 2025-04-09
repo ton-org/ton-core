@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export function crc16(data: Buffer) {
+export function crc16(data: Uint8Array): Uint8Array {
     const poly = 0x1021;
     let reg = 0;
-    const message = Buffer.alloc(data.length + 2);
+    const message = new Uint8Array(data.length + 2);
     message.set(data);
     for (let byte of message) {
         let mask = 0x80;
@@ -25,5 +25,5 @@ export function crc16(data: Buffer) {
             }
         }
     }
-    return Buffer.from([Math.floor(reg / 256), reg % 256]);
+    return new Uint8Array([Math.floor(reg / 256), reg % 256]);
 }

@@ -9,6 +9,7 @@
 import { Address } from "../../address/Address";
 import { BitString } from "../../boc/BitString";
 import { bitsToPaddedBuffer, paddedBufferToBits } from "../../boc/utils/paddedBits";
+import { hexStringToUint8Array, uint8ArrayToHexString } from "../../utils/buffer_to_uint8array";
 
 export function serializeInternalKey(value: any): string {
     if (typeof value === 'number') {
@@ -20,8 +21,8 @@ export function serializeInternalKey(value: any): string {
         return 'b:' + value.toString(10);
     } else if (Address.isAddress(value)) {
         return 'a:' + value.toString();
-    } else if (Buffer.isBuffer(value)) {
-        return 'f:' + value.toString('hex');
+    } else if (value instanceof Uint8Array) {
+        return 'f:' + uint8ArrayToHexString(value);
     } else if(BitString.isBitString(value)) {
         return 'B:' + value.toString();
     } else {
@@ -39,7 +40,7 @@ export function deserializeInternalKey(value: string): any {
     } else if (k === 'a:') {
         return Address.parse(v);
     } else if (k === 'f:') {
-        return Buffer.from(v, 'hex');
+        return hexStringToUint8Array(v);
     }
     else if (k === 'B:') {
 
@@ -50,14 +51,14 @@ export function deserializeInternalKey(value: string): any {
             const padded  = v.substr(0, charLen) + "0"; //Padding
             if((!lastDash) && ((charLen & 1) !== 0)){
                 // Four bit nibmle without padding
-                return new BitString(Buffer.from(padded, 'hex'), 0, charLen << 2);
+                return new BitString(hexStringToUint8Array(padded), 0, charLen << 2);
             }
             else {
-                return paddedBufferToBits(Buffer.from(padded, 'hex')); 
+                return paddedBufferToBits(hexStringToUint8Array(padded)); 
             }
         }
         else {
-            return new BitString(Buffer.from(v, 'hex'), 0, v.length << 2);
+            return new BitString(hexStringToUint8Array(v), 0, v.length << 2);
         }
     }
     throw Error('Invalid key type: ' + k);

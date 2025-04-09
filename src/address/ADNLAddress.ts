@@ -9,6 +9,7 @@
 import inspectSymbol from 'symbol.inspect';
 import { base32Decode, base32Encode } from '../utils/base32';
 import { crc16 } from '../utils/crc16';
+import { base64ToUint8Array, uint8ArrayEquals, uint8ArrayToHexString } from '../utils/buffer_to_uint8array';
 
 export class ADNLAddress {
 
@@ -26,20 +27,20 @@ export class ADNLAddress {
         }
         let gotHash = decoded.slice(33);
         let hash = crc16(decoded.slice(0, 33));
-        if (!hash.equals(gotHash)) {
+        if (!uint8ArrayEquals(hash, gotHash)) {
             throw Error('Invalid address');
         }
         return new ADNLAddress(decoded.slice(1, 33));
     }
 
     static parseRaw(src: string) {
-        const data = Buffer.from(src, 'base64');
+        const data = base64ToUint8Array(src);
         return new ADNLAddress(data);
     }
 
-    readonly address: Buffer;
+    readonly address: Uint8Array;
 
-    constructor(address: Buffer) {
+    constructor(address: Uint8Array) {
         if (address.length !== 32) {
             throw Error('Invalid address');
         }
@@ -47,18 +48,24 @@ export class ADNLAddress {
     }
 
     equals(b: ADNLAddress) {
-        return this.address.equals(b.address);
+        return uint8ArrayEquals(this.address, b.address);
     }
 
     toRaw = () => {
-        return this.address.toString('hex').toUpperCase();
+        return uint8ArrayToHexString(this.address).toUpperCase();
     }
 
     toString = () => {
-        let data = Buffer.concat([Buffer.from([0x2D]), this.address]);
+        let data = new Uint8Array(1 + this.address.length);
+        data[0] = 0x2D;
+        data.set(this.address, 1);
+
         let hash = crc16(data);
-        data = Buffer.concat([data, hash]);
-        return base32Encode(data).slice(1);
+        let result = new Uint8Array(data.length + hash.length);
+        result.set(data);
+        result.set(hash, data.length);
+
+        return base32Encode(result).slice(1);
     }
 
     [inspectSymbol] = () => this.toString();
