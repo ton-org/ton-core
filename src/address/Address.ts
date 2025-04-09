@@ -71,7 +71,7 @@ export class Address {
             return false;
         }
         // Check if address is valid base64
-        if (!/[A-Za-z0-9+/_-]+/.test(source)) {
+        if (!/^[A-Za-z0-9+/_-]+$/.test(source)) {
             return false;
         }
 
