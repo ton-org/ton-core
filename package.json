@@ -1,6 +1,6 @@
 {
   "name": "@ton/core",
-  "version": "0.59.0",
+  "version": "0.60.1",
   "main": "dist/index.js",
   "repository": "https://github.com/ton-org/ton-core.git",
   "author": "Whales Corp. <developers@whalescorp.com>",
@@ -48,5 +48,6 @@
         "filename": "CHANGELOG.md"
       }
     }
-  }
+  },
+  "packageManager": "yarn@3.4.1+sha256.b51208ae422260539b3503fe5b596f4f236947d69ed1f8797f9830331a38c841"
 }

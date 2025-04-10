@@ -13,11 +13,14 @@ import { beginCell } from "../boc/Builder";
 import { toNano } from "../utils/convert";
 import { MessageRelaxed } from "./MessageRelaxed";
 import { Message } from "./Message";
+import { Dictionary } from "../dict/Dictionary";
 import { StateInit } from "./StateInit";
+import { ExtraCurrency, packExtraCurrencyDict } from "./ExtraCurrency";
 
 export function internal(src: {
     to: Address | string,
     value: bigint | string,
+    extracurrency?: Maybe<ExtraCurrency>,
     bounce?: Maybe<boolean>,
     init?: Maybe<StateInit>,
     body?: Maybe<Cell | string>
@@ -47,6 +50,12 @@ export function internal(src: {
         value = src.value;
     }
 
+    let other: Dictionary<number, bigint> | undefined;
+    if(src.extracurrency) {
+        // Resolve value
+        other = packExtraCurrencyDict(src.extracurrency);
+    }
+
     // Resolve body
     let body: Cell = Cell.EMPTY;
     if (typeof src.body === 'string') {
@@ -60,7 +69,7 @@ export function internal(src: {
         info: {
             type: 'internal',
             dest: to,
-            value: { coins: value },
+            value: { coins: value, other },
             bounce,
             ihrDisabled: true,
             bounced: false,
