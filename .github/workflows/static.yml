@@ -43,3 +43,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
+https://github.com/Re290666/demo-repository.git
+https://github.com/Re2906/tact.git
+https://github.com/Re29066/literate-goggles.git
