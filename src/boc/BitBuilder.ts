@@ -152,7 +152,7 @@ export class BitBuilder {
 
         // Corner case for zero bits
         if (bits === 0) {
-            if (value !== 0n) {
+            if (v !== 0n) {
                 throw Error(`value is not zero for ${bits} bits. Got ${value}`);
             } else {
                 return;
@@ -161,7 +161,7 @@ export class BitBuilder {
 
         // Corner case for one bit
         if (bits === 1) {
-            if (value !== -1n && value !== 0n) {
+            if (v !== -1n && v !== 0n) {
                 throw Error(`value is not zero or -1 for ${bits} bits. Got ${value}`);
             } else {
                 this.writeBit(value === -1n);
@@ -239,7 +239,7 @@ export class BitBuilder {
 
         // Calculate size
         let v2 = v > 0 ? v : -v;
-        const sizeBytes = 1 + Math.ceil((v2.toString(2).length) / 8); // Fastest way in most environments
+        const sizeBytes = Math.ceil((v2.toString(2).length + 1) / 8); // Fastest way in most environments
         const sizeBits = sizeBytes * 8;
 
         // Write size

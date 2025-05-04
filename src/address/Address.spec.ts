@@ -61,10 +61,12 @@ describe('Address', () => {
         expect(() => {
             Address.parseRaw('0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422');
         }).toThrowError('Invalid address hash length: 31');
+        expect(Address.isRaw('0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422')).toBe(false);
 
         expect(() => {
             Address.parseRaw('0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e');
         }).toThrowError('Invalid address hash length: 31');
+        expect(Address.isRaw('0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e')).toBe(false);
 
         expect(() => {
             Address.parse('ton://EQAs9VlT6S776tq3unJcP5Ogsj-ELLunLXuOb1EKcOQi4wJB')
@@ -81,9 +83,21 @@ describe('Address', () => {
         expect(() => {
             Address.parseFriendly('ton://transfer/EQDXDCFLXgiTrjGSNVBuvKPZVYlPn3J_u96xxLas3_yoRWRk')
         }).toThrowError('Unknown address type');
+        expect(Address.isFriendly('ton://transfer/EQDXDCFLXgiTrjGSNVBuvKPZVYlPn3J_u96xxLas3_yoRWRk')).toBe(false);
 
         expect(() => {
             Address.parseFriendly('0:EQDXDCFLXgiTrjGSNVBuvKPZVYlPn3J_u96xxLas3_yoRWRk')
         }).toThrowError('Unknown address type');
+        expect(Address.isFriendly('0:EQDXDCFLXgiTrjGSNVBuvKPZVYlPn3J_u96xxLas3_yoRWRk')).toBe(false)
+
+        expect(() => {
+            Address.parseFriendly('!@#$%^&*AAAAAAAAAAAAAA AAAAAAAAAA AAAAAAAAAAAA A')
+        }).toThrowError('Unknown address type');
+        expect(Address.isFriendly('!@#$%^&*AAAAAAAAAAAAAA AAAAAAAAAA AAAAAAAAAAAA A')).toBe(false)
+
+        expect(() => {
+            Address.parseFriendly('                                                ')
+        }).toThrowError('Unknown address type');
+        expect(Address.isFriendly('                                                ')).toBe(false)
     });
 });

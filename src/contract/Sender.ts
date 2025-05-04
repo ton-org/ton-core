@@ -10,11 +10,13 @@ import { Address } from "../address/Address";
 import { Cell } from "../boc/Cell";
 import { SendMode } from "../types/SendMode";
 import { StateInit } from "../types/StateInit";
+import { ExtraCurrency } from "../types/ExtraCurrency";
 import { Maybe } from "../utils/maybe";
 
 export type SenderArguments = {
     value: bigint,
     to: Address,
+    extracurrency?: Maybe<ExtraCurrency>,
     sendMode?: Maybe<SendMode>,
     bounce?: Maybe<boolean>,
     init?: Maybe<StateInit>,

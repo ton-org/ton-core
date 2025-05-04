@@ -255,4 +255,20 @@ describe('BitBuilder', () => {
             expect(bits.toString()).toBe(c[1]);
         }
     });
+
+    it('should store bigint and number for len 1', () => {
+      let builder = new BitBuilder();
+      builder.writeInt(0, 1)
+      builder.writeInt(0n, 1)
+      builder.writeInt(-1, 1)
+      builder.writeInt(-1n, 1)
+      expect(builder.length).toBe(4)
+    })
+
+    it('should store bigint and number for len 0', () => {
+      let builder = new BitBuilder();
+      builder.writeInt(0, 0)
+      builder.writeInt(0n, 0)
+      expect(builder.length).toBe(0)
+    })
 });
