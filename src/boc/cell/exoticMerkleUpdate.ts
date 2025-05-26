@@ -9,6 +9,7 @@
 import { BitReader } from "../BitReader";
 import { BitString } from "../BitString";
 import { Cell } from "../Cell";
+import { uint8ArrayToHexString, uint8ArrayEquals } from "../../utils/buffer_to_uint8array";
 
 export function exoticMerkleUpdate(bits: BitString, refs: Cell[]) {
     const reader = new BitReader(bits);
@@ -38,16 +39,16 @@ export function exoticMerkleUpdate(bits: BitString, refs: Cell[]) {
         throw new Error(`Merkle Update cell ref depth must be exactly "${proofDepth1}", got "${refs[0].depth(0)}"`);
     }
 
-    if (!proofHash1.equals(refs[0].hash(0))) {
-        throw new Error(`Merkle Update cell ref hash must be exactly "${proofHash1.toString('hex')}", got "${refs[0].hash(0).toString('hex')}"`);
+    if (!uint8ArrayEquals(proofHash1, refs[0].hash(0))) {
+        throw new Error(`Merkle Update cell ref hash must be exactly "${uint8ArrayToHexString(proofHash1)}", got "${uint8ArrayToHexString(refs[0].hash(0))}"`);
     }
 
     if (proofDepth2 !== refs[1].depth(0)) {
         throw new Error(`Merkle Update cell ref depth must be exactly "${proofDepth2}", got "${refs[1].depth(0)}"`);
     }
 
-    if (!proofHash2.equals(refs[1].hash(0))) {
-        throw new Error(`Merkle Update cell ref hash must be exactly "${proofHash2.toString('hex')}", got "${refs[1].hash(0).toString('hex')}"`);
+    if (!uint8ArrayEquals(proofHash2, refs[1].hash(0))) {
+        throw new Error(`Merkle Update cell ref hash must be exactly "${uint8ArrayToHexString(proofHash2)}", got "${uint8ArrayToHexString(refs[1].hash(0))}"`);
     }
 
     return {

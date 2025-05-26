@@ -13,7 +13,7 @@ import { LevelMask } from "./LevelMask";
 
 export type ExoticPruned = {
     mask: number;
-    pruned: { depth: number, hash: Buffer }[]
+    pruned: { depth: number, hash: Uint8Array }[]
 }
 
 export function exoticPruned(bits: BitString, refs: Cell[]): ExoticPruned {
@@ -60,8 +60,8 @@ export function exoticPruned(bits: BitString, refs: Cell[]): ExoticPruned {
 
     // Read pruned
 
-    let pruned: { depth: number, hash: Buffer }[] = [];
-    let hashes: Buffer[] = [];
+    let pruned: { depth: number, hash: Uint8Array }[] = [];
+    let hashes: Uint8Array[] = [];
     let depths: number[] = [];
     for (let i = 0; i < mask.level; i++) {
         hashes.push(reader.loadBuffer(32));

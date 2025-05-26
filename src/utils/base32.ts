@@ -8,7 +8,7 @@
 
 const alphabet = 'abcdefghijklmnopqrstuvwxyz234567';
 
-export function base32Encode(buffer: Buffer): string {
+export function base32Encode(buffer: Uint8Array): string {
     const length = buffer.byteLength;
     let bits = 0;
     let value = 0;
@@ -39,7 +39,7 @@ function readChar(alphabet: string, char: string): number {
     return idx;
 }
 
-export function base32Decode(input: string): Buffer {
+export function base32Decode(input: string): Uint8Array {
     let cleanedInput: string;
     cleanedInput = input.toLowerCase();
 
@@ -49,7 +49,7 @@ export function base32Decode(input: string): Buffer {
     let value = 0;
 
     let index = 0;
-    const output = Buffer.alloc(((length * 5) / 8) | 0);
+    const output = new Uint8Array(((length * 5) / 8) | 0);
 
     for (let i = 0; i < length; i++) {
         value = (value << 5) | readChar(alphabet, cleanedInput[i]!);

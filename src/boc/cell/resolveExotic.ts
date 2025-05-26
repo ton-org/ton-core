@@ -16,14 +16,14 @@ import { exoticMerkleUpdate } from "./exoticMerkleUpdate";
 import { exoticPruned } from "./exoticPruned";
 import { LevelMask } from "./LevelMask";
 
-function resolvePruned(bits: BitString, refs: Cell[]): { type: CellType, depths: number[], hashes: Buffer[], mask: LevelMask } {
+function resolvePruned(bits: BitString, refs: Cell[]): { type: CellType, depths: number[], hashes: Uint8Array[], mask: LevelMask } {
 
     // Parse pruned cell
     let pruned = exoticPruned(bits, refs);
 
     // Calculate parameters
     let depths: number[] = [];
-    let hashes: Buffer[] = [];
+    let hashes: Uint8Array[] = [];
     let mask = new LevelMask(pruned.mask);
     for (let i = 0; i < pruned.pruned.length; i++) {
         depths.push(pruned.pruned[i].depth);
@@ -38,14 +38,14 @@ function resolvePruned(bits: BitString, refs: Cell[]): { type: CellType, depths:
     };
 }
 
-function resolveLibrary(bits: BitString, refs: Cell[]): { type: CellType, depths: number[], hashes: Buffer[], mask: LevelMask } {
+function resolveLibrary(bits: BitString, refs: Cell[]): { type: CellType, depths: number[], hashes: Uint8Array[], mask: LevelMask } {
 
     // Parse library cell
     let pruned = exoticLibrary(bits, refs);
 
     // Calculate parameters
     let depths: number[] = [];
-    let hashes: Buffer[] = [];
+    let hashes: Uint8Array[] = [];
     let mask = new LevelMask();
 
     return {
@@ -57,14 +57,14 @@ function resolveLibrary(bits: BitString, refs: Cell[]): { type: CellType, depths
 }
 
 
-function resolveMerkleProof(bits: BitString, refs: Cell[]): { type: CellType, depths: number[], hashes: Buffer[], mask: LevelMask } {
+function resolveMerkleProof(bits: BitString, refs: Cell[]): { type: CellType, depths: number[], hashes: Uint8Array[], mask: LevelMask } {
 
     // Parse merkle proof cell
     let merkleProof = exoticMerkleProof(bits, refs);
 
     // Calculate parameters
     let depths: number[] = [];
-    let hashes: Buffer[] = [];
+    let hashes: Uint8Array[] = [];
     let mask = new LevelMask(refs[0].level() >> 1);
 
     return {
@@ -75,14 +75,14 @@ function resolveMerkleProof(bits: BitString, refs: Cell[]): { type: CellType, de
     };
 }
 
-function resolveMerkleUpdate(bits: BitString, refs: Cell[]): { type: CellType, depths: number[], hashes: Buffer[], mask: LevelMask } {
+function resolveMerkleUpdate(bits: BitString, refs: Cell[]): { type: CellType, depths: number[], hashes: Uint8Array[], mask: LevelMask } {
 
     // Parse merkle proof cell
     let merkleUpdate = exoticMerkleUpdate(bits, refs);
 
     // Calculate parameters
     let depths: number[] = [];
-    let hashes: Buffer[] = [];
+    let hashes: Uint8Array[] = [];
     let mask = new LevelMask((refs[0].level() | refs[1].level()) >> 1);
 
     return {
@@ -93,7 +93,7 @@ function resolveMerkleUpdate(bits: BitString, refs: Cell[]): { type: CellType, d
     };
 }
 
-export function resolveExotic(bits: BitString, refs: Cell[]): { type: CellType, depths: number[], hashes: Buffer[], mask: LevelMask } {
+export function resolveExotic(bits: BitString, refs: Cell[]): { type: CellType, depths: number[], hashes: Uint8Array[], mask: LevelMask } {
     let reader = new BitReader(bits);
     let type = reader.preloadUint(8);
 

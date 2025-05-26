@@ -7,6 +7,7 @@
  */
 
 import { Cell } from "../../Cell";
+import { uint8ArrayToHexString } from "../../../utils/buffer_to_uint8array";
 
 export function topologicalSort(src: Cell) {
     let pending: Cell[] = [src];
@@ -17,12 +18,12 @@ export function topologicalSort(src: Cell) {
         const cells = [...pending];
         pending = [];
         for (let cell of cells) {
-            const hash = cell.hash().toString('hex');
+            const hash = uint8ArrayToHexString(cell.hash());
             if (allCells.has(hash)) {
                 continue;
             }
             notPermCells.add(hash);
-            allCells.set(hash, { cell: cell, refs: cell.refs.map((v) => v.hash().toString('hex')) });
+            allCells.set(hash, { cell: cell, refs: cell.refs.map((v) => uint8ArrayToHexString(v.hash())) });
             for (let r of cell.refs) {
                 pending.push(r);
             }

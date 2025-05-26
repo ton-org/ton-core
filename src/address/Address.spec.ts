@@ -7,6 +7,7 @@
  */
 
 import { Address } from "./Address";
+import { hexStringToUint8Array } from "../utils/buffer_to_uint8array";
 
 describe('Address', () => {
     it('should parse addresses in various forms', () => {
@@ -21,14 +22,14 @@ describe('Address', () => {
         expect(address1.address.workChain).toBe(0);
         expect(address2.address.workChain).toBe(0);
         expect(address3.workChain).toBe(0);
-        expect(address1.address.hash).toEqual(Buffer.from('2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3', 'hex'));
-        expect(address2.address.hash).toEqual(Buffer.from('2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3', 'hex'));
-        expect(address3.hash).toEqual(Buffer.from('2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3', 'hex'));
+        expect(address1.address.hash).toEqual(hexStringToUint8Array('2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3'));
+        expect(address2.address.hash).toEqual(hexStringToUint8Array('2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3'));
+        expect(address3.hash).toEqual(hexStringToUint8Array('2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3'));
         expect(address1.address.toRawString()).toBe('0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3');
         expect(address2.address.toRawString()).toBe('0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3');
         expect(address3.toRawString()).toBe('0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3');
         expect(address4.workChain).toBe(-1);
-        expect(address4.hash).toEqual(Buffer.from('3333333333333333333333333333333333333333333333333333333333333333', 'hex'));
+        expect(address4.hash).toEqual(hexStringToUint8Array('3333333333333333333333333333333333333333333333333333333333333333'));
     });
     it('should serialize to friendly form', () => {
         let address = Address.parseRaw('0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3');
