@@ -154,17 +154,12 @@ export {
     StorageInfo,
     loadStorageInfo,
     storeStorageInfo
-} from './StorageInto';
+} from './StorageInfo';
 export {
     StorageUsed,
     loadStorageUsed,
     storeStorageUsed
 } from './StorageUsed';
-export {
-    StorageUsedShort,
-    loadStorageUsedShort,
-    storeStorageUsedShort
-} from './StorageUsedShort';
 export {
     TickTock,
     loadTickTock,

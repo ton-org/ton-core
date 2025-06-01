@@ -10,7 +10,7 @@ import { Address } from "../address/Address"
 import { Builder } from "../boc/Builder"
 import { Slice } from "../boc/Slice"
 import { AccountStorage, loadAccountStorage, storeAccountStorage } from "./AccountStorage"
-import { loadStorageInfo, StorageInfo, storeStorageInfo } from "./StorageInto"
+import { loadStorageInfo, StorageInfo, storeStorageInfo } from "./StorageInfo"
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L231
 // account_none$0 = Account;

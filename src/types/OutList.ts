@@ -12,7 +12,7 @@ import {loadMessageRelaxed, MessageRelaxed, storeMessageRelaxed} from "./Message
 import {beginCell, Builder} from "../boc/Builder";
 import { Cell } from "../boc/Cell";
 import {Slice} from "../boc/Slice";
-import {loadStorageInfo, storeStorageInfo} from "./StorageInto";
+import {loadStorageInfo, storeStorageInfo} from "./StorageInfo";
 import {loadAccountStorage, storeAccountStorage} from "./AccountStorage";
 import {Account} from "./Account";
 import {loadMessage} from "./Message";
