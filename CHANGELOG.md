@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+BREAKING: you should update library to support new `StorageInfo` format. Both versions work fine on mainnet until new format is not enabled.
+
+## Added
+- support of a new format of `StorageInfo`, `StorageUsed`
+- `StorageExtraInfo` structure
+
+## Fixed
+- `StorageInto.ts` renamed to `StorageInfo.ts`
+- Anchor regex in `Address.isFriendly` (thx @kolpav)
+- `writeInt` with number and size 0 or 1 (thx @stels-cs)
+- support rewrite prefixes in anycast addresses (thx @ilyar)
+
+## Removed
+- `StorageUsedShort` is replaced by `StorageUsed`
+
+
 ## [0.60.1] - 2025-02-20
 
 ## Fixed
