@@ -190,7 +190,7 @@ describe('Out List', () => {
 
     it('Should deserialize changeLibrary action', () => {
         const mode = 1;
-        const libHash = Buffer.alloc(32);
+        const libHash = new Uint8Array(32);
         const libRef: LibRef = { type: "hash", libHash};
         const action = beginCell()
             .storeUint(outActionChangeLibraryTag, 32)

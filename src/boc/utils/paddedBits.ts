@@ -27,7 +27,7 @@ export function bitsToPaddedBuffer(bits: BitString) {
 
     return builder.buffer();
 }
-export function paddedBufferToBits(buff: Buffer) {
+export function paddedBufferToBits(buff: Uint8Array) {
     let bitLen = 0;
     // Finding rightmost non-zero byte in the buffer
     for( let i = buff.length - 1; i >= 0; i--) {

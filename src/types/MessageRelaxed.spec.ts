@@ -9,11 +9,12 @@
 import { beginCell } from "../boc/Builder";
 import { Cell } from "../boc/Cell";
 import { loadMessageRelaxed, storeMessageRelaxed } from "./MessageRelaxed";
+import { base64ToUint8Array } from "../utils/buffer_to_uint8array";
 
 describe('MessageRelaxed', () => {
     it('should parse message relaxed', () => {
         const state = 'te6ccsEBAgEAkQA3kQFoYgBgSQkXjXbkhpC1sju4zUJsLIAoavunKbfNsPFbk9jXL6BfXhAAAAAAAAAAAAAAAAAAAQEAsA+KfqUAAAAAAAAAAEO5rKAIAboVCXedy2J0RCseg4yfdNFtU8/BfiaHVEPkH/ze1W+fABicYUqh1j9Lnqv9ZhECm0XNPaB7/HcwoBb3AJnYYfqByAvrwgCqR2XE';
-        const cell = Cell.fromBoc(Buffer.from(state, 'base64'))[0];
+        const cell = Cell.fromBoc(base64ToUint8Array(state))[0];
         const relaxed = loadMessageRelaxed(cell.beginParse());
         let stored = beginCell()
             .store(storeMessageRelaxed(relaxed))

@@ -21,7 +21,7 @@ import { exoticLibrary } from "./exoticLibrary";
 // This function replicates unknown logic of resolving cell data
 // https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/vm/cells/DataCell.cpp#L214
 //
-export function wonderCalculator(type: CellType, bits: BitString, refs: Cell[]): { mask: LevelMask, hashes: Buffer[], depths: number[] } {
+export function wonderCalculator(type: CellType, bits: BitString, refs: Cell[]): { mask: LevelMask, hashes: Uint8Array[], depths: number[] } {
 
     //
     // Resolving level mask
@@ -74,7 +74,7 @@ export function wonderCalculator(type: CellType, bits: BitString, refs: Cell[]):
     //
 
     let depths: number[] = [];
-    let hashes: Buffer[] = [];
+    let hashes: Uint8Array[] = [];
 
     let hashCount = type === CellType.PrunedBranch ? 1 : levelMask.hashCount;
     let totalHashCount = levelMask.hashCount;
@@ -130,8 +130,7 @@ export function wonderCalculator(type: CellType, bits: BitString, refs: Cell[]):
         //
 
         let repr = getRepr(bits, currentBits, refs, levelI, levelMask.apply(levelI).value, type);
-        let hash = sha256_sync(repr);
-
+        const hash = new Uint8Array(sha256_sync(Buffer.from(repr)));
         //
         // Persist next
         //
@@ -151,7 +150,7 @@ export function wonderCalculator(type: CellType, bits: BitString, refs: Cell[]):
     // Calculate hash and depth for all levels
     //
 
-    let resolvedHashes: Buffer[] = [];
+    let resolvedHashes: Uint8Array[] = [];
     let resolvedDepths: number[] = [];
     if (pruned) {
         for (let i = 0; i < 4; i++) {

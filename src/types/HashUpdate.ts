@@ -13,7 +13,7 @@ import { Slice } from "../boc/Slice";
 // update_hashes#72 {X:Type} old_hash:bits256 new_hash:bits256
 //  = HASH_UPDATE X;
 
-export type HashUpdate = { oldHash: Buffer, newHash: Buffer };
+export type HashUpdate = { oldHash: Uint8Array, newHash: Uint8Array };
 
 export function loadHashUpdate(slice: Slice): HashUpdate {
     if (slice.loadUint(8) !== 0x72) {

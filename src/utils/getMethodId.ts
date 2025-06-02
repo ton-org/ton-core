@@ -6,6 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { utf8StringToUint8Array } from './buffer_to_uint8array';
+
 const TABLE = new Int16Array([
     0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
     0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
@@ -41,9 +43,9 @@ const TABLE = new Int16Array([
     0x6e17, 0x7e36, 0x4e55, 0x5e74, 0x2e93, 0x3eb2, 0x0ed1, 0x1ef0
 ])
 
-function crc16(data: string | Buffer) {
-    if (!(data instanceof Buffer)) {
-        data = Buffer.from(data)
+function crc16(data: string | Uint8Array) {
+    if (!(data instanceof Uint8Array)) {
+        data = utf8StringToUint8Array(data)
     }
 
     let crc = 0
