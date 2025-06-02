@@ -38,7 +38,7 @@ export { generateMerkleUpdate } from './dict/generateMerkleUpdate'
 
 // Tuples
 export { Tuple, TupleItem, TupleItemNull, TupleItemInt, TupleItemNaN, TupleItemCell, TupleItemSlice, TupleItemBuilder } from './tuple/tuple';
-export { parseTuple, serializeTuple } from './tuple/tuple';
+export { parseTuple, serializeTuple, parseTupleItem, serializeTupleItem } from './tuple/tuple';
 export { TupleReader } from './tuple/reader';
 export { TupleBuilder } from './tuple/builder';
 

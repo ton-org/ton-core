@@ -41,7 +41,7 @@ export type TupleItem = TupleItemNull | TupleItemInt | TupleItemNaN | TupleItemC
 // vm_tuple_tcons$_ {n:#} head:(VmTupleRef n) tail:^VmStackValue = VmTuple (n + 1);
 // vm_stk_tuple#07 len:(## 16) data:(VmTuple len) = VmStackValue;
 
-function serializeTupleItem(src: TupleItem, builder: Builder) {
+export function serializeTupleItem(src: TupleItem, builder: Builder) {
     if (src.type === 'null') {
         builder.storeUint(0x00, 8);
     } else if (src.type === 'int') {
@@ -102,7 +102,7 @@ function serializeTupleItem(src: TupleItem, builder: Builder) {
     }
 }
 
-function parseStackItem(cs: Slice): TupleItem {
+export function parseTupleItem(cs: Slice): TupleItem {
     let kind = cs.loadUint(8);
     if (kind === 0) {
         return { type: 'null' };
@@ -150,16 +150,16 @@ function parseStackItem(cs: Slice): TupleItem {
         if (length > 1) {
             let head: Slice = cs.loadRef().beginParse();
             let tail: Slice = cs.loadRef().beginParse();
-            items.unshift(parseStackItem(tail));
+            items.unshift(parseTupleItem(tail));
             for (let i = 0; i < length - 2; i++) {
                 let ohead = head;
                 head = ohead.loadRef().beginParse();
                 tail = ohead.loadRef().beginParse();
-                items.unshift(parseStackItem(tail));
+                items.unshift(parseTupleItem(tail));
             }
-            items.unshift(parseStackItem(head));
+            items.unshift(parseTupleItem(head));
         } else if (length === 1) {
-            items.push(parseStackItem(cs.loadRef().beginParse()));
+            items.push(parseTupleItem(cs.loadRef().beginParse()));
         }
         return { type: 'tuple', items };
     } else {
@@ -203,7 +203,7 @@ export function parseTuple(src: Cell): TupleItem[] {
     let size = cs.loadUint(24);
     for (let i = 0; i < size; i++) {
         let next = cs.loadRef();
-        res.unshift(parseStackItem(cs));
+        res.unshift(parseTupleItem(cs));
         cs = next.beginParse();
     }
     return res;
