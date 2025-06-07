@@ -40,18 +40,29 @@ export function readString(slice: Slice) {
 }
 
 function writeBuffer(src: Buffer, builder: Builder) {
-    if (src.length > 0) {
-        let bytes = Math.floor(builder.availableBits / 8);
-        if (src.length > bytes) {
-            let a = src.subarray(0, bytes);
-            let t = src.subarray(bytes);
-            builder = builder.storeBuffer(a);
-            let bb = beginCell();
-            writeBuffer(t, bb);
-            builder = builder.storeRef(bb.endCell());
-        } else {
-            builder = builder.storeBuffer(src);
+    if (src.length === 0) {
+        return;
+    }
+
+    const rootOffset = Math.floor(builder.availableBits / 8);
+    builder.storeBuffer(src.subarray(0, rootOffset));
+
+    const bytesPerCell = 127;
+    const tailSize = Math.ceil((src.length - rootOffset) / bytesPerCell);
+    let head: Cell | undefined;
+
+    for (let i = tailSize - 1; i >= 0; i--) {
+        const offset = rootOffset + i * bytesPerCell;
+        const piece = src.subarray(offset, offset + bytesPerCell);
+        const nextHead = beginCell().storeBuffer(piece);
+        if (head) {
+            nextHead.storeRef(head);
         }
+        head = nextHead.endCell();
+    }
+
+    if (head) {
+        builder.storeRef(head);
     }
 }
 
