@@ -10,7 +10,7 @@ import { Builder } from "../boc/Builder";
 import { Slice } from "../boc/Slice";
 import { Maybe } from "../utils/maybe";
 import { AccountStatusChange, loadAccountStatusChange, storeAccountStatusChange } from "./AccountStatusChange";
-import { loadStorageUsedShort, StorageUsedShort, storeStorageUsedShort } from "./StorageUsedShort";
+import { loadStorageUsed, StorageUsed, storeStorageUsed } from './StorageUsed';
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L310
 // tr_phase_action$_ success:Bool valid:Bool no_funds:Bool
@@ -35,7 +35,7 @@ export type TransactionActionPhase = {
     skippedActions: number;
     messagesCreated: number;
     actionListHash: bigint;
-    totalMessageSize: StorageUsedShort;
+    totalMessageSize: StorageUsed;
 }
 
 export function loadTransactionActionPhase(slice: Slice): TransactionActionPhase {
@@ -52,7 +52,7 @@ export function loadTransactionActionPhase(slice: Slice): TransactionActionPhase
     let skippedActions = slice.loadUint(16);
     let messagesCreated = slice.loadUint(16);
     let actionListHash = slice.loadUintBig(256);
-    let totalMessageSize = loadStorageUsedShort(slice);
+    let totalMessageSize = loadStorageUsed(slice);
     return {
         success,
         valid,
@@ -86,6 +86,6 @@ export function storeTransactionActionPhase(src: TransactionActionPhase) {
         builder.storeUint(src.skippedActions, 16);
         builder.storeUint(src.messagesCreated, 16);
         builder.storeUint(src.actionListHash, 256);
-        builder.store(storeStorageUsedShort(src.totalMessageSize));
+        builder.store(storeStorageUsed(src.totalMessageSize));
     };
 }
