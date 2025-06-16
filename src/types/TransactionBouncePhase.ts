@@ -8,7 +8,7 @@
 
 import { Builder } from "../boc/Builder";
 import { Slice } from "../boc/Slice";
-import { loadStorageUsedShort, StorageUsedShort, storeStorageUsedShort } from "./StorageUsedShort";
+import { loadStorageUsed, StorageUsed, storeStorageUsed } from './StorageUsed';
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L318
 // tr_phase_bounce_negfunds$00 = TrBouncePhase;
@@ -26,13 +26,13 @@ export type TransactionBounceNegativeFunds = {
 
 export type TransactionBounceNoFunds = {
     type: "no-funds";
-    messageSize: StorageUsedShort;
+    messageSize: StorageUsed;
     requiredForwardFees: bigint;
 };
 
 export type TransactionBounceOk = {
     type: "ok";
-    messageSize: StorageUsedShort;
+    messageSize: StorageUsed;
     messageFees: bigint;
     forwardFees: bigint;
 }
@@ -41,7 +41,7 @@ export function loadTransactionBouncePhase(slice: Slice): TransactionBouncePhase
 
     // Ok
     if (slice.loadBit()) {
-        let messageSize = loadStorageUsedShort(slice);
+        let messageSize = loadStorageUsed(slice);
         let messageFees = slice.loadCoins();
         let forwardFees = slice.loadCoins();
         return {
@@ -54,7 +54,7 @@ export function loadTransactionBouncePhase(slice: Slice): TransactionBouncePhase
 
     // No funds
     if (slice.loadBit()) {
-        let messageSize = loadStorageUsedShort(slice);
+        let messageSize = loadStorageUsed(slice);
         let requiredForwardFees = slice.loadCoins();
         return {
             type: "no-funds",
@@ -73,7 +73,7 @@ export function storeTransactionBouncePhase(src: TransactionBouncePhase) {
     return (builder: Builder) => {
         if (src.type === 'ok') {
             builder.storeBit(true);
-            builder.store(storeStorageUsedShort(src.messageSize));
+            builder.store(storeStorageUsed(src.messageSize));
             builder.storeCoins(src.messageFees);
             builder.storeCoins(src.forwardFees);
         } else if (src.type === 'negative-funds') {
@@ -82,7 +82,7 @@ export function storeTransactionBouncePhase(src: TransactionBouncePhase) {
         } else if (src.type === 'no-funds') {
             builder.storeBit(false);
             builder.storeBit(true);
-            builder.store(storeStorageUsedShort(src.messageSize));
+            builder.store(storeStorageUsed(src.messageSize));
             builder.storeCoins(src.requiredForwardFees);
         } else {
             throw new Error("Invalid TransactionBouncePhase type");
