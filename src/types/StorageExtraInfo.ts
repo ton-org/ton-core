@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Whales Corp. 
+ * Copyright (c) Whales Corp.
  * All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -32,7 +32,7 @@ export function loadStorageExtraInfo(slice: Slice): StorageExtraInfo | null {
 
 export function storeStorageExtraInfo(src: StorageExtraInfo | null) {
     return (builder: Builder) => {
-        if (src === null) {
+        if (src === null || typeof src === 'undefined') {
             builder.storeUint(0, 3);
         } else {
             builder.storeUint(1, 3);
