@@ -1,5 +1,6 @@
 import { Cell } from '../boc/Cell';
-import { loadStorageInfo } from './StorageInfo';
+import {loadStorageInfo, StorageInfo, storeStorageInfo} from './StorageInfo';
+import {Builder} from "../boc/Builder";
 
 
 describe('StorageInfo', () => {
@@ -17,5 +18,42 @@ describe('StorageInfo', () => {
             lastPaid: 1748811232,
             duePayment: null
         });
+    });
+
+    it.each([
+      ['9c7b98a341201e6492f2bcf144215e1ddbef6774126caa57784fbce25597d4f7', {
+          used: { cells: 22n, bits: 5705n },
+          storageExtra: null,
+          lastPaid: 1748811232,
+          duePayment: null,
+      }],
+      ['7672b3010077582fa477bf2b070183412aa0d1a9b98ba8c437b9d90b37b6a559', {
+          used: { cells: 22n, bits: 5705n },
+          storageExtra: {
+              dictHash: 0n,
+          },
+          lastPaid: 1748811232,
+          duePayment: null,
+      }],
+    ])('should store and store storage info %s', (hash: string, data: StorageInfo) => {
+        const builder = new Builder();
+        storeStorageInfo(data)(builder);
+        const c = builder.endCell();
+        expect(c.hash().toString('hex')).toEqual(hash);
+    });
+
+    // Source: https://github.com/ton-blockchain/ton/blob/b3b2bd1c3c645a931a9aa6cbfc915c258c9012cc/crypto/block/block.tlb#L256-L257
+    // storage_info$_ used:StorageUsed last_paid:uint32
+    // due_payment:(Maybe Grams) = StorageInfo;
+    it('should store and store storage info (old)', () => {
+        const builder = new Builder();
+        // @ts-ignore
+        storeStorageInfo({
+            used: { cells: 22n, bits: 5705n },
+            lastPaid: 1748811232,
+            duePayment: null,
+        })(builder);
+        const c = builder.endCell();
+        expect(c.hash().toString('hex')).toEqual('9c7b98a341201e6492f2bcf144215e1ddbef6774126caa57784fbce25597d4f7');
     });
 });
