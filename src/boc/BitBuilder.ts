@@ -164,7 +164,7 @@ export class BitBuilder {
             if (v !== -1n && v !== 0n) {
                 throw Error(`value is not zero or -1 for ${bits} bits. Got ${value}`);
             } else {
-                this.writeBit(value === -1n);
+                this.writeBit(v === -1n);
                 return;
             }
         }
