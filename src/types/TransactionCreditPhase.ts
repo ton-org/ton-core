@@ -16,26 +16,26 @@ import { CurrencyCollection, loadCurrencyCollection, storeCurrencyCollection } f
 //   credit:CurrencyCollection = TrCreditPhase;
 
 export type TransactionCreditPhase = {
-    dueFeesColelcted?: Maybe<bigint>,
+    dueFeesCollected?: Maybe<bigint>,
     credit: CurrencyCollection
 };
 
 export function loadTransactionCreditPhase(slice: Slice): TransactionCreditPhase {
-    const dueFeesColelcted = slice.loadBit() ? slice.loadCoins() : undefined;
+    const dueFeesCollected = slice.loadBit() ? slice.loadCoins() : undefined;
     const credit = loadCurrencyCollection(slice);
     return {
-        dueFeesColelcted,
+        dueFeesCollected,
         credit
     };
 }
 
 export function storeTransactionCreditPhase(src: TransactionCreditPhase) {
     return (builder: Builder) => {
-        if (src.dueFeesColelcted === null || src.dueFeesColelcted === undefined) {
+        if (src.dueFeesCollected === null || src.dueFeesCollected === undefined) {
             builder.storeBit(false);
         } else {
             builder.storeBit(true);
-            builder.storeCoins(src.dueFeesColelcted);
+            builder.storeCoins(src.dueFeesCollected);
         }
         builder.store(storeCurrencyCollection(src.credit));
     };
