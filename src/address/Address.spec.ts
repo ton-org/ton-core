@@ -45,6 +45,18 @@ describe('Address', () => {
         expect(address.toString({ bounceable: false, urlSafe: false })).toMatch('UQAs9VlT6S776tq3unJcP5Ogsj+ELLunLXuOb1EKcOQi41+E');
         expect(address.toString({ bounceable: false, urlSafe: false, testOnly: true })).toMatch('0QAs9VlT6S776tq3unJcP5Ogsj+ELLunLXuOb1EKcOQi4+QO');
     });
+    it('should serialize with urlSafe=false', () => {
+        const address = Address.parseRaw('0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3');
+
+        // Bounceable
+        expect(address.toString({ testOnly: true })).toMatch('kQAs9VlT6S776tq3unJcP5Ogsj-ELLunLXuOb1EKcOQi47nL');
+        expect(address.toString({ urlSafe: false })).toMatch('EQAs9VlT6S776tq3unJcP5Ogsj+ELLunLXuOb1EKcOQi4wJB');
+        expect(address.toString({ urlSafe: false, testOnly: true })).toMatch('kQAs9VlT6S776tq3unJcP5Ogsj+ELLunLXuOb1EKcOQi47nL');
+
+        // Non-Bounceable
+        expect(address.toString({ bounceable: false, urlSafe: false })).toMatch('UQAs9VlT6S776tq3unJcP5Ogsj+ELLunLXuOb1EKcOQi41+E');
+        expect(address.toString({ bounceable: false, urlSafe: false, testOnly: true })).toMatch('0QAs9VlT6S776tq3unJcP5Ogsj+ELLunLXuOb1EKcOQi4+QO');
+    });
     it('should implement equals', () => {
         let address1 = Address.parseRaw('0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3');
         let address2 = Address.parseRaw('0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e3');
