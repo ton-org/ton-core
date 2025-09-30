@@ -379,7 +379,7 @@ export class BitReader {
 
     /**
      * Load bit string that was padded to make it byte alligned. Used in BOC serialization
-     * @param bytes number of bytes to read
+     * @param bits number of bytes to read
      */
     loadPaddedBits(bits: number) {
 

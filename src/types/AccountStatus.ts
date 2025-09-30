@@ -42,9 +42,9 @@ export function loadAccountStatus(slice: Slice): AccountStatus {
 /**
  * Store account state to builder
  * @param src account state
- * @param builder buidler
+ * @returns (builder: Builder) => Builder
  */
-export function storeAccountStatus(src: AccountStatus) {
+export function storeAccountStatus(src: AccountStatus): (builder: Builder) => Builder {
     return (builder: Builder) => {
         if (src === 'uninitialized') {
             builder.storeUint(0x00, 2);

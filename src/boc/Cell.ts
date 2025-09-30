@@ -181,7 +181,7 @@ export class Cell {
     }
 
     /**
-     * Checks cell to be euqal to another cell
+     * Checks cell to be equal to another cell
      * @param other other cell
      * @returns true if cells are equal
      */
