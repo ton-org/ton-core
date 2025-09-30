@@ -198,14 +198,19 @@ export class Address {
         return addressWithChecksum;
     }
 
+    /**
+     * Returns address as a string.
+     *
+     * @param args optional arguments with the following properties:
+     * - urlSafe — if true (default), returns url-friendly string, otherwise just base64
+     * - bounceable — if true (default), returns bounceable address (with 0x11 tag),
+     *   otherwise — non-bounceable (with 0x51 tag)
+     * - testOnly — if true (by default, false), returns test-only address (with 0x80 tag), otherwise - non-test-only
+     */
     toString = (args?: { urlSafe?: boolean, bounceable?: boolean, testOnly?: boolean }) => {
-        let urlSafe = (args && args.urlSafe !== undefined) ? args.urlSafe : true;
-        let buffer = this.toStringBuffer(args);
-        if (urlSafe) {
-            return buffer.toString('base64').replace(/\+/g, '-').replace(/\//g, '_');
-        } else {
-            return buffer.toString('base64');
-        }
+        const urlSafe = (args && args.urlSafe !== undefined) ? args.urlSafe : true;
+        const buffer = this.toStringBuffer(args);
+        return urlSafe ? buffer.toString('base64url') : buffer.toString('base64');
     }
 
     [inspectSymbol] = () => this.toString()
