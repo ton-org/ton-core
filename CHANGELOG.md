@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.62.0] - 2025-09-30
+
+## Added
+- export `serializeTupleItem` and `parseTupleItem` functions for tuple (de)serialization (thx @krigga)
+
+## Fixed
+- `storeInt(-1, 1)` now stores a `1` bit, instead of `0` (thx @Alejandbel)
+
 ## [0.61.0] - 2025-06-10
 BREAKING: you should update library to support new `StorageInfo` format. Both versions work fine on mainnet until new format is not enabled.
 
