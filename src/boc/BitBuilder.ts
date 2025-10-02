@@ -188,7 +188,7 @@ export class BitBuilder {
     }
 
     /**
-     * Wrtie var uint value, used for serializing coins
+     * Write var uint value, used for serializing coins
      * @param value value to write as bigint or number
      * @param bits header bits to write size
      */
@@ -220,7 +220,7 @@ export class BitBuilder {
     }
 
     /**
-     * Wrtie var int value, used for serializing coins
+     * Write var int value, used for serializing coins
      * @param value value to write as bigint or number
      * @param bits header bits to write size
      */

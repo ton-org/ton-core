@@ -252,7 +252,7 @@ export class Builder {
 
     /**
      * Store address
-     * @param addres address to store 
+     * @param address address to store
      * @returns this builder
      */
     storeAddress(address: Maybe<Address | ExternalAddress>) {
@@ -445,6 +445,8 @@ export class Builder {
     /**
      * Store dictionary in this builder
      * @param dict dictionary to store
+     * @param key key description
+     * @param value value description
      * @returns this builder
      */
     storeDict<K extends DictionaryKeyTypes, V>(dict?: Maybe<Dictionary<K, V>>, key?: Maybe<DictionaryKey<K>>, value?: Maybe<DictionaryValue<V>>) {
@@ -459,6 +461,8 @@ export class Builder {
     /**
      * Store dictionary in this builder directly
      * @param dict dictionary to store
+     * @param key key description
+     * @param value value description
      * @returns this builder
      */
     storeDictDirect<K extends DictionaryKeyTypes, V>(dict: Dictionary<K, V>, key?: Maybe<DictionaryKey<K>>, value?: Maybe<DictionaryValue<V>>) {

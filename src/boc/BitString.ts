@@ -82,8 +82,8 @@ export class BitString {
     }
 
     /**
-     * Get a subscring of the bitstring
-     * @param offset 
+     * Get a substring of the bitstring
+     * @param offset
      * @param length 
      * @returns 
      */
@@ -126,7 +126,7 @@ export class BitString {
             throw new Error(`Offset ${offset} is out of bounds`);
         }
         if (offset + length > this._length) {
-            throw new Error(`Offset + Lenght = ${offset + length} is out of bounds`);
+            throw new Error(`Offset + Length = ${offset + length} is out of bounds`);
         }
 
         // Check alignment

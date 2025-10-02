@@ -121,7 +121,7 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
 
         /**
          * Create big var int
-         * @param bits nubmer of header bits
+         * @param bits number of header bits
          * @returns DictionaryValue<bigint>
          */
         BigVarInt: (bits: number) => {
@@ -148,7 +148,7 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
 
         /**
          * Create big var int
-         * @param bits nubmer of header bits
+         * @param bits number of header bits
          * @returns DictionaryValue<bigint>
          */
         BigVarUint: (bits: number) => {
@@ -190,7 +190,7 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
 
         /**
          * Create BitString value
-         * @param requested bit length
+         * @param bits bit length
          * @returns DictionaryValue<BitString>
          * Point is that Buffer is not applicable
          * when length is not 8 bit alligned.
@@ -227,7 +227,7 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
      * Load dictionary from slice
      * @param key key description
      * @param value value description
-     * @param src slice
+     * @param sc slice
      * @returns Dictionary<K, V>
      */
     static load<K extends DictionaryKeyTypes, V>(key: DictionaryKey<K>, value: DictionaryValue<V>, sc: Slice | Cell): Dictionary<K, V> {

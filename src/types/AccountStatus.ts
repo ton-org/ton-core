@@ -42,7 +42,7 @@ export function loadAccountStatus(slice: Slice): AccountStatus {
 /**
  * Store account state to builder
  * @param src account state
- * @param builder buidler
+ * @returns builder transformer
  */
 export function storeAccountStatus(src: AccountStatus) {
     return (builder: Builder) => {
