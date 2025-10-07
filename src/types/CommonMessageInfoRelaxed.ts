@@ -12,6 +12,7 @@ import { Builder } from "../boc/Builder";
 import { Slice } from "../boc/Slice";
 import { Maybe } from "../utils/maybe";
 import { CurrencyCollection, loadCurrencyCollection, storeCurrencyCollection } from "./CurrencyCollection";
+import { loadMessageFlags, MessageFlags, storeMessageFlags } from "./extraFlags";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L132
 // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
@@ -33,7 +34,7 @@ export type CommonMessageInfoRelaxedInternal = {
     src?: Maybe<Address>,
     dest: Address,
     value: CurrencyCollection,
-    ihrFee: bigint,
+    extraFlags: MessageFlags,
     forwardFee: bigint,
     createdLt: bigint,
     createdAt: number
@@ -58,7 +59,7 @@ export function loadCommonMessageInfoRelaxed(slice: Slice): CommonMessageInfoRel
         const src = slice.loadMaybeAddress();
         const dest = slice.loadAddress();
         const value = loadCurrencyCollection(slice);
-        const ihrFee = slice.loadCoins();
+        const extraFlags = loadMessageFlags(slice);
         const forwardFee = slice.loadCoins();
         const createdLt = slice.loadUintBig(64);
         const createdAt = slice.loadUint(32);
@@ -71,7 +72,7 @@ export function loadCommonMessageInfoRelaxed(slice: Slice): CommonMessageInfoRel
             src,
             dest,
             value,
-            ihrFee,
+            extraFlags,
             forwardFee,
             createdLt,
             createdAt,
@@ -108,7 +109,7 @@ export function storeCommonMessageInfoRelaxed(source: CommonMessageInfoRelaxed) 
             builder.storeAddress(source.src);
             builder.storeAddress(source.dest);
             builder.store(storeCurrencyCollection(source.value));
-            builder.storeCoins(source.ihrFee);
+            builder.store(storeMessageFlags(source.extraFlags));
             builder.storeCoins(source.forwardFee);
             builder.storeUint(source.createdLt, 64);
             builder.storeUint(source.createdAt, 32);
