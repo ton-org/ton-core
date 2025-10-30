@@ -1,8 +1,36 @@
 {
   "name": "@ton/core",
   "version": "0.62.0",
-  "main": "dist/index.js",
-  "repository": "https://github.com/ton-org/ton-core.git",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./dist/*": {
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.js"
+    },
+    "./*": {
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "./src/boc/Cell.ts",
+    "./dist/boc/Cell.js",
+    "./dist/boc/Cell.mjs",
+    "./src/boc/BitString.ts",
+    "./dist/boc/BitString.js",
+    "./dist/boc/BitString.mjs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ton-org/ton-core.git"
+  },
   "author": "Whales Corp. <developers@whalescorp.com>",
   "license": "MIT",
   "files": [
@@ -11,7 +39,7 @@
   ],
   "scripts": {
     "docs": "rm -fr docs && typedoc src/index.ts",
-    "build": "rm -fr dist && tsc --declaration",
+    "build": "tsc && tsdown",
     "test": "jest --verbose --runInBand",
     "release": "yarn build && yarn test && yarn release-it --npm.yarn1"
   },
@@ -26,6 +54,7 @@
     "ton3-core": "^0.0.20",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
+    "tsdown": "^0.15.12",
     "typedoc": "^0.25.12",
     "typescript": "^5.4.3"
   },
