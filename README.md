@@ -15,6 +15,9 @@ npm install @ton/core
 
 [Documentation](https://ton-org.github.io/ton-core/)
 
+## Contributing
+
+See [CONTRIBUTING](./CONTRIBUTING.md).
 
 ## Acknowledgements
 
