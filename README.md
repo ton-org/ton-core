@@ -15,10 +15,13 @@ npm install @ton/core
 
 [Documentation](https://ton-org.github.io/ton-core/)
 
+## Contributing
+
+See [CONTRIBUTING](./CONTRIBUTING.md).
 
 ## Acknowledgements
 
-This library is developed by the [Whales Corp.](https://tonwhales.com/) and maintained by [Dan Volkov](https://github.com/dvlkv).
+This library has been created and maintained by the [Whales Corp.](https://tonwhales.com/) and [Dan Volkov](https://github.com/dvlkv). The current maintainer is [TON Studio](https://github.com/ton-studio/).
 
 # License
 
