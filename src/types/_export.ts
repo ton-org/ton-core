@@ -12,73 +12,76 @@ export {
     comment
 } from './_helpers';
 export {
-    Account,
+    type Account,
     loadAccount,
     storeAccount
 } from './Account';
 export {
-    AccountState,
+    type AccountState,
     loadAccountState,
     storeAccountState
 } from './AccountState';
 export {
-    AccountStatus,
+    type AccountStatus,
     loadAccountStatus,
     storeAccountStatus
 } from './AccountStatus';
 export {
-    AccountStatusChange,
+    type AccountStatusChange,
     loadAccountStatusChange,
     storeAccountStatusChange
 } from './AccountStatusChange';
 export {
-    AccountStorage,
+    type AccountStorage,
     loadAccountStorage,
     storeAccountStorage
 } from './AccountStorage';
-export {
+export type {
     OutActionSendMsg,
     OutActionSetCode,
     OutActionReserve,
     OutActionChangeLibrary,
     OutAction,
+} from './OutList';
+
+export {
     loadOutAction,
     storeOutAction,
     loadOutList,
     storeOutList
 } from './OutList';
 export {
-    CommonMessageInfo,
-    CommonMessageInfoInternal,
-    CommonMessageInfoExternalIn,
-    CommonMessageInfoExternalOut,
+    type CommonMessageInfo,
+    type CommonMessageInfoInternal,
+    type CommonMessageInfoExternalIn,
+    type CommonMessageInfoExternalOut,
     loadCommonMessageInfo,
     storeCommonMessageInfo
 } from './CommonMessageInfo';
 export {
-    CommonMessageInfoRelaxed,
-    CommonMessageInfoRelaxedExternalOut,
-    CommonMessageInfoRelaxedInternal,
+    type CommonMessageInfoRelaxed,
+    type CommonMessageInfoRelaxedExternalOut,
+    type CommonMessageInfoRelaxedInternal,
     loadCommonMessageInfoRelaxed,
     storeCommonMessageInfoRelaxed
 } from './CommonMessageInfoRelaxed';
 export {
-    ComputeSkipReason,
+    type ComputeSkipReason,
     loadComputeSkipReason,
     storeComputeSkipReason
 } from './ComputeSkipReason';
 export {
-    CurrencyCollection,
+    type CurrencyCollection,
     loadCurrencyCollection,
     storeCurrencyCollection
 } from './CurrencyCollection';
 export {
-    DepthBalanceInfo,
+    type DepthBalanceInfo,
     loadDepthBalanceInfo,
     storeDepthBalanceInfo
 } from './DepthBalanceInfo';
 export {
-    ExtraCurrency,
+    type ExtraCurrency,
     packExtraCurrencyCell,
     packExtraCurrencyDict,
     loadExtraCurrency,
@@ -86,21 +89,21 @@ export {
     storeExtraCurrency
 } from './ExtraCurrency';
 export {
-    HashUpdate,
+    type HashUpdate,
     loadHashUpdate,
     storeHashUpdate
 } from './HashUpdate';
 export {
-    MasterchainStateExtra,
+    type MasterchainStateExtra,
     loadMasterchainStateExtra
 } from './MasterchainStateExtra';
 export {
-    Message,
+    type Message,
     loadMessage,
     storeMessage
 } from './Message';
 export {
-    MessageRelaxed,
+    type MessageRelaxed,
     loadMessageRelaxed,
     storeMessageRelaxed
 } from './MessageRelaxed';
@@ -111,91 +114,91 @@ export {
     ReserveMode
 } from './ReserveMode';
 export {
-    ShardAccount,
+    type ShardAccount,
     loadShardAccount,
     storeShardAccount
 } from './ShardAccount';
 export {
-    ShardAccountRef,
+    type ShardAccountRef,
     ShardAccountRefValue,
     loadShardAccounts,
     storeShardAccounts
 } from './ShardAccounts';
 export {
-    ShardIdent,
+    type ShardIdent,
     loadShardIdent,
     storeShardIdent
 } from './ShardIdent';
 export {
-    ShardStateUnsplit,
+    type ShardStateUnsplit,
     loadShardStateUnsplit
 } from './ShardStateUnsplit';
 export {
-    SimpleLibrary,
+    type SimpleLibrary,
     loadSimpleLibrary,
     storeSimpleLibrary
 } from './SimpleLibrary';
 export {
-    LibRef,
+    type LibRef,
     loadLibRef,
     storeLibRef
 } from './LibRef';
 export {
-    SplitMergeInfo,
+    type SplitMergeInfo,
     loadSplitMergeInfo,
     storeSplitMergeInfo
 } from './SplitMergeInfo';
 export {
-    StateInit,
+    type StateInit,
     loadStateInit,
     storeStateInit
 } from './StateInit';
 export {
-    StorageInfo,
+    type StorageInfo,
     loadStorageInfo,
     storeStorageInfo
 } from './StorageInfo';
 export {
-    StorageUsed,
+    type StorageUsed,
     loadStorageUsed,
     storeStorageUsed
 } from './StorageUsed';
 export {
-    TickTock,
+    type TickTock,
     loadTickTock,
     storeTickTock
 } from './TickTock';
 export {
-    Transaction,
+    type Transaction,
     loadTransaction,
     storeTransaction
 } from './Transaction';
 export {
-    TransactionActionPhase,
+    type TransactionActionPhase,
     loadTransactionActionPhase,
     storeTransactionActionPhase
 } from './TransactionActionPhase';
 export {
-    TransactionBouncePhase,
-    TransactionBounceNoFunds,
-    TransactionBounceNegativeFunds,
-    TransactionBounceOk,
+    type TransactionBouncePhase,
+    type TransactionBounceNoFunds,
+    type TransactionBounceNegativeFunds,
+    type TransactionBounceOk,
     loadTransactionBouncePhase,
     storeTransactionBouncePhase
 } from './TransactionBouncePhase';
 export {
-    TransactionComputeVm,
-    TransactionComputePhase,
-    TransactionComputeSkipped,
+    type TransactionComputeVm,
+    type TransactionComputePhase,
+    type TransactionComputeSkipped,
     loadTransactionComputePhase,
     storeTransactionComputePhase
 } from './TransactionComputePhase';
 export {
-    TransactionCreditPhase,
+    type TransactionCreditPhase,
     loadTransactionCreditPhase,
     storeTransactionCreditPhase
 } from './TransactionCreditPhase';
-export {
+export type {
     TransactionDescription,
     TransactionDescriptionGeneric,
     TransactionDescriptionMergeInstall,
@@ -204,11 +207,13 @@ export {
     TransactionDescriptionSplitPrepare,
     TransactionDescriptionStorage,
     TransactionDescriptionTickTock,
+} from './TransactionDescription';
+export {
     loadTransactionDescription,
     storeTransactionDescription
 } from './TransactionDescription';
 export {
-    TransactionStoragePhase,
+    type TransactionStoragePhase,
     loadTransactionStoragePhase,
     storeTransactionsStoragePhase
 } from './TransactionStoragePhase';

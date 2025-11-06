@@ -22,10 +22,10 @@ export { Builder, beginCell } from './boc/Builder';
 export { Slice } from './boc/Slice';
 export { CellType } from './boc/CellType';
 export { Cell } from './boc/Cell';
-export { Writable } from './boc/Writable';
+export { type Writable } from './boc/Writable';
 
 // Dict
-export { Dictionary, DictionaryKey, DictionaryKeyTypes, DictionaryValue } from './dict/Dictionary';
+export { Dictionary, type DictionaryKey, type DictionaryKeyTypes, type DictionaryValue } from './dict/Dictionary';
 
 // Exotics
 export { exoticMerkleProof, convertToMerkleProof } from './boc/cell/exoticMerkleProof';
@@ -37,7 +37,7 @@ export { generateMerkleProof, generateMerkleProofDirect } from './dict/generateM
 export { generateMerkleUpdate } from './dict/generateMerkleUpdate'
 
 // Tuples
-export { Tuple, TupleItem, TupleItemNull, TupleItemInt, TupleItemNaN, TupleItemCell, TupleItemSlice, TupleItemBuilder } from './tuple/tuple';
+export type { Tuple, TupleItem, TupleItemNull, TupleItemInt, TupleItemNaN, TupleItemCell, TupleItemSlice, TupleItemBuilder } from './tuple/tuple';
 export { parseTuple, serializeTuple, parseTupleItem, serializeTupleItem } from './tuple/tuple';
 export { TupleReader } from './tuple/reader';
 export { TupleBuilder } from './tuple/builder';
@@ -46,13 +46,13 @@ export { TupleBuilder } from './tuple/builder';
 export * from './types/_export';
 
 // Contract
-export { Contract } from './contract/Contract';
-export { ContractProvider, ContractGetMethodResult } from './contract/ContractProvider';
-export { ContractState } from './contract/ContractState';
-export { Sender, SenderArguments } from './contract/Sender';
-export { openContract, OpenedContract } from './contract/openContract';
+export type { Contract } from './contract/Contract';
+export type { ContractProvider, ContractGetMethodResult } from './contract/ContractProvider';
+export type { ContractState } from './contract/ContractState';
+export type { Sender, SenderArguments } from './contract/Sender';
+export { openContract, type OpenedContract } from './contract/openContract';
 export { ComputeError } from './contract/ComputeError';
-export {
+export type {
     ContractABI,
     ABIError,
     ABITypeRef,
