@@ -17,6 +17,15 @@ npm install @ton/core
 
 [Documentation](https://ton-org.github.io/ton-core/)
 
+## Debugging in tests
+
+By default tests are running using multiple worker threads. It's faster, but 
+undesirable during debugging. `SINGLETHREADED` env variable covers this case
+
+```sh
+SINGLETHREADED=1 yarn run test
+```
+
 ## Contributing
 
 See [CONTRIBUTING](./CONTRIBUTING.md).
