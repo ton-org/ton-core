@@ -13,6 +13,7 @@
     "docs": "rm -fr docs && typedoc src/index.ts",
     "build": "rm -fr dist && tsc --declaration",
     "test": "jest --verbose",
+    "coverage": "jest --verbose -c ./jest-coverage.config.js",
     "release": "yarn build && yarn test && yarn release-it --npm.yarn1"
   },
   "devDependencies": {
