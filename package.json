@@ -12,11 +12,13 @@
   "scripts": {
     "docs": "rm -fr docs && typedoc src/index.ts",
     "build": "rm -fr dist && tsc --declaration",
-    "test": "jest --verbose --runInBand",
+    "test": "jest --verbose",
     "release": "yarn build && yarn test && yarn release-it --npm.yarn1"
   },
   "devDependencies": {
     "@release-it/keep-a-changelog": "^3.1.0",
+    "@swc/core": "^1.15.3",
+    "@swc/jest": "^0.2.39",
     "@ton/crypto": "^3.2.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.30",
