@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Whales Corp. 
+ * Copyright (c) Whales Corp.
  * All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -54,7 +54,7 @@ describe('tuple', () => {
     });
 
     it('should read ultra deep cons', () => {
-        let fContent = fs.readFileSync('./src/tuple/ultra_deep_cons.json');
+        let fContent = fs.readFileSync('./src/tuple/__testdata__/ultra_deep_cons.json');
         const cons: TupleItem[] = JSON.parse(fContent.toString());
 
         const result = [];
@@ -75,7 +75,7 @@ describe('tuple', () => {
                 "value": BigInt(1)
             }
         ];
-        
+
         const r = new TupleReader(cons);
         expect(() => r.readLispListDirect()).toThrowError('Lisp list consists only from (any, tuple) elements');
     });
