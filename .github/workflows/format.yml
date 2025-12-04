@@ -1,4 +1,4 @@
-name: Run tests
+name: Check formatting
 
 on:
   push:
