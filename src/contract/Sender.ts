@@ -14,16 +14,16 @@ import { ExtraCurrency } from "../types/ExtraCurrency";
 import { Maybe } from "../utils/maybe";
 
 export type SenderArguments = {
-	value: bigint;
-	to: Address;
-	extracurrency?: Maybe<ExtraCurrency>;
-	sendMode?: Maybe<SendMode>;
-	bounce?: Maybe<boolean>;
-	init?: Maybe<StateInit>;
-	body?: Maybe<Cell>;
+    value: bigint;
+    to: Address;
+    extracurrency?: Maybe<ExtraCurrency>;
+    sendMode?: Maybe<SendMode>;
+    bounce?: Maybe<boolean>;
+    init?: Maybe<StateInit>;
+    body?: Maybe<Cell>;
 };
 
 export interface Sender {
-	readonly address?: Address;
-	send(args: SenderArguments): Promise<void>;
+    readonly address?: Address;
+    send(args: SenderArguments): Promise<void>;
 }

@@ -16,77 +16,77 @@ import { loadStorageUsed, StorageUsed, storeStorageUsed } from "./StorageUsed";
 // tr_phase_bounce_ok$1 msg_size:StorageUsedShort msg_fees:Grams fwd_fees:Grams = TrBouncePhase;
 
 export type TransactionBouncePhase =
-	| TransactionBounceNegativeFunds
-	| TransactionBounceNoFunds
-	| TransactionBounceOk;
+    | TransactionBounceNegativeFunds
+    | TransactionBounceNoFunds
+    | TransactionBounceOk;
 
 export type TransactionBounceNegativeFunds = {
-	type: "negative-funds";
+    type: "negative-funds";
 };
 
 export type TransactionBounceNoFunds = {
-	type: "no-funds";
-	messageSize: StorageUsed;
-	requiredForwardFees: bigint;
+    type: "no-funds";
+    messageSize: StorageUsed;
+    requiredForwardFees: bigint;
 };
 
 export type TransactionBounceOk = {
-	type: "ok";
-	messageSize: StorageUsed;
-	messageFees: bigint;
-	forwardFees: bigint;
+    type: "ok";
+    messageSize: StorageUsed;
+    messageFees: bigint;
+    forwardFees: bigint;
 };
 
 export function loadTransactionBouncePhase(
-	slice: Slice,
+    slice: Slice,
 ): TransactionBouncePhase {
-	// Ok
-	if (slice.loadBit()) {
-		let messageSize = loadStorageUsed(slice);
-		let messageFees = slice.loadCoins();
-		let forwardFees = slice.loadCoins();
-		return {
-			type: "ok",
-			messageSize,
-			messageFees,
-			forwardFees,
-		};
-	}
+    // Ok
+    if (slice.loadBit()) {
+        let messageSize = loadStorageUsed(slice);
+        let messageFees = slice.loadCoins();
+        let forwardFees = slice.loadCoins();
+        return {
+            type: "ok",
+            messageSize,
+            messageFees,
+            forwardFees,
+        };
+    }
 
-	// No funds
-	if (slice.loadBit()) {
-		let messageSize = loadStorageUsed(slice);
-		let requiredForwardFees = slice.loadCoins();
-		return {
-			type: "no-funds",
-			messageSize,
-			requiredForwardFees,
-		};
-	}
+    // No funds
+    if (slice.loadBit()) {
+        let messageSize = loadStorageUsed(slice);
+        let requiredForwardFees = slice.loadCoins();
+        return {
+            type: "no-funds",
+            messageSize,
+            requiredForwardFees,
+        };
+    }
 
-	// Negative funds
-	return {
-		type: "negative-funds",
-	};
+    // Negative funds
+    return {
+        type: "negative-funds",
+    };
 }
 
 export function storeTransactionBouncePhase(src: TransactionBouncePhase) {
-	return (builder: Builder) => {
-		if (src.type === "ok") {
-			builder.storeBit(true);
-			builder.store(storeStorageUsed(src.messageSize));
-			builder.storeCoins(src.messageFees);
-			builder.storeCoins(src.forwardFees);
-		} else if (src.type === "negative-funds") {
-			builder.storeBit(false);
-			builder.storeBit(false);
-		} else if (src.type === "no-funds") {
-			builder.storeBit(false);
-			builder.storeBit(true);
-			builder.store(storeStorageUsed(src.messageSize));
-			builder.storeCoins(src.requiredForwardFees);
-		} else {
-			throw new Error("Invalid TransactionBouncePhase type");
-		}
-	};
+    return (builder: Builder) => {
+        if (src.type === "ok") {
+            builder.storeBit(true);
+            builder.store(storeStorageUsed(src.messageSize));
+            builder.storeCoins(src.messageFees);
+            builder.storeCoins(src.forwardFees);
+        } else if (src.type === "negative-funds") {
+            builder.storeBit(false);
+            builder.storeBit(false);
+        } else if (src.type === "no-funds") {
+            builder.storeBit(false);
+            builder.storeBit(true);
+            builder.store(storeStorageUsed(src.messageSize));
+            builder.storeCoins(src.requiredForwardFees);
+        } else {
+            throw new Error("Invalid TransactionBouncePhase type");
+        }
+    };
 }

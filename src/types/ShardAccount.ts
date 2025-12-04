@@ -16,38 +16,38 @@ import { Account, loadAccount, storeAccount } from "./Account";
 //  last_trans_lt:uint64 = ShardAccount;
 
 export type ShardAccount = {
-	account?: Maybe<Account>;
-	lastTransactionHash: bigint;
-	lastTransactionLt: bigint;
+    account?: Maybe<Account>;
+    lastTransactionHash: bigint;
+    lastTransactionLt: bigint;
 };
 
 export function loadShardAccount(slice: Slice): ShardAccount {
-	let accountRef = slice.loadRef();
-	let account: Account | undefined = undefined;
-	if (!accountRef.isExotic) {
-		let accountSlice = accountRef.beginParse();
-		if (accountSlice.loadBit()) {
-			account = loadAccount(accountSlice);
-		}
-	}
+    let accountRef = slice.loadRef();
+    let account: Account | undefined = undefined;
+    if (!accountRef.isExotic) {
+        let accountSlice = accountRef.beginParse();
+        if (accountSlice.loadBit()) {
+            account = loadAccount(accountSlice);
+        }
+    }
 
-	return {
-		account,
-		lastTransactionHash: slice.loadUintBig(256),
-		lastTransactionLt: slice.loadUintBig(64),
-	};
+    return {
+        account,
+        lastTransactionHash: slice.loadUintBig(256),
+        lastTransactionLt: slice.loadUintBig(64),
+    };
 }
 
 export function storeShardAccount(src: ShardAccount) {
-	return (builder: Builder) => {
-		if (src.account) {
-			builder.storeRef(
-				beginCell().storeBit(true).store(storeAccount(src.account)),
-			);
-		} else {
-			builder.storeRef(beginCell().storeBit(false));
-		}
-		builder.storeUint(src.lastTransactionHash, 256);
-		builder.storeUint(src.lastTransactionLt, 64);
-	};
+    return (builder: Builder) => {
+        if (src.account) {
+            builder.storeRef(
+                beginCell().storeBit(true).store(storeAccount(src.account)),
+            );
+        } else {
+            builder.storeRef(beginCell().storeBit(false));
+        }
+        builder.storeUint(src.lastTransactionHash, 256);
+        builder.storeUint(src.lastTransactionLt, 64);
+    };
 }

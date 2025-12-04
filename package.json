@@ -1,24 +1,24 @@
 {
-	"name": "@ton/core",
-	"version": "0.62.0",
-	"main": "dist/index.js",
-	"repository": "https://github.com/ton-org/ton-core.git",
-	"author": "Whales Corp. <developers@whalescorp.com>",
-	"license": "MIT",
-	"files": [
-		"dist",
-		"src"
-	],
-	"scripts": {
-		"build": "rm -fr dist && tsc --declaration",
-		"test": "jest --verbose",
-		"format": "biome format --write .",
-		"format:check": "biome format .",
-		"coverage": "jest --verbose -c ./jest-coverage.config.js",
-		"release": "yarn build && yarn test && yarn release-it --npm.yarn1"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.3.8",
+    "name": "@ton/core",
+    "version": "0.62.0",
+    "main": "dist/index.js",
+    "repository": "https://github.com/ton-org/ton-core.git",
+    "author": "Whales Corp. <developers@whalescorp.com>",
+    "license": "MIT",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "scripts": {
+        "build": "rm -fr dist && tsc --declaration",
+        "test": "jest --verbose",
+        "format": "biome format --write .",
+        "format:check": "biome format .",
+        "coverage": "jest --verbose -c ./jest-coverage.config.js",
+        "release": "yarn build && yarn test && yarn release-it --npm.yarn1"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "2.3.8",
         "@release-it/keep-a-changelog": "^3.1.0",
         "@swc/core": "^1.15.3",
         "@swc/jest": "^0.2.39",
@@ -31,27 +31,27 @@
         "ton3-core": "^0.0.20",
         "ts-jest": "^29.1.2",
         "ts-node": "^10.9.2",
-		"typescript": "^5.4.3"
-	},
-	"peerDependencies": {
-		"@ton/crypto": ">=3.2.0"
-	},
-	"dependencies": {
-		"symbol.inspect": "1.0.1"
-	},
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
-	},
-	"release-it": {
-		"github": {
-			"release": true
-		},
-		"plugins": {
-			"@release-it/keep-a-changelog": {
-				"filename": "CHANGELOG.md"
-			}
-		}
-	},
-	"packageManager": "yarn@3.4.1+sha256.b51208ae422260539b3503fe5b596f4f236947d69ed1f8797f9830331a38c841"
+        "typescript": "^5.4.3"
+    },
+    "peerDependencies": {
+        "@ton/crypto": ">=3.2.0"
+    },
+    "dependencies": {
+        "symbol.inspect": "1.0.1"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "release-it": {
+        "github": {
+            "release": true
+        },
+        "plugins": {
+            "@release-it/keep-a-changelog": {
+                "filename": "CHANGELOG.md"
+            }
+        }
+    },
+    "packageManager": "yarn@3.4.1+sha256.b51208ae422260539b3503fe5b596f4f236947d69ed1f8797f9830331a38c841"
 }

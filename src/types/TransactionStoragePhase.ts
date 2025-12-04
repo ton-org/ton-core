@@ -10,9 +10,9 @@ import { Builder } from "../boc/Builder";
 import { Slice } from "../boc/Slice";
 import { Maybe } from "../utils/maybe";
 import {
-	AccountStatusChange,
-	loadAccountStatusChange,
-	storeAccountStatusChange,
+    AccountStatusChange,
+    loadAccountStatusChange,
+    storeAccountStatusChange,
 } from "./AccountStatusChange";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L284
@@ -22,36 +22,36 @@ import {
 //   = TrStoragePhase;
 
 export type TransactionStoragePhase = {
-	storageFeesCollected: bigint;
-	storageFeesDue?: Maybe<bigint>;
-	statusChange: AccountStatusChange;
+    storageFeesCollected: bigint;
+    storageFeesDue?: Maybe<bigint>;
+    statusChange: AccountStatusChange;
 };
 
 export function loadTransactionStoragePhase(
-	slice: Slice,
+    slice: Slice,
 ): TransactionStoragePhase {
-	const storageFeesCollected = slice.loadCoins();
-	let storageFeesDue: Maybe<bigint> = undefined;
-	if (slice.loadBit()) {
-		storageFeesDue = slice.loadCoins();
-	}
-	const statusChange = loadAccountStatusChange(slice);
-	return {
-		storageFeesCollected,
-		storageFeesDue,
-		statusChange,
-	};
+    const storageFeesCollected = slice.loadCoins();
+    let storageFeesDue: Maybe<bigint> = undefined;
+    if (slice.loadBit()) {
+        storageFeesDue = slice.loadCoins();
+    }
+    const statusChange = loadAccountStatusChange(slice);
+    return {
+        storageFeesCollected,
+        storageFeesDue,
+        statusChange,
+    };
 }
 
 export function storeTransactionsStoragePhase(src: TransactionStoragePhase) {
-	return (builder: Builder) => {
-		builder.storeCoins(src.storageFeesCollected);
-		if (src.storageFeesDue === null || src.storageFeesDue === undefined) {
-			builder.storeBit(false);
-		} else {
-			builder.storeBit(true);
-			builder.storeCoins(src.storageFeesDue);
-		}
-		builder.store(storeAccountStatusChange(src.statusChange));
-	};
+    return (builder: Builder) => {
+        builder.storeCoins(src.storageFeesCollected);
+        if (src.storageFeesDue === null || src.storageFeesDue === undefined) {
+            builder.storeBit(false);
+        } else {
+            builder.storeBit(true);
+            builder.storeCoins(src.storageFeesDue);
+        }
+        builder.store(storeAccountStatusChange(src.statusChange));
+    };
 }

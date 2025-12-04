@@ -16,18 +16,18 @@ import { Slice } from "../boc/Slice";
 export type HashUpdate = { oldHash: Buffer; newHash: Buffer };
 
 export function loadHashUpdate(slice: Slice): HashUpdate {
-	if (slice.loadUint(8) !== 0x72) {
-		throw Error("Invalid data");
-	}
-	const oldHash = slice.loadBuffer(32);
-	const newHash = slice.loadBuffer(32);
-	return { oldHash, newHash };
+    if (slice.loadUint(8) !== 0x72) {
+        throw Error("Invalid data");
+    }
+    const oldHash = slice.loadBuffer(32);
+    const newHash = slice.loadBuffer(32);
+    return { oldHash, newHash };
 }
 
 export function storeHashUpdate(src: HashUpdate) {
-	return (builder: Builder) => {
-		builder.storeUint(0x72, 8);
-		builder.storeBuffer(src.oldHash);
-		builder.storeBuffer(src.newHash);
-	};
+    return (builder: Builder) => {
+        builder.storeUint(0x72, 8);
+        builder.storeBuffer(src.oldHash);
+        builder.storeBuffer(src.newHash);
+    };
 }
