@@ -19,7 +19,7 @@ npm install @ton/core
 
 ## Formatting
 
-We use `biome` as our formatter. It's prettier compatible and fast
+We use `biome` as our formatter. It's compatible to `prettier`, just significantly faster.
 
 IDE Setup: [VSCode](https://marketplace.visualstudio.com/items?itemName=biomejs.biome), [Zed](https://biomejs.dev/reference/zed/)
 
