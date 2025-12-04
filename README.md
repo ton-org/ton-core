@@ -42,7 +42,7 @@ The goal is to run every function at least once.
 yarn run coverage
 ```
 
-2. Coverage report is build to the `/coverage` directory
+2. Coverage report is written to the `/coverage` directory
 
 3. Open `/coverage/index.html` to check the report
 
