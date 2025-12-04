@@ -13,14 +13,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Choose yarn
+      - name: Corepack
         run: |
           corepack enable
-          yarn set version 3.4.1
       - name: Node.js
         uses: actions/setup-node@v6
         with:
           node-version: "lts/*"
           cache: "yarn"
-      - run: yarn ci
+      - run: yarn
       - run: yarn run test
