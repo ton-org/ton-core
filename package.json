@@ -13,10 +13,13 @@
     "docs": "rm -fr docs && typedoc src/index.ts",
     "build": "rm -fr dist && tsc --declaration",
     "test": "jest --verbose",
+    "format": "biome format --write ./src",
+    "format:check": "biome format ./src",
     "coverage": "jest --verbose -c ./jest-coverage.config.js",
     "release": "yarn build && yarn test && yarn release-it --npm.yarn1"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.3.8",
     "@release-it/keep-a-changelog": "^3.1.0",
     "@swc/core": "^1.15.3",
     "@swc/jest": "^0.2.39",
