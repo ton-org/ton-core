@@ -13,10 +13,6 @@ npm install @ton/core
 
 ⚠️ Beware that having two versions of `@ton/core` concurrently in the same project is not supported. Use the package manager's functionality ([npm](https://docs.npmjs.com/cli/v8/commands/npm-find-dupes), [yarn](https://yarnpkg.com/cli/dedupe)) in CI to avoid this.
 
-## Reference Documentation
-
-[Documentation](https://ton-org.github.io/ton-core/)
-
 ## Formatting
 
 We use `biome` as our formatter. It's compatible to `prettier`, just significantly faster.
