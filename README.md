@@ -17,6 +17,16 @@ npm install @ton/core
 
 [Documentation](https://ton-org.github.io/ton-core/)
 
+## Formatting
+
+We use `biome` as our formatter. It's compatible to `prettier`, just significantly faster.
+
+IDE Setup: [VSCode](https://marketplace.visualstudio.com/items?itemName=biomejs.biome), [Zed](https://biomejs.dev/reference/zed/)
+
+```sh
+yarn run format
+```
+
 ## Testing
 
 ### Debugging in tests

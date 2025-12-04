@@ -1,11 +1,9 @@
-# Simple workflow for testing
 name: Run tests
 
 on:
-  # Runs on pushes and PRs targeting the default branch
   push:
     branches: ["main"]
-  
+
   pull_request:
     branches: ["main"]
 
@@ -14,8 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
+      - name: Corepack
+        run: |
+          corepack enable
       - name: Node.js
-        uses: actions/setup-node@v3
-      - run: npm install
-      - run: npm run test
+        uses: actions/setup-node@v6
+        with:
+          node-version: "lts/*"
+          cache: "yarn"
+      - run: yarn
+      - run: yarn run test

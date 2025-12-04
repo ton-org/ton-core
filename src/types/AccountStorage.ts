@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Whales Corp. 
+ * Copyright (c) Whales Corp.
  * All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -8,31 +8,39 @@
 
 import { Builder } from "../boc/Builder";
 import { Slice } from "../boc/Slice";
-import { AccountState, loadAccountState, storeAccountState } from "./AccountState";
-import { CurrencyCollection, loadCurrencyCollection, storeCurrencyCollection } from "./CurrencyCollection";
+import {
+	AccountState,
+	loadAccountState,
+	storeAccountState,
+} from "./AccountState";
+import {
+	CurrencyCollection,
+	loadCurrencyCollection,
+	storeCurrencyCollection,
+} from "./CurrencyCollection";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L235
-// account_storage$_ last_trans_lt:uint64 balance:CurrencyCollection state:AccountState 
+// account_storage$_ last_trans_lt:uint64 balance:CurrencyCollection state:AccountState
 //   = AccountStorage;
 
 export type AccountStorage = {
-    lastTransLt: bigint,
-    balance: CurrencyCollection,
-    state: AccountState
+	lastTransLt: bigint;
+	balance: CurrencyCollection;
+	state: AccountState;
 };
 
 export function loadAccountStorage(slice: Slice): AccountStorage {
-    return {
-        lastTransLt: slice.loadUintBig(64),
-        balance: loadCurrencyCollection(slice),
-        state: loadAccountState(slice)
-    };
+	return {
+		lastTransLt: slice.loadUintBig(64),
+		balance: loadCurrencyCollection(slice),
+		state: loadAccountState(slice),
+	};
 }
 
 export function storeAccountStorage(src: AccountStorage) {
-    return (builder: Builder) => {
-        builder.storeUint(src.lastTransLt, 64);
-        builder.store(storeCurrencyCollection(src.balance));
-        builder.store(storeAccountState(src.state));
-    };
+	return (builder: Builder) => {
+		builder.storeUint(src.lastTransLt, 64);
+		builder.store(storeCurrencyCollection(src.balance));
+		builder.store(storeAccountState(src.state));
+	};
 }

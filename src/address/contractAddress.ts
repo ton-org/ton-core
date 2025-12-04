@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Whales Corp. 
+ * Copyright (c) Whales Corp.
  * All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -11,9 +11,6 @@ import { StateInit, storeStateInit } from "../types/StateInit";
 import { Address } from "./Address";
 
 export function contractAddress(workchain: number, init: StateInit) {
-    let hash = beginCell()
-        .store(storeStateInit(init))
-        .endCell()
-        .hash();
-    return new Address(workchain, hash);
+	let hash = beginCell().store(storeStateInit(init)).endCell().hash();
+	return new Address(workchain, hash);
 }

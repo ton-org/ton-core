@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Whales Corp. 
+ * Copyright (c) Whales Corp.
  * All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -11,20 +11,22 @@ import { BitString } from "../BitString";
 import { Cell } from "../Cell";
 
 export function exoticLibrary(bits: BitString, refs: Cell[]) {
-    const reader = new BitReader(bits);
+	const reader = new BitReader(bits);
 
-    // type + hash
-    const size = 8 + 256;
+	// type + hash
+	const size = 8 + 256;
 
-    if (bits.length !== size) {
-        throw new Error(`Library cell must have exactly (8 + 256) bits, got "${bits.length}"`);
-    }
+	if (bits.length !== size) {
+		throw new Error(
+			`Library cell must have exactly (8 + 256) bits, got "${bits.length}"`,
+		);
+	}
 
-    // Check type
-    let type = reader.loadUint(8);
-    if (type !== 2) {
-        throw new Error(`Library cell must have type 2, got "${type}"`);
-    }
+	// Check type
+	let type = reader.loadUint(8);
+	if (type !== 2) {
+		throw new Error(`Library cell must have type 2, got "${type}"`);
+	}
 
-    return {};
+	return {};
 }

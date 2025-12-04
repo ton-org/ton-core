@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Whales Corp. 
+ * Copyright (c) Whales Corp.
  * All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -14,45 +14,41 @@ import { Slice } from "../boc/Slice";
 // libref_hash$0 lib_hash:bits256 = LibRef;
 // libref_ref$1 library:^Cell = LibRef;
 
-
 export interface LibRefHash {
-    type: 'hash';
-    libHash: Buffer;
+	type: "hash";
+	libHash: Buffer;
 }
 
 export interface LibRefRef {
-    type: 'ref';
-    library: Cell;
+	type: "ref";
+	library: Cell;
 }
 
 export type LibRef = LibRefHash | LibRefRef;
 
 export function loadLibRef(slice: Slice): LibRef {
-    const type = slice.loadUint(1);
-    if (type === 0) {
-        return {
-            type: 'hash',
-            libHash: slice.loadBuffer(32)
-        };
-    }
-    else {
-        return {
-            type: 'ref',
-            library: slice.loadRef()
-        };
-    }
+	const type = slice.loadUint(1);
+	if (type === 0) {
+		return {
+			type: "hash",
+			libHash: slice.loadBuffer(32),
+		};
+	} else {
+		return {
+			type: "ref",
+			library: slice.loadRef(),
+		};
+	}
 }
 
 export function storeLibRef(src: LibRef) {
-    return (builder: Builder) => {
-        if (src.type === 'hash') {
-            builder.storeUint(0, 1);
-            builder.storeBuffer(src.libHash);
-        }
-        else {
-            builder.storeUint(1, 1);
-            builder.storeRef(src.library);
-        }
-    }
+	return (builder: Builder) => {
+		if (src.type === "hash") {
+			builder.storeUint(0, 1);
+			builder.storeBuffer(src.libHash);
+		} else {
+			builder.storeUint(1, 1);
+			builder.storeRef(src.library);
+		}
+	};
 }
-

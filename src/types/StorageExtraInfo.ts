@@ -14,29 +14,29 @@ import { Slice } from "../boc/Slice";
 // storage_extra_info$001 dict_hash:uint256 = StorageExtraInfo;
 
 export type StorageExtraInfo = {
-    dictHash: bigint;
-}
+	dictHash: bigint;
+};
 
 export function loadStorageExtraInfo(slice: Slice): StorageExtraInfo | null {
-    let header = slice.loadUint(3);
-    if (header === 0) {
-        return null;
-    }
-    if (header === 1) {
-        return {
-            dictHash: slice.loadUintBig(256),
-        };
-    }
-    throw new Error(`Invalid storage extra info header: ${header}`);
+	let header = slice.loadUint(3);
+	if (header === 0) {
+		return null;
+	}
+	if (header === 1) {
+		return {
+			dictHash: slice.loadUintBig(256),
+		};
+	}
+	throw new Error(`Invalid storage extra info header: ${header}`);
 }
 
 export function storeStorageExtraInfo(src: StorageExtraInfo | null) {
-    return (builder: Builder) => {
-        if (src === null || typeof src === 'undefined') {
-            builder.storeUint(0, 3);
-        } else {
-            builder.storeUint(1, 3);
-            builder.storeUint(src.dictHash, 256);
-        }
-    };
+	return (builder: Builder) => {
+		if (src === null || typeof src === "undefined") {
+			builder.storeUint(0, 3);
+		} else {
+			builder.storeUint(1, 3);
+			builder.storeUint(src.dictHash, 256);
+		}
+	};
 }
