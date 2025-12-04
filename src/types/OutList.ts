@@ -6,59 +6,70 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-
 import { SendMode } from "./SendMode";
-import {loadMessageRelaxed, MessageRelaxed, storeMessageRelaxed} from "./MessageRelaxed";
-import {beginCell, Builder} from "../boc/Builder";
+import {
+	loadMessageRelaxed,
+	MessageRelaxed,
+	storeMessageRelaxed,
+} from "./MessageRelaxed";
+import { beginCell, Builder } from "../boc/Builder";
 import { Cell } from "../boc/Cell";
-import {Slice} from "../boc/Slice";
-import {loadStorageInfo, storeStorageInfo} from "./StorageInfo";
-import {loadAccountStorage, storeAccountStorage} from "./AccountStorage";
-import {Account} from "./Account";
-import {loadMessage} from "./Message";
-import { CurrencyCollection, loadCurrencyCollection, storeCurrencyCollection } from "./CurrencyCollection";
+import { Slice } from "../boc/Slice";
+import { loadStorageInfo, storeStorageInfo } from "./StorageInfo";
+import { loadAccountStorage, storeAccountStorage } from "./AccountStorage";
+import { Account } from "./Account";
+import { loadMessage } from "./Message";
+import {
+	CurrencyCollection,
+	loadCurrencyCollection,
+	storeCurrencyCollection,
+} from "./CurrencyCollection";
 import { SimpleLibrary } from "./SimpleLibrary";
 import { LibRef, loadLibRef, storeLibRef } from "./LibRef";
 import { ReserveMode } from "./ReserveMode";
 
 export interface OutActionSendMsg {
-    type: 'sendMsg',
-    mode: SendMode;
-    outMsg: MessageRelaxed;
+	type: "sendMsg";
+	mode: SendMode;
+	outMsg: MessageRelaxed;
 }
 
 export interface OutActionSetCode {
-    type: 'setCode',
-    newCode: Cell;
+	type: "setCode";
+	newCode: Cell;
 }
 
 export interface OutActionReserve {
-    type: 'reserve',
-    mode: ReserveMode;
-    currency: CurrencyCollection;
+	type: "reserve";
+	mode: ReserveMode;
+	currency: CurrencyCollection;
 }
 
 export interface OutActionChangeLibrary {
-    type: 'changeLibrary',
-    mode: number;
-    libRef: LibRef;
+	type: "changeLibrary";
+	mode: number;
+	libRef: LibRef;
 }
 
-export type OutAction = OutActionSendMsg | OutActionSetCode | OutActionReserve | OutActionChangeLibrary;
+export type OutAction =
+	| OutActionSendMsg
+	| OutActionSetCode
+	| OutActionReserve
+	| OutActionChangeLibrary;
 
 export function storeOutAction(action: OutAction) {
-    switch (action.type) {
-        case 'sendMsg':
-            return storeOutActionSendMsg(action);
-        case 'setCode':
-            return storeOutActionSetCode(action);
-        case 'reserve':
-            return storeOutActionReserve(action);
-        case 'changeLibrary':
-            return storeOutActionChangeLibrary(action);
-        default:
-            throw new Error(`Unknown action type ${(action as OutAction).type}`)
-    }
+	switch (action.type) {
+		case "sendMsg":
+			return storeOutActionSendMsg(action);
+		case "setCode":
+			return storeOutActionSetCode(action);
+		case "reserve":
+			return storeOutActionReserve(action);
+		case "changeLibrary":
+			return storeOutActionChangeLibrary(action);
+		default:
+			throw new Error(`Unknown action type ${(action as OutAction).type}`);
+	}
 }
 
 /*
@@ -67,11 +78,14 @@ action_send_msg#0ec3c86d mode:(## 8)
 */
 const outActionSendMsgTag = 0x0ec3c86d;
 function storeOutActionSendMsg(action: OutActionSendMsg) {
-    return (builder: Builder) => {
-        builder.storeUint(outActionSendMsgTag, 32)
-            .storeUint(action.mode, 8)
-            .storeRef(beginCell().store(storeMessageRelaxed(action.outMsg)).endCell());
-    }
+	return (builder: Builder) => {
+		builder
+			.storeUint(outActionSendMsgTag, 32)
+			.storeUint(action.mode, 8)
+			.storeRef(
+				beginCell().store(storeMessageRelaxed(action.outMsg)).endCell(),
+			);
+	};
 }
 
 /*
@@ -79,9 +93,9 @@ action_set_code#ad4de08e new_code:^Cell = OutAction;
  */
 const outActionSetCodeTag = 0xad4de08e;
 function storeOutActionSetCode(action: OutActionSetCode) {
-    return (builder: Builder) => {
-        builder.storeUint(outActionSetCodeTag, 32).storeRef(action.newCode);
-    }
+	return (builder: Builder) => {
+		builder.storeUint(outActionSetCodeTag, 32).storeRef(action.newCode);
+	};
 }
 
 /*
@@ -90,11 +104,12 @@ action_reserve_currency#36e6b809 mode:(## 8)
  */
 const outActionReserveTag = 0x36e6b809;
 function storeOutActionReserve(action: OutActionReserve) {
-    return (builder: Builder) => {
-        builder.storeUint(outActionReserveTag, 32)
-            .storeUint(action.mode, 8)
-            .store(storeCurrencyCollection(action.currency));
-    }
+	return (builder: Builder) => {
+		builder
+			.storeUint(outActionReserveTag, 32)
+			.storeUint(action.mode, 8)
+			.store(storeCurrencyCollection(action.currency));
+	};
 }
 
 /*
@@ -103,61 +118,60 @@ action_change_library#26fa1dd4 mode:(## 7)
  */
 const outActionChangeLibraryTag = 0x26fa1dd4;
 function storeOutActionChangeLibrary(action: OutActionChangeLibrary) {
-    return (builder: Builder) => {
-        builder.storeUint(outActionChangeLibraryTag, 32)
-            .storeUint(action.mode, 7)
-            .store(storeLibRef(action.libRef));
-    }
+	return (builder: Builder) => {
+		builder
+			.storeUint(outActionChangeLibraryTag, 32)
+			.storeUint(action.mode, 7)
+			.store(storeLibRef(action.libRef));
+	};
 }
 
+export function loadOutAction(slice: Slice): OutAction {
+	const tag = slice.loadUint(32);
+	if (tag === outActionSendMsgTag) {
+		const mode = slice.loadUint(8);
+		const outMsg = loadMessageRelaxed(slice.loadRef().beginParse());
 
-export function loadOutAction(slice: Slice): OutAction  {
-    const tag = slice.loadUint(32);
-    if (tag === outActionSendMsgTag) {
-        const mode = slice.loadUint(8);
-        const outMsg = loadMessageRelaxed(slice.loadRef().beginParse());
+		return {
+			type: "sendMsg",
+			mode,
+			outMsg,
+		};
+	}
 
-        return {
-            type: 'sendMsg',
-            mode,
-            outMsg
-        }
-    }
+	if (tag === outActionSetCodeTag) {
+		const newCode = slice.loadRef();
 
-    if (tag === outActionSetCodeTag) {
-        const newCode = slice.loadRef();
+		return {
+			type: "setCode",
+			newCode,
+		};
+	}
 
-        return {
-            type: 'setCode',
-            newCode
-        }
-    }
+	if (tag === outActionReserveTag) {
+		const mode = slice.loadUint(8);
+		const currency = loadCurrencyCollection(slice);
 
-    if (tag === outActionReserveTag) {
-        const mode = slice.loadUint(8);
-        const currency = loadCurrencyCollection(slice);
+		return {
+			type: "reserve",
+			mode,
+			currency,
+		};
+	}
 
-        return {
-            type: 'reserve',
-            mode,
-            currency
-        }
-    }
+	if (tag === outActionChangeLibraryTag) {
+		const mode = slice.loadUint(7);
+		const libRef = loadLibRef(slice);
 
-    if (tag === outActionChangeLibraryTag) {
-        const mode = slice.loadUint(7);
-        const libRef = loadLibRef(slice);
+		return {
+			type: "changeLibrary",
+			mode,
+			libRef,
+		};
+	}
 
-        return {
-            type: 'changeLibrary',
-            mode,
-            libRef
-        }
-    }
-
-    throw new Error(`Unknown out action tag 0x${tag.toString(16)}`);
+	throw new Error(`Unknown out action tag 0x${tag.toString(16)}`);
 }
-
 
 /*
 out_list_empty$_ = OutList 0;
@@ -165,27 +179,25 @@ out_list$_ {n:#} prev:^(OutList n) action:OutAction
   = OutList (n + 1);
  */
 export function storeOutList(actions: OutAction[]) {
-    const cell = actions.reduce((cell, action) => beginCell()
-            .storeRef(cell)
-            .store(storeOutAction(action))
-            .endCell(),
-        beginCell().endCell()
-    );
+	const cell = actions.reduce(
+		(cell, action) =>
+			beginCell().storeRef(cell).store(storeOutAction(action)).endCell(),
+		beginCell().endCell(),
+	);
 
-    return (builder: Builder) => {
-        builder.storeSlice(cell.beginParse());
-    }
+	return (builder: Builder) => {
+		builder.storeSlice(cell.beginParse());
+	};
 }
 
 export function loadOutList(slice: Slice): OutAction[] {
-    const actions: OutAction[] = [];
-    while (slice.remainingRefs) {
-        const nextCell = slice.loadRef();
+	const actions: OutAction[] = [];
+	while (slice.remainingRefs) {
+		const nextCell = slice.loadRef();
 
-        actions.push(loadOutAction(slice));
-        slice = nextCell.beginParse();
-    }
+		actions.push(loadOutAction(slice));
+		slice = nextCell.beginParse();
+	}
 
-    return actions.reverse();
+	return actions.reverse();
 }
-

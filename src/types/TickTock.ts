@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Whales Corp. 
+ * Copyright (c) Whales Corp.
  * All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -13,20 +13,20 @@ import { Slice } from "../boc/Slice";
 // tick_tock$_ tick:Bool tock:Bool = TickTock;
 
 export type TickTock = {
-    tick: boolean;
-    tock: boolean;
-}
+	tick: boolean;
+	tock: boolean;
+};
 
 export function loadTickTock(slice: Slice): TickTock {
-    return {
-        tick: slice.loadBit(),
-        tock: slice.loadBit()
-    };
+	return {
+		tick: slice.loadBit(),
+		tock: slice.loadBit(),
+	};
 }
 
 export function storeTickTock(src: TickTock) {
-    return (builder: Builder) => {
-        builder.storeBit(src.tick);
-        builder.storeBit(src.tock);
-    }
+	return (builder: Builder) => {
+		builder.storeBit(src.tick);
+		builder.storeBit(src.tock);
+	};
 }

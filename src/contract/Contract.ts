@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Whales Corp. 
+ * Copyright (c) Whales Corp.
  * All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -13,7 +13,7 @@ import { Maybe } from "../utils/maybe";
 import { ContractABI } from "./ContractABI";
 
 export interface Contract {
-    readonly address: Address;
-    readonly init?: Maybe<StateInit>;
-    readonly abi?: Maybe<ContractABI>;
+	readonly address: Address;
+	readonly init?: Maybe<StateInit>;
+	readonly abi?: Maybe<ContractABI>;
 }
