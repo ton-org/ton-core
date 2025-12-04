@@ -17,27 +17,27 @@ import { Slice } from "../boc/Slice";
 export type ComputeSkipReason = "no-state" | "bad-state" | "no-gas";
 
 export function loadComputeSkipReason(slice: Slice): ComputeSkipReason {
-	let reason = slice.loadUint(2);
-	if (reason === 0x00) {
-		return "no-state";
-	} else if (reason === 0x01) {
-		return "bad-state";
-	} else if (reason === 0x02) {
-		return "no-gas";
-	}
-	throw new Error(`Unknown ComputeSkipReason: ${reason}`);
+    let reason = slice.loadUint(2);
+    if (reason === 0x00) {
+        return "no-state";
+    } else if (reason === 0x01) {
+        return "bad-state";
+    } else if (reason === 0x02) {
+        return "no-gas";
+    }
+    throw new Error(`Unknown ComputeSkipReason: ${reason}`);
 }
 
 export function storeComputeSkipReason(src: ComputeSkipReason) {
-	return (builder: Builder) => {
-		if (src === "no-state") {
-			builder.storeUint(0x00, 2);
-		} else if (src === "bad-state") {
-			builder.storeUint(0x01, 2);
-		} else if (src === "no-gas") {
-			builder.storeUint(0x02, 2);
-		} else {
-			throw new Error(`Unknown ComputeSkipReason: ${src}`);
-		}
-	};
+    return (builder: Builder) => {
+        if (src === "no-state") {
+            builder.storeUint(0x00, 2);
+        } else if (src === "bad-state") {
+            builder.storeUint(0x01, 2);
+        } else if (src === "no-gas") {
+            builder.storeUint(0x02, 2);
+        } else {
+            throw new Error(`Unknown ComputeSkipReason: ${src}`);
+        }
+    };
 }

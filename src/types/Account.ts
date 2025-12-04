@@ -10,9 +10,9 @@ import { Address } from "../address/Address";
 import { Builder } from "../boc/Builder";
 import { Slice } from "../boc/Slice";
 import {
-	AccountStorage,
-	loadAccountStorage,
-	storeAccountStorage,
+    AccountStorage,
+    loadAccountStorage,
+    storeAccountStorage,
 } from "./AccountStorage";
 import { loadStorageInfo, StorageInfo, storeStorageInfo } from "./StorageInfo";
 
@@ -21,23 +21,23 @@ import { loadStorageInfo, StorageInfo, storeStorageInfo } from "./StorageInfo";
 // account$1 addr:MsgAddressInt storage_stat:StorageInfo storage:AccountStorage = Account;
 
 export type Account = {
-	addr: Address;
-	storageStats: StorageInfo;
-	storage: AccountStorage;
+    addr: Address;
+    storageStats: StorageInfo;
+    storage: AccountStorage;
 };
 
 export function loadAccount(slice: Slice): Account {
-	return {
-		addr: slice.loadAddress(),
-		storageStats: loadStorageInfo(slice),
-		storage: loadAccountStorage(slice),
-	};
+    return {
+        addr: slice.loadAddress(),
+        storageStats: loadStorageInfo(slice),
+        storage: loadAccountStorage(slice),
+    };
 }
 
 export function storeAccount(src: Account) {
-	return (builder: Builder) => {
-		builder.storeAddress(src.addr);
-		builder.store(storeStorageInfo(src.storageStats));
-		builder.store(storeAccountStorage(src.storage));
-	};
+    return (builder: Builder) => {
+        builder.storeAddress(src.addr);
+        builder.store(storeStorageInfo(src.storageStats));
+        builder.store(storeAccountStorage(src.storage));
+    };
 }

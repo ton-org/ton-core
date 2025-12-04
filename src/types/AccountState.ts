@@ -16,36 +16,36 @@ import { loadStateInit, StateInit, storeStateInit } from "./StateInit";
 // account_frozen$01 state_hash:bits256 = AccountState;
 
 export type AccountState =
-	| AccountStateUninit
-	| AccountStateActive
-	| AccountStateFrozen;
+    | AccountStateUninit
+    | AccountStateActive
+    | AccountStateFrozen;
 
 export type AccountStateUninit = { type: "uninit" };
 export type AccountStateActive = { type: "active"; state: StateInit };
 export type AccountStateFrozen = { type: "frozen"; stateHash: bigint };
 
 export function loadAccountState(cs: Slice): AccountState {
-	if (cs.loadBit()) {
-		return { type: "active", state: loadStateInit(cs) };
-	} else if (cs.loadBit()) {
-		return { type: "frozen", stateHash: cs.loadUintBig(256) };
-	} else {
-		return { type: "uninit" };
-	}
+    if (cs.loadBit()) {
+        return { type: "active", state: loadStateInit(cs) };
+    } else if (cs.loadBit()) {
+        return { type: "frozen", stateHash: cs.loadUintBig(256) };
+    } else {
+        return { type: "uninit" };
+    }
 }
 
 export function storeAccountState(src: AccountState) {
-	return (builder: Builder) => {
-		if (src.type === "active") {
-			builder.storeBit(true);
-			builder.store(storeStateInit(src.state));
-		} else if (src.type === "frozen") {
-			builder.storeBit(false);
-			builder.storeBit(true);
-			builder.storeUint(src.stateHash, 256);
-		} else if (src.type === "uninit") {
-			builder.storeBit(false);
-			builder.storeBit(false);
-		}
-	};
+    return (builder: Builder) => {
+        if (src.type === "active") {
+            builder.storeBit(true);
+            builder.store(storeStateInit(src.state));
+        } else if (src.type === "frozen") {
+            builder.storeBit(false);
+            builder.storeBit(true);
+            builder.storeUint(src.stateHash, 256);
+        } else if (src.type === "uninit") {
+            builder.storeBit(false);
+            builder.storeBit(false);
+        }
+    };
 }

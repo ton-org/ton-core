@@ -12,9 +12,9 @@ import { Slice } from "../boc/Slice";
 import { DictionaryValue } from "../dict/Dictionary";
 import { Maybe } from "../utils/maybe";
 import {
-	CommonMessageInfo,
-	loadCommonMessageInfo,
-	storeCommonMessageInfo,
+    CommonMessageInfo,
+    loadCommonMessageInfo,
+    storeCommonMessageInfo,
 } from "./CommonMessageInfo";
 import { loadStateInit, StateInit, storeStateInit } from "./StateInit";
 
@@ -24,87 +24,88 @@ import { loadStateInit, StateInit, storeStateInit } from "./StateInit";
 //  body:(Either X ^X) = Message X;
 
 export type Message = {
-	info: CommonMessageInfo;
-	init?: Maybe<StateInit>;
-	body: Cell;
+    info: CommonMessageInfo;
+    init?: Maybe<StateInit>;
+    body: Cell;
 };
 
 export function loadMessage(slice: Slice): Message {
-	const info = loadCommonMessageInfo(slice);
-	let init: StateInit | null = null;
-	if (slice.loadBit()) {
-		if (!slice.loadBit()) {
-			init = loadStateInit(slice);
-		} else {
-			init = loadStateInit(slice.loadRef().beginParse());
-		}
-	}
-	const body = slice.loadBit() ? slice.loadRef() : slice.asCell();
+    const info = loadCommonMessageInfo(slice);
+    let init: StateInit | null = null;
+    if (slice.loadBit()) {
+        if (!slice.loadBit()) {
+            init = loadStateInit(slice);
+        } else {
+            init = loadStateInit(slice.loadRef().beginParse());
+        }
+    }
+    const body = slice.loadBit() ? slice.loadRef() : slice.asCell();
 
-	return {
-		info,
-		init,
-		body,
-	};
+    return {
+        info,
+        init,
+        body,
+    };
 }
 
 export function storeMessage(message: Message, opts?: { forceRef?: boolean }) {
-	return (builder: Builder) => {
-		// Store CommonMsgInfo
-		builder.store(storeCommonMessageInfo(message.info));
+    return (builder: Builder) => {
+        // Store CommonMsgInfo
+        builder.store(storeCommonMessageInfo(message.info));
 
-		// Store init
-		if (message.init) {
-			builder.storeBit(true);
-			let initCell = beginCell().store(storeStateInit(message.init));
+        // Store init
+        if (message.init) {
+            builder.storeBit(true);
+            let initCell = beginCell().store(storeStateInit(message.init));
 
-			// Check if need to store it in ref
-			let needRef = false;
-			if (opts && opts.forceRef) {
-				needRef = true;
-			} else {
-				needRef =
-					builder.availableBits - 2 /* At least two bits for ref flags */ <
-					initCell.bits + message.body.bits.length;
-			}
+            // Check if need to store it in ref
+            let needRef = false;
+            if (opts && opts.forceRef) {
+                needRef = true;
+            } else {
+                needRef =
+                    builder.availableBits -
+                        2 /* At least two bits for ref flags */ <
+                    initCell.bits + message.body.bits.length;
+            }
 
-			// Persist init
-			if (needRef) {
-				builder.storeBit(true);
-				builder.storeRef(initCell);
-			} else {
-				builder.storeBit(false);
-				builder.storeBuilder(initCell);
-			}
-		} else {
-			builder.storeBit(false);
-		}
+            // Persist init
+            if (needRef) {
+                builder.storeBit(true);
+                builder.storeRef(initCell);
+            } else {
+                builder.storeBit(false);
+                builder.storeBuilder(initCell);
+            }
+        } else {
+            builder.storeBit(false);
+        }
 
-		// Store body
-		let needRef = false;
-		if (opts && opts.forceRef) {
-			needRef = true;
-		} else {
-			needRef =
-				builder.availableBits - 1 /* At least one bit for ref flag */ <
-					message.body.bits.length ||
-				builder.refs + message.body.refs.length > 4;
-		}
-		if (needRef) {
-			builder.storeBit(true);
-			builder.storeRef(message.body);
-		} else {
-			builder.storeBit(false);
-			builder.storeBuilder(message.body.asBuilder());
-		}
-	};
+        // Store body
+        let needRef = false;
+        if (opts && opts.forceRef) {
+            needRef = true;
+        } else {
+            needRef =
+                builder.availableBits - 1 /* At least one bit for ref flag */ <
+                    message.body.bits.length ||
+                builder.refs + message.body.refs.length > 4;
+        }
+        if (needRef) {
+            builder.storeBit(true);
+            builder.storeRef(message.body);
+        } else {
+            builder.storeBit(false);
+            builder.storeBuilder(message.body.asBuilder());
+        }
+    };
 }
 
 export const MessageValue: DictionaryValue<Message> = {
-	serialize(src, builder) {
-		builder.storeRef(beginCell().store(storeMessage(src)));
-	},
-	parse(slice) {
-		return loadMessage(slice.loadRef().beginParse());
-	},
+    serialize(src, builder) {
+        builder.storeRef(beginCell().store(storeMessage(src)));
+    },
+    parse(slice) {
+        return loadMessage(slice.loadRef().beginParse());
+    },
 };

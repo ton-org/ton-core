@@ -14,27 +14,27 @@ import { Slice } from "../boc/Slice";
 //  workchain_id:int32 shard_prefix:uint64 = ShardIdent;
 
 export type ShardIdent = {
-	shardPrefixBits: number;
-	workchainId: number;
-	shardPrefix: bigint;
+    shardPrefixBits: number;
+    workchainId: number;
+    shardPrefix: bigint;
 };
 
 export function loadShardIdent(slice: Slice): ShardIdent {
-	if (slice.loadUint(2) !== 0) {
-		throw Error("Invalid data");
-	}
-	return {
-		shardPrefixBits: slice.loadUint(6),
-		workchainId: slice.loadInt(32),
-		shardPrefix: slice.loadUintBig(64),
-	};
+    if (slice.loadUint(2) !== 0) {
+        throw Error("Invalid data");
+    }
+    return {
+        shardPrefixBits: slice.loadUint(6),
+        workchainId: slice.loadInt(32),
+        shardPrefix: slice.loadUintBig(64),
+    };
 }
 
 export function storeShardIdent(src: ShardIdent) {
-	return (builder: Builder) => {
-		builder.storeUint(0, 2);
-		builder.storeUint(src.shardPrefixBits, 6);
-		builder.storeInt(src.workchainId, 32);
-		builder.storeUint(src.shardPrefix, 64);
-	};
+    return (builder: Builder) => {
+        builder.storeUint(0, 2);
+        builder.storeUint(src.shardPrefixBits, 6);
+        builder.storeInt(src.workchainId, 32);
+        builder.storeUint(src.shardPrefix, 64);
+    };
 }

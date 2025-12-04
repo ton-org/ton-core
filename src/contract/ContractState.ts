@@ -10,11 +10,11 @@ import { Maybe } from "../utils/maybe";
 import { ExtraCurrency } from "../types/ExtraCurrency";
 
 export type ContractState = {
-	balance: bigint;
-	extracurrency: Maybe<ExtraCurrency>;
-	last: { lt: bigint; hash: Buffer } | null;
-	state:
-		| { type: "uninit" }
-		| { type: "active"; code: Maybe<Buffer>; data: Maybe<Buffer> }
-		| { type: "frozen"; stateHash: Buffer };
+    balance: bigint;
+    extracurrency: Maybe<ExtraCurrency>;
+    last: { lt: bigint; hash: Buffer } | null;
+    state:
+        | { type: "uninit" }
+        | { type: "active"; code: Maybe<Buffer>; data: Maybe<Buffer> }
+        | { type: "frozen"; stateHash: Buffer };
 };

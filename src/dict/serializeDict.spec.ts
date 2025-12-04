@@ -10,17 +10,17 @@ import { beginCell } from "../boc/Builder";
 import { serializeDict } from "./serializeDict";
 
 describe("serializeDict", () => {
-	it("should build prefix tree", () => {
-		// From docs
-		const map = new Map<bigint, bigint>();
-		map.set(13n, 169n);
-		map.set(17n, 289n);
-		map.set(239n, 57121n);
+    it("should build prefix tree", () => {
+        // From docs
+        const map = new Map<bigint, bigint>();
+        map.set(13n, 169n);
+        map.set(17n, 289n);
+        map.set(239n, 57121n);
 
-		// Test serialization
-		let builder = beginCell();
-		serializeDict(map, 16, (src, cell) => cell.storeUint(src, 16), builder);
-		let root = builder.endCell();
-		expect(root).toMatchSnapshot();
-	});
+        // Test serialization
+        let builder = beginCell();
+        serializeDict(map, 16, (src, cell) => cell.storeUint(src, 16), builder);
+        let root = builder.endCell();
+        expect(root).toMatchSnapshot();
+    });
 });

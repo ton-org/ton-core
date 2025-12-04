@@ -20,33 +20,33 @@ import { ExtraCurrency } from "../types/ExtraCurrency";
 import { OpenedContract } from "./openContract";
 
 export type ContractGetMethodResult = {
-	stack: TupleReader;
-	gasUsed?: Maybe<bigint>;
-	logs?: Maybe<string>;
+    stack: TupleReader;
+    gasUsed?: Maybe<bigint>;
+    logs?: Maybe<string>;
 };
 
 export interface ContractProvider {
-	getState(): Promise<ContractState>;
-	get(
-		name: string | number,
-		args: TupleItem[],
-	): Promise<ContractGetMethodResult>;
-	external(message: Cell): Promise<void>;
-	internal(
-		via: Sender,
-		args: {
-			value: bigint | string;
-			extracurrency?: ExtraCurrency;
-			bounce?: Maybe<boolean>;
-			sendMode?: SendMode;
-			body?: Maybe<Cell | string>;
-		},
-	): Promise<void>;
-	open<T extends Contract>(contract: T): OpenedContract<T>;
-	getTransactions(
-		address: Address,
-		lt: bigint,
-		hash: Buffer,
-		limit?: number,
-	): Promise<Transaction[]>;
+    getState(): Promise<ContractState>;
+    get(
+        name: string | number,
+        args: TupleItem[],
+    ): Promise<ContractGetMethodResult>;
+    external(message: Cell): Promise<void>;
+    internal(
+        via: Sender,
+        args: {
+            value: bigint | string;
+            extracurrency?: ExtraCurrency;
+            bounce?: Maybe<boolean>;
+            sendMode?: SendMode;
+            body?: Maybe<Cell | string>;
+        },
+    ): Promise<void>;
+    open<T extends Contract>(contract: T): OpenedContract<T>;
+    getTransactions(
+        address: Address,
+        lt: bigint,
+        hash: Buffer,
+        limit?: number,
+    ): Promise<Transaction[]>;
 }

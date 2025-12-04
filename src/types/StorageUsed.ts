@@ -13,20 +13,20 @@ import { Slice } from "../boc/Slice";
 // storage_used$_ cells:(VarUInteger 7) bits:(VarUInteger 7) = StorageUsed;
 
 export type StorageUsed = {
-	cells: bigint;
-	bits: bigint;
+    cells: bigint;
+    bits: bigint;
 };
 
 export function loadStorageUsed(cs: Slice): StorageUsed {
-	return {
-		cells: cs.loadVarUintBig(3),
-		bits: cs.loadVarUintBig(3),
-	};
+    return {
+        cells: cs.loadVarUintBig(3),
+        bits: cs.loadVarUintBig(3),
+    };
 }
 
 export function storeStorageUsed(src: StorageUsed) {
-	return (builder: Builder) => {
-		builder.storeVarUint(src.cells, 3);
-		builder.storeVarUint(src.bits, 3);
-	};
+    return (builder: Builder) => {
+        builder.storeVarUint(src.cells, 3);
+        builder.storeVarUint(src.bits, 3);
+    };
 }

@@ -16,28 +16,28 @@ import { Slice } from "../boc/Slice";
 export type AccountStatusChange = "unchanged" | "frozen" | "deleted";
 
 export function loadAccountStatusChange(slice: Slice): AccountStatusChange {
-	if (!slice.loadBit()) {
-		return "unchanged";
-	}
-	if (slice.loadBit()) {
-		return "deleted";
-	} else {
-		return "frozen";
-	}
+    if (!slice.loadBit()) {
+        return "unchanged";
+    }
+    if (slice.loadBit()) {
+        return "deleted";
+    } else {
+        return "frozen";
+    }
 }
 
 export function storeAccountStatusChange(src: AccountStatusChange) {
-	return (builder: Builder) => {
-		if (src == "unchanged") {
-			builder.storeBit(0);
-		} else if (src === "frozen") {
-			builder.storeBit(1);
-			builder.storeBit(0);
-		} else if (src === "deleted") {
-			builder.storeBit(1);
-			builder.storeBit(1);
-		} else {
-			throw Error("Invalid account status change");
-		}
-	};
+    return (builder: Builder) => {
+        if (src == "unchanged") {
+            builder.storeBit(0);
+        } else if (src === "frozen") {
+            builder.storeBit(1);
+            builder.storeBit(0);
+        } else if (src === "deleted") {
+            builder.storeBit(1);
+            builder.storeBit(1);
+        } else {
+            throw Error("Invalid account status change");
+        }
+    };
 }

@@ -15,30 +15,30 @@ import { Slice } from "../boc/Slice";
 //   = SplitMergeInfo;
 
 export type SplitMergeInfo = {
-	currentShardPrefixLength: number;
-	accountSplitDepth: number;
-	thisAddress: bigint;
-	siblingAddress: bigint;
+    currentShardPrefixLength: number;
+    accountSplitDepth: number;
+    thisAddress: bigint;
+    siblingAddress: bigint;
 };
 
 export function loadSplitMergeInfo(slice: Slice): SplitMergeInfo {
-	let currentShardPrefixLength = slice.loadUint(6);
-	let accountSplitDepth = slice.loadUint(6);
-	let thisAddress = slice.loadUintBig(256);
-	let siblingAddress = slice.loadUintBig(256);
-	return {
-		currentShardPrefixLength,
-		accountSplitDepth,
-		thisAddress,
-		siblingAddress,
-	};
+    let currentShardPrefixLength = slice.loadUint(6);
+    let accountSplitDepth = slice.loadUint(6);
+    let thisAddress = slice.loadUintBig(256);
+    let siblingAddress = slice.loadUintBig(256);
+    return {
+        currentShardPrefixLength,
+        accountSplitDepth,
+        thisAddress,
+        siblingAddress,
+    };
 }
 
 export function storeSplitMergeInfo(src: SplitMergeInfo) {
-	return (builder: Builder) => {
-		builder.storeUint(src.currentShardPrefixLength, 6);
-		builder.storeUint(src.accountSplitDepth, 6);
-		builder.storeUint(src.thisAddress, 256);
-		builder.storeUint(src.siblingAddress, 256);
-	};
+    return (builder: Builder) => {
+        builder.storeUint(src.currentShardPrefixLength, 6);
+        builder.storeUint(src.accountSplitDepth, 6);
+        builder.storeUint(src.thisAddress, 256);
+        builder.storeUint(src.siblingAddress, 256);
+    };
 }
