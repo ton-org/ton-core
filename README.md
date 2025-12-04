@@ -34,7 +34,7 @@ We use test coverage to eliminate blind spots in our tests.
 
 #### How to?
 
-The goal is to make all functions runned at least once
+The goal is to run every function at least once.
 
 1. Build a coverage report 
 
