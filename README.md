@@ -17,7 +17,9 @@ npm install @ton/core
 
 [Documentation](https://ton-org.github.io/ton-core/)
 
-## Debugging in tests
+## Testing
+
+### Debugging in tests
 
 By default tests are running using multiple worker threads. It's faster, but 
 undesirable during debugging. `SINGLETHREADED` env variable covers this case
@@ -25,6 +27,24 @@ undesirable during debugging. `SINGLETHREADED` env variable covers this case
 ```sh
 SINGLETHREADED=1 yarn run test
 ```
+
+### Coverage report
+
+We use test coverage to eliminate blind spots in our tests.
+
+#### How to?
+
+The goal is to make all functions runned at least once
+
+1. Build a coverage report 
+
+```sh
+yarn run coverage
+```
+
+2. Coverage report is build to the `/coverage` directory
+
+3. Open `/coverage/index.html` to check the report
 
 ## Contributing
 
