@@ -3,6 +3,7 @@ dist
 docs
 coverage
 .idea
+.zed
 
 
 # Yarn >2.0.0

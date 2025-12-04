@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Whales Corp. 
+ * Copyright (c) Whales Corp.
  * All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -15,28 +15,32 @@ import { Slice } from "../boc/Slice";
 // acc_state_active$10 = AccountStatus;
 // acc_state_nonexist$11 = AccountStatus;
 
-export type AccountStatus = 'uninitialized' | 'frozen' | 'active' | 'non-existing';
+export type AccountStatus =
+	| "uninitialized"
+	| "frozen"
+	| "active"
+	| "non-existing";
 
 /**
  * Load account state from slice
- * @param slice 
+ * @param slice
  * @returns AccountState
  */
 export function loadAccountStatus(slice: Slice): AccountStatus {
-    const status = slice.loadUint(2);
-    if (status === 0x00) {
-        return 'uninitialized';
-    }
-    if (status === 0x01) {
-        return 'frozen';
-    }
-    if (status === 0x02) {
-        return 'active';
-    }
-    if (status === 0x03) {
-        return 'non-existing';
-    }
-    throw Error('Invalid data');
+	const status = slice.loadUint(2);
+	if (status === 0x00) {
+		return "uninitialized";
+	}
+	if (status === 0x01) {
+		return "frozen";
+	}
+	if (status === 0x02) {
+		return "active";
+	}
+	if (status === 0x03) {
+		return "non-existing";
+	}
+	throw Error("Invalid data");
 }
 
 /**
@@ -45,18 +49,18 @@ export function loadAccountStatus(slice: Slice): AccountStatus {
  * @returns builder transformer
  */
 export function storeAccountStatus(src: AccountStatus) {
-    return (builder: Builder) => {
-        if (src === 'uninitialized') {
-            builder.storeUint(0x00, 2);
-        } else if (src === 'frozen') {
-            builder.storeUint(0x01, 2);
-        } else if (src === 'active') {
-            builder.storeUint(0x02, 2);
-        } else if (src === 'non-existing') {
-            builder.storeUint(0x03, 2);
-        } else {
-            throw Error('Invalid data');
-        }
-        return builder;
-    };
+	return (builder: Builder) => {
+		if (src === "uninitialized") {
+			builder.storeUint(0x00, 2);
+		} else if (src === "frozen") {
+			builder.storeUint(0x01, 2);
+		} else if (src === "active") {
+			builder.storeUint(0x02, 2);
+		} else if (src === "non-existing") {
+			builder.storeUint(0x03, 2);
+		} else {
+			throw Error("Invalid data");
+		}
+		return builder;
+	};
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Whales Corp. 
+ * Copyright (c) Whales Corp.
  * All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -10,17 +10,24 @@ import { beginCell, Builder } from "../boc/Builder";
 import { Cell } from "../boc/Cell";
 import { Slice } from "../boc/Slice";
 
-const INT64_MIN = BigInt('-9223372036854775808');
-const INT64_MAX = BigInt('9223372036854775807');
+const INT64_MIN = BigInt("-9223372036854775808");
+const INT64_MAX = BigInt("9223372036854775807");
 
-export type Tuple = { type: 'tuple', items: TupleItem[] };
-export type TupleItemNull = { type: 'null' };
-export type TupleItemInt = { type: 'int', value: bigint };
-export type TupleItemNaN = { type: 'nan' };
-export type TupleItemCell = { type: 'cell', cell: Cell };
-export type TupleItemSlice = { type: 'slice', cell: Cell };
-export type TupleItemBuilder = { type: 'builder', cell: Cell };
-export type TupleItem = TupleItemNull | TupleItemInt | TupleItemNaN | TupleItemCell | TupleItemSlice | TupleItemBuilder | Tuple;
+export type Tuple = { type: "tuple"; items: TupleItem[] };
+export type TupleItemNull = { type: "null" };
+export type TupleItemInt = { type: "int"; value: bigint };
+export type TupleItemNaN = { type: "nan" };
+export type TupleItemCell = { type: "cell"; cell: Cell };
+export type TupleItemSlice = { type: "slice"; cell: Cell };
+export type TupleItemBuilder = { type: "builder"; cell: Cell };
+export type TupleItem =
+	| TupleItemNull
+	| TupleItemInt
+	| TupleItemNaN
+	| TupleItemCell
+	| TupleItemSlice
+	| TupleItemBuilder
+	| Tuple;
 
 // vm_stk_null#00 = VmStackValue;
 // vm_stk_tinyint#01 value:int64 = VmStackValue;
@@ -42,129 +49,124 @@ export type TupleItem = TupleItemNull | TupleItemInt | TupleItemNaN | TupleItemC
 // vm_stk_tuple#07 len:(## 16) data:(VmTuple len) = VmStackValue;
 
 export function serializeTupleItem(src: TupleItem, builder: Builder) {
-    if (src.type === 'null') {
-        builder.storeUint(0x00, 8);
-    } else if (src.type === 'int') {
-        if (src.value <= INT64_MAX && src.value >= INT64_MIN) {
-            builder.storeUint(0x01, 8);
-            builder.storeInt(src.value, 64);
-        } else {
-            builder.storeUint(0x0100, 15);
-            builder.storeInt(src.value, 257);
-        }
-    } else if (src.type === 'nan') {
-        builder.storeInt(0x02ff, 16);
-    } else if (src.type === 'cell') {
-        builder.storeUint(0x03, 8);
-        builder.storeRef(src.cell);
-    } else if (src.type === 'slice') {
-        builder.storeUint(0x04, 8);
-        builder.storeUint(0, 10);
-        builder.storeUint(src.cell.bits.length, 10);
-        builder.storeUint(0, 3);
-        builder.storeUint(src.cell.refs.length, 3);
-        builder.storeRef(src.cell);
-    } else if (src.type === 'builder') {
-        builder.storeUint(0x05, 8);
-        builder.storeRef(src.cell);
-    } else if (src.type === 'tuple') {
-        let head: Cell | null = null;
-        let tail: Cell | null = null;
-        for (let i = 0; i < src.items.length; i++) {
+	if (src.type === "null") {
+		builder.storeUint(0x00, 8);
+	} else if (src.type === "int") {
+		if (src.value <= INT64_MAX && src.value >= INT64_MIN) {
+			builder.storeUint(0x01, 8);
+			builder.storeInt(src.value, 64);
+		} else {
+			builder.storeUint(0x0100, 15);
+			builder.storeInt(src.value, 257);
+		}
+	} else if (src.type === "nan") {
+		builder.storeInt(0x02ff, 16);
+	} else if (src.type === "cell") {
+		builder.storeUint(0x03, 8);
+		builder.storeRef(src.cell);
+	} else if (src.type === "slice") {
+		builder.storeUint(0x04, 8);
+		builder.storeUint(0, 10);
+		builder.storeUint(src.cell.bits.length, 10);
+		builder.storeUint(0, 3);
+		builder.storeUint(src.cell.refs.length, 3);
+		builder.storeRef(src.cell);
+	} else if (src.type === "builder") {
+		builder.storeUint(0x05, 8);
+		builder.storeRef(src.cell);
+	} else if (src.type === "tuple") {
+		let head: Cell | null = null;
+		let tail: Cell | null = null;
+		for (let i = 0; i < src.items.length; i++) {
+			// Swap
+			let s: Cell | null = head;
+			head = tail;
+			tail = s;
 
-            // Swap
-            let s: Cell | null = head;
-            head = tail;
-            tail = s;
+			if (i > 1) {
+				head = beginCell().storeRef(tail!).storeRef(head!).endCell();
+			}
 
-            if (i > 1) {
-                head = beginCell()
-                    .storeRef(tail!)
-                    .storeRef(head!)
-                    .endCell();
-            }
+			let bc = beginCell();
+			serializeTupleItem(src.items[i], bc);
+			tail = bc.endCell();
+		}
 
-            let bc = beginCell();
-            serializeTupleItem(src.items[i], bc);
-            tail = bc.endCell();
-        }
-
-        builder.storeUint(0x07, 8);
-        builder.storeUint(src.items.length, 16);
-        if (head) {
-            builder.storeRef(head);
-        }
-        if (tail) {
-            builder.storeRef(tail);
-        }
-    } else {
-        throw Error('Invalid value');
-    }
+		builder.storeUint(0x07, 8);
+		builder.storeUint(src.items.length, 16);
+		if (head) {
+			builder.storeRef(head);
+		}
+		if (tail) {
+			builder.storeRef(tail);
+		}
+	} else {
+		throw Error("Invalid value");
+	}
 }
 
 export function parseTupleItem(cs: Slice): TupleItem {
-    let kind = cs.loadUint(8);
-    if (kind === 0) {
-        return { type: 'null' };
-    } else if (kind === 1) {
-        return { type: 'int', value: cs.loadIntBig(64) }
-    } else if (kind === 2) {
-        if (cs.loadUint(7) === 0) {
-            return { type: 'int', value: cs.loadIntBig(257) }
-        } else {
-            cs.loadBit(); // must eq 1
-            return { type: 'nan' };
-        }
-    } else if (kind === 3) {
-        return { type: 'cell', cell: cs.loadRef() };
-    } else if (kind === 4) {
-        let startBits = cs.loadUint(10);
-        let endBits = cs.loadUint(10);
-        let startRefs = cs.loadUint(3);
-        let endRefs = cs.loadUint(3);
+	let kind = cs.loadUint(8);
+	if (kind === 0) {
+		return { type: "null" };
+	} else if (kind === 1) {
+		return { type: "int", value: cs.loadIntBig(64) };
+	} else if (kind === 2) {
+		if (cs.loadUint(7) === 0) {
+			return { type: "int", value: cs.loadIntBig(257) };
+		} else {
+			cs.loadBit(); // must eq 1
+			return { type: "nan" };
+		}
+	} else if (kind === 3) {
+		return { type: "cell", cell: cs.loadRef() };
+	} else if (kind === 4) {
+		let startBits = cs.loadUint(10);
+		let endBits = cs.loadUint(10);
+		let startRefs = cs.loadUint(3);
+		let endRefs = cs.loadUint(3);
 
-        // Copy to new cell
-        let rs = cs.loadRef().beginParse();
-        rs.skip(startBits);
-        let dt = rs.loadBits(endBits - startBits);
+		// Copy to new cell
+		let rs = cs.loadRef().beginParse();
+		rs.skip(startBits);
+		let dt = rs.loadBits(endBits - startBits);
 
-        let builder = beginCell()
-            .storeBits(dt);
+		let builder = beginCell().storeBits(dt);
 
-        // Copy refs if exist
-        if (startRefs < endRefs) {
-            for (let i = 0; i < startRefs; i++) {
-                rs.loadRef();
-            }
-            for (let i = 0; i < endRefs - startRefs; i++) {
-                builder.storeRef(rs.loadRef());
-            }
-        }
+		// Copy refs if exist
+		if (startRefs < endRefs) {
+			for (let i = 0; i < startRefs; i++) {
+				rs.loadRef();
+			}
+			for (let i = 0; i < endRefs - startRefs; i++) {
+				builder.storeRef(rs.loadRef());
+			}
+		}
 
-        return { type: 'slice', cell: builder.endCell() };
-    } else if (kind === 5) {
-        return { type: 'builder', cell: cs.loadRef() };
-    } else if (kind === 7) {
-        let length = cs.loadUint(16);
-        let items: TupleItem[] = [];
-        if (length > 1) {
-            let head: Slice = cs.loadRef().beginParse();
-            let tail: Slice = cs.loadRef().beginParse();
-            items.unshift(parseTupleItem(tail));
-            for (let i = 0; i < length - 2; i++) {
-                let ohead = head;
-                head = ohead.loadRef().beginParse();
-                tail = ohead.loadRef().beginParse();
-                items.unshift(parseTupleItem(tail));
-            }
-            items.unshift(parseTupleItem(head));
-        } else if (length === 1) {
-            items.push(parseTupleItem(cs.loadRef().beginParse()));
-        }
-        return { type: 'tuple', items };
-    } else {
-        throw Error('Unsupported stack item')
-    }
+		return { type: "slice", cell: builder.endCell() };
+	} else if (kind === 5) {
+		return { type: "builder", cell: cs.loadRef() };
+	} else if (kind === 7) {
+		let length = cs.loadUint(16);
+		let items: TupleItem[] = [];
+		if (length > 1) {
+			let head: Slice = cs.loadRef().beginParse();
+			let tail: Slice = cs.loadRef().beginParse();
+			items.unshift(parseTupleItem(tail));
+			for (let i = 0; i < length - 2; i++) {
+				let ohead = head;
+				head = ohead.loadRef().beginParse();
+				tail = ohead.loadRef().beginParse();
+				items.unshift(parseTupleItem(tail));
+			}
+			items.unshift(parseTupleItem(head));
+		} else if (length === 1) {
+			items.push(parseTupleItem(cs.loadRef().beginParse()));
+		}
+		return { type: "tuple", items };
+	} else {
+		throw Error("Unsupported stack item");
+	}
 }
 
 //
@@ -177,34 +179,33 @@ export function parseTupleItem(cs: Slice): TupleItem {
 //
 
 function serializeTupleTail(src: TupleItem[], builder: Builder) {
-    if (src.length > 0) {
+	if (src.length > 0) {
+		// rest:^(VmStackList n)
+		let tail = beginCell();
+		serializeTupleTail(src.slice(0, src.length - 1), tail);
+		builder.storeRef(tail.endCell());
 
-        // rest:^(VmStackList n)
-        let tail = beginCell();
-        serializeTupleTail(src.slice(0, src.length - 1), tail);
-        builder.storeRef(tail.endCell());
-
-        // tos
-        serializeTupleItem(src[src.length - 1], builder);
-    }
+		// tos
+		serializeTupleItem(src[src.length - 1], builder);
+	}
 }
 
 export function serializeTuple(src: TupleItem[]) {
-    let builder = beginCell();
-    builder.storeUint(src.length, 24);
-    let r = [...src];
-    serializeTupleTail(r, builder);
-    return builder.endCell();
+	let builder = beginCell();
+	builder.storeUint(src.length, 24);
+	let r = [...src];
+	serializeTupleTail(r, builder);
+	return builder.endCell();
 }
 
 export function parseTuple(src: Cell): TupleItem[] {
-    let res: TupleItem[] = [];
-    let cs = src.beginParse();
-    let size = cs.loadUint(24);
-    for (let i = 0; i < size; i++) {
-        let next = cs.loadRef();
-        res.unshift(parseTupleItem(cs));
-        cs = next.beginParse();
-    }
-    return res;
+	let res: TupleItem[] = [];
+	let cs = src.beginParse();
+	let size = cs.loadUint(24);
+	for (let i = 0; i < size; i++) {
+		let next = cs.loadRef();
+		res.unshift(parseTupleItem(cs));
+		cs = next.beginParse();
+	}
+	return res;
 }

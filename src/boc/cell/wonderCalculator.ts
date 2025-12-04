@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Whales Corp. 
+ * Copyright (c) Whales Corp.
  * All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -8,7 +8,7 @@
 
 import { BitString } from "../BitString";
 import { CellType } from "../CellType";
-import { Cell } from '../Cell';
+import { Cell } from "../Cell";
 import { LevelMask } from "./LevelMask";
 import { ExoticPruned, exoticPruned } from "./exoticPruned";
 import { exoticMerkleProof } from "./exoticMerkleProof";
@@ -21,164 +21,168 @@ import { exoticLibrary } from "./exoticLibrary";
 // This function replicates unknown logic of resolving cell data
 // https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/vm/cells/DataCell.cpp#L214
 //
-export function wonderCalculator(type: CellType, bits: BitString, refs: Cell[]): { mask: LevelMask, hashes: Buffer[], depths: number[] } {
+export function wonderCalculator(
+	type: CellType,
+	bits: BitString,
+	refs: Cell[],
+): { mask: LevelMask; hashes: Buffer[]; depths: number[] } {
+	//
+	// Resolving level mask
+	//
 
-    //
-    // Resolving level mask
-    //
+	let levelMask: LevelMask;
+	let pruned: ExoticPruned | null = null;
+	if (type === CellType.Ordinary) {
+		let mask = 0;
+		for (let r of refs) {
+			mask = mask | r.mask.value;
+		}
+		levelMask = new LevelMask(mask);
+	} else if (type === CellType.PrunedBranch) {
+		// Parse pruned
+		pruned = exoticPruned(bits, refs);
 
-    let levelMask: LevelMask;
-    let pruned: ExoticPruned | null = null;
-    if (type === CellType.Ordinary) {
-        let mask = 0;
-        for (let r of refs) {
-            mask = mask | r.mask.value;
-        }
-        levelMask = new LevelMask(mask);
-    } else if (type === CellType.PrunedBranch) {
+		// Load level
+		levelMask = new LevelMask(pruned.mask);
+	} else if (type === CellType.MerkleProof) {
+		// Parse proof
+		let loaded = exoticMerkleProof(bits, refs);
 
-        // Parse pruned
-        pruned = exoticPruned(bits, refs);
+		// Load level
+		levelMask = new LevelMask(refs[0].mask.value >> 1);
+	} else if (type === CellType.MerkleUpdate) {
+		// Parse update
+		let loaded = exoticMerkleUpdate(bits, refs);
 
-        // Load level
-        levelMask = new LevelMask(pruned.mask);
+		// Load level
+		levelMask = new LevelMask((refs[0].mask.value | refs[1].mask.value) >> 1);
+	} else if (type === CellType.Library) {
+		// Parse library
+		let loaded = exoticLibrary(bits, refs);
 
-    } else if (type === CellType.MerkleProof) {
+		// Load level
+		levelMask = new LevelMask();
+	} else {
+		throw new Error("Unsupported exotic type");
+	}
 
-        // Parse proof
-        let loaded = exoticMerkleProof(bits, refs);
+	//
+	// Calculate hashes and depths
+	// NOTE: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/vm/cells/DataCell.cpp#L214
+	//
 
-        // Load level
-        levelMask = new LevelMask(refs[0].mask.value >> 1);
-    } else if (type === CellType.MerkleUpdate) {
+	let depths: number[] = [];
+	let hashes: Buffer[] = [];
 
-        // Parse update
-        let loaded = exoticMerkleUpdate(bits, refs);
+	let hashCount = type === CellType.PrunedBranch ? 1 : levelMask.hashCount;
+	let totalHashCount = levelMask.hashCount;
+	let hashIOffset = totalHashCount - hashCount;
+	for (let levelI = 0, hashI = 0; levelI <= levelMask.level; levelI++) {
+		if (!levelMask.isSignificant(levelI)) {
+			continue;
+		}
 
-        // Load level
-        levelMask = new LevelMask((refs[0].mask.value | refs[1].mask.value) >> 1);
-    } else if (type === CellType.Library) {
+		if (hashI < hashIOffset) {
+			hashI++;
+			continue;
+		}
 
-        // Parse library
-        let loaded = exoticLibrary(bits, refs);
+		//
+		// Bits
+		//
 
-        // Load level
-        levelMask = new LevelMask();
-    } else {
-        throw new Error("Unsupported exotic type");
-    }
+		let currentBits: BitString;
+		if (hashI === hashIOffset) {
+			if (!(levelI === 0 || type === CellType.PrunedBranch)) {
+				throw Error("Invalid");
+			}
+			currentBits = bits;
+		} else {
+			if (!(levelI !== 0 && type !== CellType.PrunedBranch)) {
+				throw Error("Invalid: " + levelI + ", " + type);
+			}
+			currentBits = new BitString(hashes[hashI - hashIOffset - 1], 0, 256);
+		}
 
-    //
-    // Calculate hashes and depths
-    // NOTE: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/vm/cells/DataCell.cpp#L214
-    //
+		//
+		// Depth
+		//
 
-    let depths: number[] = [];
-    let hashes: Buffer[] = [];
+		let currentDepth = 0;
+		for (let c of refs) {
+			let childDepth: number;
+			if (type == CellType.MerkleProof || type == CellType.MerkleUpdate) {
+				childDepth = c.depth(levelI + 1);
+			} else {
+				childDepth = c.depth(levelI);
+			}
+			currentDepth = Math.max(currentDepth, childDepth);
+		}
+		if (refs.length > 0) {
+			currentDepth++;
+		}
 
-    let hashCount = type === CellType.PrunedBranch ? 1 : levelMask.hashCount;
-    let totalHashCount = levelMask.hashCount;
-    let hashIOffset = totalHashCount - hashCount;
-    for (let levelI = 0, hashI = 0; levelI <= levelMask.level; levelI++) {
+		//
+		// Hash
+		//
 
-        if (!levelMask.isSignificant(levelI)) {
-            continue;
-        }
+		let repr = getRepr(
+			bits,
+			currentBits,
+			refs,
+			levelI,
+			levelMask.apply(levelI).value,
+			type,
+		);
+		let hash = sha256_sync(repr);
 
-        if (hashI < hashIOffset) {
-            hashI++;
-            continue;
-        }
+		//
+		// Persist next
+		//
 
-        //
-        // Bits
-        //
+		let destI = hashI - hashIOffset;
+		depths[destI] = currentDepth;
+		hashes[destI] = hash;
 
-        let currentBits: BitString;
-        if (hashI === hashIOffset) {
-            if (!(levelI === 0 || type === CellType.PrunedBranch)) {
-                throw Error('Invalid');
-            }
-            currentBits = bits;
-        } else {
-            if (!(levelI !== 0 && type !== CellType.PrunedBranch)) {
-                throw Error('Invalid: ' + levelI + ', ' + type);
-            }
-            currentBits = new BitString(hashes[hashI - hashIOffset - 1], 0, 256);
-        }
+		//
+		// Next
+		//
 
-        //
-        // Depth
-        //
+		hashI++;
+	}
 
-        let currentDepth = 0;
-        for (let c of refs) {
-            let childDepth: number;
-            if (type == CellType.MerkleProof || type == CellType.MerkleUpdate) {
-                childDepth = c.depth(levelI + 1);
-            } else {
-                childDepth = c.depth(levelI);
-            }
-            currentDepth = Math.max(currentDepth, childDepth);
-        }
-        if (refs.length > 0) {
-            currentDepth++;
-        }
+	//
+	// Calculate hash and depth for all levels
+	//
 
-        //
-        // Hash
-        //
+	let resolvedHashes: Buffer[] = [];
+	let resolvedDepths: number[] = [];
+	if (pruned) {
+		for (let i = 0; i < 4; i++) {
+			const { hashIndex } = levelMask.apply(i);
+			const { hashIndex: thisHashIndex } = levelMask;
+			if (hashIndex !== thisHashIndex) {
+				resolvedHashes.push(pruned.pruned[hashIndex].hash);
+				resolvedDepths.push(pruned.pruned[hashIndex].depth);
+			} else {
+				resolvedHashes.push(hashes[0]);
+				resolvedDepths.push(depths[0]);
+			}
+		}
+	} else {
+		for (let i = 0; i < 4; i++) {
+			resolvedHashes.push(hashes[levelMask.apply(i).hashIndex]);
+			resolvedDepths.push(depths[levelMask.apply(i).hashIndex]);
+		}
+	}
 
-        let repr = getRepr(bits, currentBits, refs, levelI, levelMask.apply(levelI).value, type);
-        let hash = sha256_sync(repr);
+	//
+	// Result
+	//
 
-        //
-        // Persist next
-        //
-
-        let destI = hashI - hashIOffset;
-        depths[destI] = currentDepth;
-        hashes[destI] = hash;
-
-        //
-        // Next
-        //
-
-        hashI++;
-    }
-
-    //
-    // Calculate hash and depth for all levels
-    //
-
-    let resolvedHashes: Buffer[] = [];
-    let resolvedDepths: number[] = [];
-    if (pruned) {
-        for (let i = 0; i < 4; i++) {
-            const { hashIndex } = levelMask.apply(i);
-            const { hashIndex: thisHashIndex } = levelMask;
-            if (hashIndex !== thisHashIndex) {
-                resolvedHashes.push(pruned.pruned[hashIndex].hash);
-                resolvedDepths.push(pruned.pruned[hashIndex].depth);
-            } else {
-                resolvedHashes.push(hashes[0]);
-                resolvedDepths.push(depths[0]);
-            }
-        }
-    } else {
-        for (let i = 0; i < 4; i++) {
-            resolvedHashes.push(hashes[levelMask.apply(i).hashIndex]);
-            resolvedDepths.push(depths[levelMask.apply(i).hashIndex]);
-        }
-    }
-
-    //
-    // Result
-    //
-
-    return {
-        mask: levelMask,
-        hashes: resolvedHashes,
-        depths: resolvedDepths
-    };
+	return {
+		mask: levelMask,
+		hashes: resolvedHashes,
+		depths: resolvedDepths,
+	};
 }
