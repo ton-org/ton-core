@@ -7,7 +7,13 @@
     "license": "MIT",
     "files": [
         "dist",
-        "src"
+        "src",
+        "!*.test.*",
+        "!*.spec.*",
+        "!*.trait.*",
+        "!__snapshots__",
+        "!__testdata__",
+        "!__tests__"
     ],
     "scripts": {
         "build": "rm -fr dist && tsc -p ./tsconfig.build.json",
