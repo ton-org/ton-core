@@ -1,5 +1,8 @@
 const mainConfig = require("./jest.config");
-/** @type {import('jest').Config} */
+
+/**
+ * @type {import("jest").Config}
+ */
 const config = {
     ...mainConfig,
     collectCoverage: true,

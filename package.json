@@ -10,8 +10,9 @@
         "src"
     ],
     "scripts": {
-        "build": "rm -fr dist && tsc --declaration",
+        "build": "rm -fr dist && tsc -p ./tsconfig.build.json",
         "test": "jest --verbose",
+        "typecheck": "tsc",
         "format": "biome format --write .",
         "format:check": "biome format .",
         "coverage": "jest --verbose -c ./jest-coverage.config.js",

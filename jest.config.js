@@ -1,7 +1,10 @@
 const SINGLETHREADED =
     process.env.SINGLETHREADED === "1" || process.env.SINGLETHREADED === "true";
-/** @type {import('jest').Config} */
-const options = {
+
+/**
+ * @type {import('jest').Config}
+ */
+const config = {
     transform: {
         "^.+\\.ts": "@swc/jest",
     },
@@ -11,7 +14,7 @@ const options = {
 
 if (SINGLETHREADED) {
     /** setting value to undfined throws */
-    options.maxWorkers = 1;
+    config.maxWorkers = 1;
 }
 
-module.exports = options;
+module.exports = config;
