@@ -874,13 +874,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@noble/hashes@npm:1.1.2"
-  checksum: 3c2a8cb7c2e053811032f242155d870c5eb98844d924d69702244d48804cb03b42d4a666c49c2b71164420d8229cb9a6f242b972d50d5bb2f1d673b98b041de2
-  languageName: node
-  linkType: hard
-
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -1313,9 +1306,7 @@ __metadata:
     "@types/jest": ^29.5.12
     "@types/node": ^20.11.30
     jest: ^29.7.0
-    prando: ^6.0.1
     release-it: ^15.5.1
-    ton3-core: ^0.0.20
     ts-jest: ^29.1.2
     ts-node: ^10.9.2
     typescript: ^5.4.3
@@ -2428,13 +2419,6 @@ __metadata:
     supports-color:
       optional: true
   checksum: 3dbad3f94ea64f34431a9cbf0bafb61853eda57bff2880036153438f50fb5a84f27683ba0d8e5426bf41a8c6ff03879488120cf5b3a761e77953169c0600a708
-  languageName: node
-  linkType: hard
-
-"decimal.js@npm:10.3.1":
-  version: 10.3.1
-  resolution: "decimal.js@npm:10.3.1"
-  checksum: 0351ac9f05fe050f23227aa6a4573bee2d58fa7378fcf28d969a8c789525032effb488a90320fd3fe86a66e17b4bc507d811b15eada5b7f0e7ec5d2af4c24a59
   languageName: node
   linkType: hard
 
@@ -5614,13 +5598,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prando@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "prando@npm:6.0.1"
-  checksum: c0c25dbb2cb92dff4b0f44781f0e2132886c34ab6a12f7f0839d6073c783d86589d4c632727819d8fb0a5a675a7e27223285c6907261d3b6a49167b4cbdc162a
-  languageName: node
-  linkType: hard
-
 "prelude-ls@npm:~1.1.2":
   version: 1.1.2
   resolution: "prelude-ls@npm:1.1.2"
@@ -6529,17 +6506,6 @@ __metadata:
   dependencies:
     is-number: ^7.0.0
   checksum: f76fa01b3d5be85db6a2a143e24df9f60dd047d151062d0ba3df62953f2f697b16fe5dad9b0ac6191c7efc7b1d9dcaa4b768174b7b29da89d4428e64bc0a20ed
-  languageName: node
-  linkType: hard
-
-"ton3-core@npm:^0.0.20":
-  version: 0.0.20
-  resolution: "ton3-core@npm:0.0.20"
-  dependencies:
-    "@noble/hashes": 1.1.2
-    decimal.js: 10.3.1
-    tweetnacl: 1.0.3
-  checksum: 45abca163ee4c079b072b7d2081c48245ae77c45b5bd3ca66ab96fc7fcb435d56c60c29c3350486a543fcb360acb53bbfcf55fa20598bb26fd7d4dfe7059fea2
   languageName: node
   linkType: hard
 
