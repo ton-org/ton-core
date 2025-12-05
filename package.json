@@ -7,11 +7,18 @@
     "license": "MIT",
     "files": [
         "dist",
-        "src"
+        "src",
+        "!*.test.*",
+        "!*.spec.*",
+        "!*.trait.*",
+        "!__snapshots__",
+        "!__testdata__",
+        "!__tests__"
     ],
     "scripts": {
-        "build": "rm -fr dist && tsc --declaration",
+        "build": "rm -fr dist && tsc -p ./tsconfig.build.json",
         "test": "jest --verbose",
+        "typecheck": "tsc",
         "format": "biome format --write .",
         "format:check": "biome format .",
         "coverage": "jest --verbose -c ./jest-coverage.config.js",
