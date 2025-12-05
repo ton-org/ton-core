@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import inspectSymbol from "symbol.inspect";
+import { inspectSymbol } from "../inspect";
 import {
     Dictionary,
     DictionaryKey,
@@ -565,5 +565,5 @@ export class Slice {
         return this.asCell().toString();
     }
 
-    [inspectSymbol] = () => this.toString();
+    private [inspectSymbol] = () => this.toString();
 }

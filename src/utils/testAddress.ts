@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Prando from "prando";
+import { Prando } from "../test/prando";
 import { Address } from "../address/Address";
 import { ExternalAddress } from "../address/ExternalAddress";
 import { bitsForNumber } from "./bitsForNumber";

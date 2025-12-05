@@ -7,7 +7,7 @@
  */
 
 import { randomInt } from "crypto";
-import Prando from "prando";
+import { Prando } from "../test/prando";
 import { testAddress } from "../utils/testAddress";
 import { BitBuilder } from "./BitBuilder";
 import { Cell } from "./Cell";
