@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import inspectSymbol from "symbol.inspect";
+import { inspectSymbol } from "../inspect";
 export class ExternalAddress {
     static isAddress(src: any): src is ExternalAddress {
         return src instanceof ExternalAddress;
@@ -24,5 +24,5 @@ export class ExternalAddress {
         return `External<${this.bits}:${this.value}>`;
     }
 
-    [inspectSymbol] = () => this.toString();
+    private [inspectSymbol] = () => this.toString();
 }

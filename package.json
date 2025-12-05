@@ -36,9 +36,6 @@
     "peerDependencies": {
         "@ton/crypto": ">=3.2.0"
     },
-    "dependencies": {
-        "symbol.inspect": "1.0.1"
-    },
     "publishConfig": {
         "access": "public",
         "registry": "https://registry.npmjs.org/"

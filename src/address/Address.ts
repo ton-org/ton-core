@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import inspectSymbol from "symbol.inspect";
+import { inspectSymbol } from "../inspect";
 import { crc16 } from "../utils/crc16";
 
 const bounceable_tag = 0x11;
@@ -219,7 +219,7 @@ export class Address {
         }
     };
 
-    [inspectSymbol] = () => this.toString();
+    private [inspectSymbol] = () => this.toString();
 }
 
 export function address(src: string) {

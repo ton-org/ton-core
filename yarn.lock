@@ -1315,7 +1315,6 @@ __metadata:
     jest: ^29.7.0
     prando: ^6.0.1
     release-it: ^15.5.1
-    symbol.inspect: 1.0.1
     ton3-core: ^0.0.20
     ts-jest: ^29.1.2
     ts-node: ^10.9.2
@@ -6459,13 +6458,6 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 53b1e247e68e05db7b3808b99b892bd36fb096e6fba213a06da7fab22045e97597db425c724f2bbd6c99a3c295e1e73f3e4de78592289f38431049e1277ca0ae
-  languageName: node
-  linkType: hard
-
-"symbol.inspect@npm:1.0.1":
-  version: 1.0.1
-  resolution: "symbol.inspect@npm:1.0.1"
-  checksum: 47fa8d38d0bc5d04c06df2f71bba1a723ee0e015ca042c47b29c11f107877dd1a2e2d2154c9ef5eec11e92e4165d126c844f06d05da80e477581c8f284f05fdf
   languageName: node
   linkType: hard
 

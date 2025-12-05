@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import inspectSymbol from "symbol.inspect";
+import { inspectSymbol } from "../inspect";
 import { base32Decode, base32Encode } from "../utils/base32";
 import { crc16 } from "../utils/crc16";
 
@@ -59,5 +59,5 @@ export class ADNLAddress {
         return base32Encode(data).slice(1);
     };
 
-    [inspectSymbol] = () => this.toString();
+    private [inspectSymbol] = () => this.toString();
 }
