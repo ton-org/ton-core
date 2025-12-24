@@ -101,3 +101,9 @@ export { getMethodId } from "./utils/getMethodId";
 
 // Crypto
 export { safeSign, safeSignVerify } from "./crypto/safeSign";
+export {
+    signatureDomainHash,
+    signatureDomainPrefix,
+    domainSign,
+    domainSignVerify,
+} from "./crypto/domainSignature";

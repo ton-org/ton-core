@@ -127,6 +127,13 @@ export {
     loadShardStateUnsplit,
 } from "./ShardStateUnsplit";
 export {
+    SignatureDomain,
+    SignatureDomainEmpty,
+    SignatureDomainL2,
+    signatureDomainEmptyTag,
+    signatureDomainL2Tag,
+} from "./SignatureDomain";
+export {
     SimpleLibrary,
     loadSimpleLibrary,
     storeSimpleLibrary,
