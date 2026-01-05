@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+## Added
+- Signature domain cryptography via `domainSign`, `domainSignVerify` functions
+
 ## [0.62.0] - 2025-09-30
 
 ## Added
@@ -49,7 +54,7 @@ Notes: if you want to parse dictionary value without checking for remaining data
 
 ## [0.59.0] - 2024-10-09
 
-## Fixed 
+## Fixed
 - `TupleReader`: always pop current element in `readStringOpt` and `readBufferOpt` (thx @anton-trunov)
 
 ## Added
@@ -64,14 +69,14 @@ Notes: if you want to parse dictionary value without checking for remaining data
 ## [0.58.0] - 2024-09-13
 
 ## Added
-- Methods, prefixed with "is" in the contract classes are now wrapped like "send"/"get"  
+- Methods, prefixed with "is" in the contract classes are now wrapped like "send"/"get"
 
 ## [0.57.0] - 2024-08-16
 ## Added
 - More flexible merkle proof generation (thx @akifoq)
 - reserve_currecy, change_library actions for OutList (thx @1IxI1)
 
-## Fixed 
+## Fixed
 - Number type safety check in BitReader (thx @Trinketer22)
 
 
@@ -184,8 +189,8 @@ Notes: BoC topological sort now is more like C++ impl, however there are still s
 
 ## [0.48.0] - 2023-02-28
 
-## Added 
-- `Library` exotic cell parsing 
+## Added
+- `Library` exotic cell parsing
 
 ## [0.47.1] - 2023-02-06
 
@@ -285,7 +290,7 @@ Notes: BoC topological sort now is more like C++ impl, however there are still s
 ## [0.32.0] - 2022-12-31
 
 ## Changes
-- Rename `AccountState` to `ContractState` to avoid name clashing with blockchain primitives 
+- Rename `AccountState` to `ContractState` to avoid name clashing with blockchain primitives
 
 ## [0.31.0] - 2022-12-31
 
@@ -302,7 +307,7 @@ Notes: BoC topological sort now is more like C++ impl, however there are still s
 - `ShardAccount` parsing
 - `Account` parsing
 
-## [0.29.0] - 2022-12-31 
+## [0.29.0] - 2022-12-31
 
 ## Fixed
 - Missing exports of `StateInit`
