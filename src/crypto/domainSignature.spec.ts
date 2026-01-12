@@ -7,7 +7,7 @@ import {
 import { domainSign, domainSignVerify } from "./domainSignature";
 import { SignatureDomain } from "../types/SignatureDomain";
 
-describe("setSignWithGlobalId", () => {
+describe("domainSignature", () => {
     const data = Buffer.from("Hello world!");
     let keypair: KeyPair;
     let targetSignature: Buffer;
