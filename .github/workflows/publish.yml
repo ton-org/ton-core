@@ -1,6 +1,7 @@
 name: Publish to NPM (OIDC)
 
 on:
+  workflow_dispatch: { }
   push:
     branches:
       - main
