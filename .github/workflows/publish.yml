@@ -1,32 +1,40 @@
+name: Publish to NPM (OIDC)
+
 on:
+  workflow_dispatch: { }
   push:
     branches:
       - main
-name: Publish to NPM
+    paths:
+      - package.json
+      - yarn.lock
+
 jobs:
   publish:
-    name: Publish
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js 18
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
+          node-version: "24.x"
+          registry-url: "https://registry.npmjs.org"
           always-auth: true
-      - name: Install Yarn
-        run: npm install -g yarn
+
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Install dependencies
-        run: yarn
+        run: yarn install --immutable
+
       - name: Build
         run: yarn build
-      - name: Setup .yarnrc.yml
-        run: |
-          yarn config set npmAuthToken $NPM_AUTH_TOKEN
-          yarn config set npmAlwaysAuth true
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
       - name: Publish
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        run: yarn npm publish --access public
+        run: NODE_AUTH_TOKEN="" npm publish --provenance --access public
