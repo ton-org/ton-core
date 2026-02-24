@@ -17,6 +17,17 @@ import { Dictionary } from "../dict/Dictionary";
 import { StateInit } from "./StateInit";
 import { ExtraCurrency, packExtraCurrencyDict } from "./ExtraCurrency";
 
+/**
+ * Creates an internal message (MessageRelaxed) for sending TON between wallets/contracts.
+ *
+ * @remarks Import from `@ton/core`, not from `@ton/ton`.
+ *
+ * @example
+ * ```typescript
+ * import { internal, toNano } from '@ton/core';
+ * const msg = internal({ to: 'EQD...', value: toNano('0.5'), bounce: true });
+ * ```
+ */
 export function internal(src: {
     to: Address | string;
     value: bigint | string;
