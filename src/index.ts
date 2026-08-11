@@ -44,6 +44,8 @@ export { exoticPruned } from "./boc/cell/exoticPruned";
 export {
     generateMerkleProof,
     generateMerkleProofDirect,
+    generateMerkleProofFromCell,
+    generateMerkleProofDirectFromCell,
 } from "./dict/generateMerkleProof";
 export { generateMerkleUpdate } from "./dict/generateMerkleUpdate";
 
