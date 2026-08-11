@@ -227,6 +227,17 @@ describe("Dictionary", () => {
         expect(() => generateMerkleProofFromCell(root, [6], keys)).toThrow(
             'Trying to generate merkle proof for a missing key "6"',
         );
+
+        const prunedRoot = generateMerkleProofDirectFromCell(root, [1], keys);
+        const proofFromPrunedRoot = generateMerkleProofFromCell(
+            prunedRoot,
+            [1],
+            keys,
+        );
+        expect(proofFromPrunedRoot.refs[0].equals(prunedRoot)).toBe(true);
+        expect(() =>
+            generateMerkleProofFromCell(prunedRoot, [5], keys),
+        ).toThrow('Trying to generate merkle proof for a missing key "5"');
     });
 
     it("should generate merkle updates", () => {
