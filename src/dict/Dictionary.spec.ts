@@ -13,6 +13,10 @@ import { exoticMerkleUpdate } from "../boc/cell/exoticMerkleUpdate";
 import { Dictionary } from "./Dictionary";
 import fs from "fs";
 import { BitString } from "../boc/BitString";
+import {
+    generateMerkleProofDirectFromCell,
+    generateMerkleProofFromCell,
+} from "./generateMerkleProof";
 
 function storeBits(builder: Builder, src: string) {
     for (let s of src) {
@@ -186,6 +190,54 @@ describe("Dictionary", () => {
         }
 
         expect(() => d.generateMerkleProof([6])).toThrow();
+    });
+
+    it("should generate merkle proofs from a serialized dictionary root", () => {
+        const keys = Dictionary.Keys.Uint(8);
+        const values = Dictionary.Values.Uint(32);
+        const valueSerializer = jest.spyOn(values, "serialize");
+        const d = Dictionary.empty(keys, values);
+        d.set(1, 11);
+        d.set(2, 22);
+        d.set(3, 33);
+        d.set(4, 44);
+        d.set(5, 55);
+
+        const root = beginCell().storeDictDirect(d).endCell();
+        expect(valueSerializer).toHaveBeenCalledTimes(d.size);
+        valueSerializer.mockClear();
+
+        for (const keysToProve of [[1], [2, 3, 4], [1, 5]]) {
+            const proof = generateMerkleProofFromCell(root, keysToProve, keys);
+            expect(valueSerializer).not.toHaveBeenCalled();
+
+            const proofFromDictionary = d.generateMerkleProof(keysToProve);
+            expect(valueSerializer).toHaveBeenCalledTimes(d.size);
+            expect(proof.equals(proofFromDictionary)).toBe(true);
+            valueSerializer.mockClear();
+
+            const directProof = generateMerkleProofDirectFromCell(
+                root,
+                keysToProve,
+                keys,
+            );
+            expect(proof.refs[0].equals(directProof)).toBe(true);
+        }
+
+        expect(() => generateMerkleProofFromCell(root, [6], keys)).toThrow(
+            'Trying to generate merkle proof for a missing key "6"',
+        );
+
+        const prunedRoot = generateMerkleProofDirectFromCell(root, [1], keys);
+        const proofFromPrunedRoot = generateMerkleProofFromCell(
+            prunedRoot,
+            [1],
+            keys,
+        );
+        expect(proofFromPrunedRoot.refs[0].equals(prunedRoot)).toBe(true);
+        expect(() =>
+            generateMerkleProofFromCell(prunedRoot, [5], keys),
+        ).toThrow('Trying to generate merkle proof for a missing key "5"');
     });
 
     it("should generate merkle updates", () => {
