@@ -63,10 +63,20 @@ export function storeMessage(message: Message, opts?: { forceRef?: boolean }) {
             if (opts && opts.forceRef) {
                 needRef = true;
             } else {
-                needRef =
+                // Storing the init inline copies its refs into this builder. The
+                // body that follows needs at least one ref of its own (either the
+                // body cell itself, or — when the body is inlined — its own refs).
+                // If inlining the init would not leave enough room for the body's
+                // refs, the init must go into a ref instead (it then costs a
+                // single ref regardless of how many the state init holds). See #148.
+                let bodyRefs =
+                    message.body.refs.length > 0 ? message.body.refs.length : 1;
+                let notEnoughBits =
                     builder.availableBits -
                         2 /* At least two bits for ref flags */ <
                     initCell.bits + message.body.bits.length;
+                let notEnoughRefs = builder.refs + initCell.refs + bodyRefs > 4;
+                needRef = notEnoughBits || notEnoughRefs;
             }
 
             // Persist init
