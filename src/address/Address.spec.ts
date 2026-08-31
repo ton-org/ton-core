@@ -204,4 +204,29 @@ describe("Address", () => {
             ),
         ).toBe(false);
     });
+
+    it("isRaw should reject malformed workchain and non-hex hashes", () => {
+        const validHash = "a".repeat(64);
+        // Unanchored hash regex used to accept a hash with a single hex char.
+        expect(Address.isRaw("0:" + "z".repeat(63) + "0")).toBe(false);
+        expect(Address.isRaw("0:" + "g".repeat(64))).toBe(false);
+        expect(Address.isRaw("0:" + "0".repeat(63) + "Z")).toBe(false);
+        // parseFloat/parseInt divergence: "0x10:" used to pass isRaw and then
+        // parseRaw to workchain 16; "1e2:" validated but parsed to 1.
+        expect(Address.isRaw("0x10:" + validHash)).toBe(false);
+        expect(Address.isRaw("1e2:" + validHash)).toBe(false);
+        expect(Address.isRaw("1.5:" + validHash)).toBe(false);
+        // A well-formed raw address still passes.
+        expect(Address.isRaw("0:" + validHash)).toBe(true);
+        expect(Address.isRaw("-1:" + validHash)).toBe(true);
+    });
+
+    it("parse should not silently accept a hex/exponent workchain prefix", () => {
+        const validHash = "a".repeat(64);
+        // Previously Address.parse("0x10:<hash>") returned an address on
+        // workchain 16 because isRaw passed and parseRaw used parseInt("0x10").
+        expect(() => Address.parse("0x10:" + validHash)).toThrowError(
+            "Unknown address type",
+        );
+    });
 });
