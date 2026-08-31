@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## Fixed
+- `Address.isRaw` no longer accepts a malformed workchain (e.g. `0x10:`, `1e2:`) or a non-hex hash; `isRaw` and `parseRaw` now agree on what a raw address is, so `Address.parse` can't silently return a wrong-workchain address.
+
 ## [0.63.1] - 2026-02-11
 
 ## Fixed

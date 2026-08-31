@@ -85,18 +85,18 @@ export class Address {
 
         let [wc, hash] = source.split(":");
 
-        // wc is not valid
-        if (!Number.isInteger(parseFloat(wc))) {
+        // wc must be a plain base-10 integer. Validate it the same way parseRaw
+        // reads it (parseInt base 10) so isRaw and parseRaw can't disagree:
+        // parseFloat("0x10") is 0 (looks valid) while parseInt("0x10") is 16,
+        // so "0x10:<hash>" used to pass isRaw and then parse to workchain 16.
+        if (!/^-?\d+$/.test(wc)) {
             return false;
         }
 
-        // hash is not valid
-        if (!/[a-f0-9]+/.test(hash.toLowerCase())) {
-            return false;
-        }
-
-        // has is not correct
-        if (hash.length !== 64) {
+        // hash must be exactly 64 lowercase/uppercase hex chars. The previous
+        // regex was unanchored (/[a-f0-9]+/), so a string like "z".repeat(63)+"0"
+        // passed because it contained a single hex char.
+        if (!/^[a-fA-F0-9]{64}$/.test(hash)) {
             return false;
         }
 
