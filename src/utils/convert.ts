@@ -32,11 +32,15 @@ export function toNano(src: number | string | bigint): bigint {
             }
         }
 
-        // Check sign
+        // A single leading minus is the sign. A second minus is not a number.
+        // The old loop toggled the sign, so "--1" became +1 TON.
         let neg = false;
-        while (src.startsWith("-")) {
-            neg = !neg;
+        if (src.startsWith("-")) {
+            neg = true;
             src = src.slice(1);
+        }
+        if (src.includes("-")) {
+            throw Error("Invalid number");
         }
 
         // Split string

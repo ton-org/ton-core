@@ -61,6 +61,10 @@ describe("convert", () => {
             expect(c).toBe(BigInt(r.nano));
         }
     });
+    it("should throw on a repeated minus sign", () => {
+        // "--1" currently returns 1000000000n, which is 1 TON.
+        expect(() => toNano("--1")).toThrow("Invalid number");
+    });
     it("should convert fromNano", () => {
         for (let r of stringCases) {
             let c = fromNano(r.nano);
