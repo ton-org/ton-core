@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Buffer } from "buffer";
 import { Cell } from "../boc/Cell";
 import { SendMode } from "../types/SendMode";
 import { TupleReader } from "../tuple/reader";

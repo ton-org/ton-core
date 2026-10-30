@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Buffer } from "buffer";
 import { inspectSymbol } from "../inspect";
 import { base32Decode, base32Encode } from "../utils/base32";
 import { crc16 } from "../utils/crc16";

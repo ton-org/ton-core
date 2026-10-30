@@ -6,6 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Buffer } from "buffer";
+
 const POLY = 0x82f63b78;
 
 export function crc32c(source: Buffer) {

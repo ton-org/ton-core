@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Buffer } from "buffer";
 import { BitReader } from "../BitReader";
 import { BitString } from "../BitString";
 import { Cell } from "../Cell";

@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import { sha256_sync, sign, signVerify } from "@ton/crypto";
 import {
     SignatureDomain,
