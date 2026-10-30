@@ -53,5 +53,8 @@
             }
         }
     },
-    "packageManager": "yarn@3.4.1+sha256.b51208ae422260539b3503fe5b596f4f236947d69ed1f8797f9830331a38c841"
+    "packageManager": "yarn@3.4.1+sha256.b51208ae422260539b3503fe5b596f4f236947d69ed1f8797f9830331a38c841",
+    "dependencies": {
+        "buffer": "^6.0.3"
+    }
 }

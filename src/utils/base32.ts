@@ -6,6 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Buffer } from "buffer";
+
 const alphabet = "abcdefghijklmnopqrstuvwxyz234567";
 
 export function base32Encode(buffer: Buffer): string {

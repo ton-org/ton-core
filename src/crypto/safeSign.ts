@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Buffer } from "buffer";
 import { sha256_sync, sign, signVerify } from "@ton/crypto";
 import { Cell } from "../boc/Cell";
 

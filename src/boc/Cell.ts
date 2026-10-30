@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Buffer } from "buffer";
 import { inspectSymbol } from "../inspect";
 import { BitString } from "./BitString";
 import { CellType } from "./CellType";

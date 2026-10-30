@@ -6,6 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Buffer } from "buffer";
+
 export function crc16(data: Buffer) {
     const poly = 0x1021;
     let reg = 0;

@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Buffer } from "buffer";
 import { Builder } from "../boc/Builder";
 import { Cell } from "../boc/Cell";
 import { Slice } from "../boc/Slice";

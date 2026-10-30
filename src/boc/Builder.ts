@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Buffer } from "buffer";
 import { Address } from "../address/Address";
 import { ExternalAddress } from "../address/ExternalAddress";
 import { BitBuilder } from "./BitBuilder";
