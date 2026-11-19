@@ -39,7 +39,7 @@ export function readString(slice: Slice) {
     return readBuffer(slice).toString();
 }
 
-function writeBuffer(src: Buffer, builder: Builder) {
+export function writeBuffer(src: Buffer, builder: Builder) {
     if (src.length > 0) {
         let bytes = Math.floor(builder.availableBits / 8);
         if (src.length > bytes) {
