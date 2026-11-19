@@ -9,6 +9,39 @@
 import { Address } from "./Address";
 
 describe("Address", () => {
+    it.each([
+        -128, -64, -2, -1, 0, 1, 127,
+    ])("should preserve signed friendly workchain %i", (workChain) => {
+        const address = new Address(workChain, Buffer.alloc(32, 0x42));
+        for (const bounceable of [false, true]) {
+            for (const testOnly of [false, true]) {
+                const options = { bounceable, testOnly };
+                expect(
+                    Address.parse(address.toString(options)).equals(address),
+                ).toBe(true);
+                const parsed = Address.parseFriendly(
+                    address.toStringBuffer(options),
+                );
+                expect(parsed.address.equals(address)).toBe(true);
+                expect(parsed.isBounceable).toBe(bounceable);
+                expect(parsed.isTestOnly).toBe(testOnly);
+            }
+        }
+    });
+    it("should decode a known workchain -2 friendly address", () => {
+        const address = Address.parse(
+            "Ef4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL3I",
+        );
+        expect(address.workChain).toBe(-2);
+        expect(address.hash).toEqual(Buffer.alloc(32));
+    });
+    it("should still reject a negative-workchain address with an invalid checksum", () => {
+        const encoded = new Address(-2, Buffer.alloc(32)).toStringBuffer();
+        encoded[35] ^= 1;
+        expect(() => Address.parseFriendly(encoded)).toThrow(
+            "Invalid checksum",
+        );
+    });
     it("should parse addresses in various forms", () => {
         let address1 = Address.parseFriendly(
             "0QAs9VlT6S776tq3unJcP5Ogsj-ELLunLXuOb1EKcOQi4-QO",
