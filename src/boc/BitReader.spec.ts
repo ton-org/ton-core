@@ -14,6 +14,38 @@ import { BitBuilder } from "./BitBuilder";
 import { BitReader } from "./BitReader";
 
 describe("BitReader", () => {
+    for (const value of [1n << 53n, -(1n << 53n)]) {
+        it(`recommends loadIntBig for unsafe signed integer ${value}`, () => {
+            const builder = new BitBuilder();
+            builder.writeInt(value, 55);
+            const reader = new BitReader(builder.build());
+            expect(() => reader.loadInt(55)).toThrow(
+                `${value} is out of safe integer range. Use loadIntBig instead`,
+            );
+            expect(new BitReader(builder.build()).loadIntBig(55)).toBe(value);
+        });
+
+        it(`recommends preloadIntBig for unsafe signed integer ${value}`, () => {
+            const builder = new BitBuilder();
+            builder.writeInt(value, 55);
+            const reader = new BitReader(builder.build());
+            expect(() => reader.preloadInt(55)).toThrow(
+                `${value} is out of safe integer range. Use preloadIntBig instead`,
+            );
+            expect(reader.preloadIntBig(55)).toBe(value);
+        });
+    }
+
+    for (const value of [Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]) {
+        it(`reads safe signed integer boundary ${value}`, () => {
+            const builder = new BitBuilder();
+            builder.writeInt(value, 55);
+            const reader = new BitReader(builder.build());
+            expect(reader.preloadInt(55)).toBe(value);
+            expect(reader.loadInt(55)).toBe(value);
+        });
+    }
+
     it("should read uints from builder", () => {
         let prando = new Prando("test-1");
         for (let i = 0; i < 1000; i++) {
