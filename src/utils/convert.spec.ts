@@ -49,6 +49,18 @@ describe("convert", () => {
     it("should throw an error due to insufficient precision of number", () => {
         expect(() => toNano(10000000.000000001)).toThrow();
     });
+    it("should reject negative numbers with insufficient precision", () => {
+        expect(() => toNano(-10000000.000000001)).toThrow(
+            "Not enough precision for a number value",
+        );
+    });
+    it.each(numberCases)("should convert the negative of $real toNano", (r) => {
+        expect(toNano(-r.real)).toBe(-BigInt(r.nano));
+    });
+    it("should handle negative fractional numbers like string inputs", () => {
+        expect(toNano(-1.5)).toBe(-1500000000n);
+        expect(toNano(-1.5)).toBe(toNano("-1.5"));
+    });
     it("should convert numbers toNano", () => {
         for (let r of numberCases) {
             let c = toNano(r.real);
