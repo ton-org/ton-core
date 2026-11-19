@@ -78,29 +78,13 @@ export class Address {
     }
 
     static isRaw(source: string) {
-        // Check if has delimiter
-        if (source.indexOf(":") === -1) {
+        const match = /^(-?\d+):([a-f0-9]{64})$/i.exec(source);
+        // Require the whole input, including any trailing newline, to match.
+        if (match === null || match[0] !== source) {
             return false;
         }
 
-        let [wc, hash] = source.split(":");
-
-        // wc is not valid
-        if (!Number.isInteger(parseFloat(wc))) {
-            return false;
-        }
-
-        // hash is not valid
-        if (!/[a-f0-9]+/.test(hash.toLowerCase())) {
-            return false;
-        }
-
-        // has is not correct
-        if (hash.length !== 64) {
-            return false;
-        }
-
-        return true;
+        return Number.isSafeInteger(Number(match[1]));
     }
 
     static normalize(source: string | Address) {
@@ -122,7 +106,10 @@ export class Address {
     }
 
     static parseRaw(source: string) {
-        let workChain = parseInt(source.split(":")[0]);
+        if (!Address.isRaw(source)) {
+            throw new Error("Invalid raw address: " + source);
+        }
+        let workChain = parseInt(source.split(":")[0], 10);
         let hash = Buffer.from(source.split(":")[1], "hex");
 
         return new Address(workChain, hash);

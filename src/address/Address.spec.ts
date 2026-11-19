@@ -9,6 +9,55 @@
 import { Address } from "./Address";
 
 describe("Address", () => {
+    const rawHash = "ab".repeat(32);
+    it.each([
+        "0",
+        "-1",
+        "-128",
+        "127",
+        "2147483647",
+        "-2147483648",
+        "00",
+    ])("should validate and parse decimal raw workchain %s consistently", (workchain) => {
+        const raw = `${workchain}:${rawHash.toUpperCase()}`;
+        expect(Address.isRaw(raw)).toBe(true);
+        expect(Address.parseRaw(raw).workChain).toBe(Number(workchain));
+        expect(Address.parse(raw).hash.toString("hex")).toBe(rawHash);
+    });
+    it.each([
+        "0x10",
+        "1e1",
+        "1.0",
+        "-1.0",
+        "+1",
+        "-",
+        "1junk",
+        "Infinity",
+        "NaN",
+        "",
+        " 1",
+        "1 ",
+        "1\n",
+        "1\r",
+        "9007199254740993",
+    ])("should reject malformed raw workchain %j", (workchain) => {
+        const raw = `${workchain}:${rawHash}`;
+        expect(Address.isRaw(raw)).toBe(false);
+        expect(() => Address.parseRaw(raw)).toThrow();
+        expect(() => Address.parse(raw)).toThrow();
+    });
+    it.each([
+        `0:${rawHash}:extra`,
+        `0:${rawHash.slice(0, 63)}g`,
+        `0:${rawHash.slice(0, 63)}`,
+        `0:${rawHash}0`,
+        `0:${rawHash}\n`,
+        rawHash,
+    ])("should reject malformed raw address %s", (raw) => {
+        expect(Address.isRaw(raw)).toBe(false);
+        expect(() => Address.parseRaw(raw)).toThrow();
+        expect(() => Address.parse(raw)).toThrow();
+    });
     it("should parse addresses in various forms", () => {
         let address1 = Address.parseFriendly(
             "0QAs9VlT6S776tq3unJcP5Ogsj-ELLunLXuOb1EKcOQi4-QO",
@@ -126,7 +175,7 @@ describe("Address", () => {
             Address.parseRaw(
                 "0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422",
             );
-        }).toThrowError("Invalid address hash length: 31");
+        }).toThrowError("Invalid raw address");
         expect(
             Address.isRaw(
                 "0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422",
@@ -137,7 +186,7 @@ describe("Address", () => {
             Address.parseRaw(
                 "0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e",
             );
-        }).toThrowError("Invalid address hash length: 31");
+        }).toThrowError("Invalid raw address");
         expect(
             Address.isRaw(
                 "0:2cf55953e92efbeadab7ba725c3f93a0b23f842cbba72d7b8e6f510a70e422e",
