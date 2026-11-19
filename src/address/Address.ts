@@ -172,12 +172,16 @@ export class Address {
     }
 
     toRaw = () => {
+        if (
+            !Number.isInteger(this.workChain) ||
+            this.workChain < -2147483648 ||
+            this.workChain > 2147483647
+        ) {
+            throw new RangeError("Workchain must be a signed 32-bit integer");
+        }
         const addressWithChecksum = Buffer.alloc(36);
         addressWithChecksum.set(this.hash);
-        addressWithChecksum.set(
-            [this.workChain, this.workChain, this.workChain, this.workChain],
-            32,
-        );
+        addressWithChecksum.writeInt32BE(this.workChain, 32);
         return addressWithChecksum;
     };
 

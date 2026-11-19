@@ -9,6 +9,42 @@
 import { Address } from "./Address";
 
 describe("Address", () => {
+    const rawHash =
+        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+
+    it.each<[number, string]>([
+        [-2147483648, "80000000"],
+        [-65536, "ffff0000"],
+        [-257, "fffffeff"],
+        [-129, "ffffff7f"],
+        [-2, "fffffffe"],
+        [-1, "ffffffff"],
+        [0, "00000000"],
+        [1, "00000001"],
+        [2, "00000002"],
+        [127, "0000007f"],
+        [128, "00000080"],
+        [255, "000000ff"],
+        [256, "00000100"],
+        [65536, "00010000"],
+        [2147483647, "7fffffff"],
+    ])("encodes workchain %s as int32 in toRaw", (workchain, suffix) => {
+        const address = new Address(workchain, Buffer.from(rawHash, "hex"));
+        expect(address.toRaw().toString("hex")).toBe(rawHash + suffix);
+    });
+
+    it.each([
+        -2147483649,
+        2147483648,
+        -1.5,
+        NaN,
+        Infinity,
+        -Infinity,
+    ])("rejects a workchain outside the int32 domain in toRaw: %s", (workchain) => {
+        const address = new Address(workchain, Buffer.from(rawHash, "hex"));
+        expect(() => address.toRaw()).toThrow(RangeError);
+    });
+
     it("should parse addresses in various forms", () => {
         let address1 = Address.parseFriendly(
             "0QAs9VlT6S776tq3unJcP5Ogsj-ELLunLXuOb1EKcOQi4-QO",
