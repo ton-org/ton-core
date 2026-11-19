@@ -173,7 +173,7 @@ export class BitReader {
     loadInt(bits: number): number {
         let res = this._preloadInt(bits, this._offset);
         this._offset += bits;
-        return this._toSafeInteger(res, "loadUintBig");
+        return this._toSafeInteger(res, "loadIntBig");
     }
 
     /**
