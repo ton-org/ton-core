@@ -15,7 +15,7 @@ export function toNano(src: number | string | bigint): bigint {
                 throw Error("Invalid number");
             }
 
-            if (Math.log10(src) <= 6) {
+            if (Math.log10(Math.abs(src)) <= 6) {
                 src = src.toLocaleString("en", {
                     minimumFractionDigits: 9,
                     useGrouping: false,
