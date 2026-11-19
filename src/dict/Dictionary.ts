@@ -184,6 +184,15 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
         },
 
         /**
+         * Create a value storing the slice's remaining bits and refs inline.
+         * The value must fit in a dictionary leaf alongside its key label.
+         * @returns DictionaryValue<Slice>
+         */
+        Slice: () => {
+            return createSliceValue();
+        },
+
+        /**
          * Create Builder value
          * @param bytes number of bytes of a buffer
          * @returns DictionaryValue<Builder>
@@ -749,6 +758,23 @@ function createCellValue(): DictionaryValue<Cell> {
         },
         parse: (src) => {
             let value = src.loadRef();
+            src.endParse();
+            return value;
+        },
+    };
+}
+
+function createSliceValue(): DictionaryValue<Slice> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeSlice(src);
+        },
+        parse: (src) => {
+            const value = src.clone();
+            src.skip(src.remainingBits);
+            while (src.remainingRefs > 0) {
+                src.loadRef();
+            }
             src.endParse();
             return value;
         },
