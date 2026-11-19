@@ -13,7 +13,7 @@ import { BitString } from "./BitString";
 import { Writable } from "./Writable";
 import { Cell } from "./Cell";
 import { Slice } from "./Slice";
-import { writeString } from "./utils/strings";
+import { writeBuffer, writeString } from "./utils/strings";
 import {
     Dictionary,
     DictionaryKey,
@@ -396,6 +396,16 @@ export class Builder {
      */
     store(writer: ((builder: Builder) => void) | Writable) {
         this.storeWritable(writer);
+        return this;
+    }
+
+    /**
+     * Store raw bytes as a tail, using continuation cells as needed.
+     * @param src source buffer
+     * @returns this builder
+     */
+    storeBufferTail(src: Buffer) {
+        writeBuffer(src, this);
         return this;
     }
 
